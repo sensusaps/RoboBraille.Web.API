@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBookToLaTeX">
+  <nicename>DTBook to LaTeX</nicename>
+  <description>Convert a DTBook document to LaTeX</description>
+  <documentation uri="../../../doc/scripts/DTBookToLaTeX.html"/>
+  <comment/>
+  
+  <parameter name="input" value="" required="true">
+    <nicename>Input DTBook</nicename>
+    <description>Select input DTBook file</description>
+    <datatype>
+      <file mime="application/x-dtbook+xml" type="input"/>
+    </datatype>
+  </parameter>
+  
+  <parameter name="output" value="" required="true">
+    <nicename>Output LaTeX</nicename>
+    <description>Select the output LaTeX file</description>
+    <datatype>
+      <file mime="application/x-tex" type="output"/>
+    </datatype>
+  </parameter>		
+  
+  <parameter name="fontsize" value="17pt" required="false">
+    <nicename>Font size</nicename>
+    <description>The font size to be used. See also the documentation of the extsizes package (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
+      
+    <datatype>
+     <enum>
+       <item nicename="12pt" value="12pt"/>
+       <item nicename="14pt" value="14pt"/>
+       <item nicename="17pt" value="17pt"/>
+       <item nicename="20pt" value="20pt"/>
+       <item nicename="25pt" value="25pt"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="font" value="Tiresias LPfont" required="false">
+    <nicename>Font</nicename>
+    <description>The font to be used. This can basically be any installed TrueType or OpenType font.</description>
+    <datatype>
+     <enum>
+       <item nicename="Tiresias LPfont" value="Tiresias LPfont"/>
+       <item nicename="LMRoman10 Regular" value="LMRoman10 Regular"/>
+       <item nicename="LMSans10 Regular" value="LMSans10 Regular"/>
+       <item nicename="LMTypewriter10 Regular" value="LMTypewriter10 Regular"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="pageStyle" value="plain" required="false">
+    <nicename>Page style</nicename>
+    <description>Style for the page. See the documentation for a detailed explanation.</description>
+    <datatype>
+     <enum>
+       <item nicename="Plain" value="plain"/>
+       <item nicename="With original page numbers" value="withPageNums"/>
+       <item nicename="Scientific" value="scientific"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="alignment" value="justified" required="false">
+    <nicename>Alignment for standard text</nicename>
+    <description>The alignment of the standard text. If you choose 'left aligned' there will be less hyphenation.</description>
+    <datatype>
+     <enum>
+       <item nicename="justified" value="justified"/>
+       <item nicename="left aligned" value="left"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="defaultLanguage" value="english" required="false">
+    <nicename>Default language</nicename>
+    <description>The language to use for the babel package if no xml:lang tag specifies it. For all valid values check the babel documentation (http://www.ctan.org/get/macros/latex/required/babel/babel.pdf)</description>
+    <datatype>
+     <enum>
+       <item nicename="english" value="english"/>
+       <item nicename="ngerman" value="ngerman"/>
+       <item nicename="USenglish" value="USenglish"/>
+       <item nicename="UKenglish" value="UKenglish"/>
+       <item nicename="swedish" value="swedish"/>
+       <item nicename="canadian" value="canadian"/>
+       <item nicename="french" value="french"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="stocksize" value="a4paper" required="false">
+    <nicename>Stock size</nicename>
+    <description>The stock size to be used. This is the size of the
+    paper that the book will be printed on. Usually the stock size is
+    larger than the paper size (with trim marks indicating where to
+    trim the paper).</description>
+    <datatype>
+     <enum>
+       <item nicename="a3paper" value="a3paper"/>
+       <item nicename="a4paper" value="a4paper"/>
+       <item nicename="a5paper" value="a5paper"/>
+       <item nicename="letterpaper" value="letterpaper"/>
+       <item nicename="legalpaper" value="legalpaper"/>
+       <item nicename="executivepaper" value="executivepaper"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="line_spacing" value="singlespacing" required="false">
+    <nicename>Line spacing</nicename>
+    <description>The line spacing to be used.</description>
+    <datatype>
+     <enum>
+       <item nicename="Single spacing" value="singlespacing"/>
+       <item nicename="One-and-a-half spacing" value="onehalfspacing"/>
+       <item nicename="Double spacing" value="doublespacing"/>
+     </enum>
+    </datatype>
+  </parameter>
+
+  <parameter name="paperwidth" value="" required="false">
+    <nicename>Paper width</nicename>
+    <description>Specific width of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+  
+  <parameter name="paperheight" value="" required="false">
+    <nicename>Paper height</nicename>
+    <description>Specific height of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="left_margin" value="" required="false">
+    <nicename>Left margin</nicename>
+    <description>Inner margin of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="right_margin" value="" required="false">
+    <nicename>Right margin</nicename>
+    <description>Outer margin of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="top_margin" value="" required="false">
+    <nicename>Top margin</nicename>
+    <description>Top margin of the page.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="bottom_margin" value="" required="false">
+    <nicename>Bottom margin</nicename>
+    <description>Bottom margin of the page</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="replace_em_with_quote" value="false" required="false">
+    <nicename>Replace em with quote</nicename>
+    <description>Replace italics with quotes for better readability.</description>
+    <datatype>
+     <enum>
+       <item nicename="Yes" value="true"/>
+       <item nicename="No" value="false"/>
+     </enum>
+    </datatype>
+  </parameter>
+
+  &ValidatorScriptParamsSimpleStatic;		
+  
+  <task name="int_daisy_validator" interactive="false">
+    <parameter>
+      <name>input</name>
+      <value>${input}</value>
+    </parameter>
+    
+    <parameter>
+      <name>abortThreshold</name>
+      <value>NONE</value>
+    </parameter>
+    
+    &ValidatorTaskParamsSimpleStatic;
+  </task>
+  
+  <task name="se_tpb_dtbook2latex" interactive="false">	
+    <parameter>
+      <name>xml</name>
+      <value>${input}</value>
+    </parameter>
+    
+    <parameter>
+      <name>out</name>
+      <value>${output}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>fontsize</name>
+      <value>${fontsize}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>font</name>
+      <value>${font}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>pageStyle</name>
+      <value>${pageStyle}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>alignment</name>
+      <value>${alignment}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>defaultLanguage</name>
+      <value>${defaultLanguage}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>stocksize</name>
+      <value>${stocksize}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>line_spacing</name>
+      <value>${line_spacing}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>paperwidth</name>
+      <value>${paperwidth}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>paperheight</name>
+      <value>${paperheight}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>left_margin</name>
+      <value>${left_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>right_margin</name>
+      <value>${right_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>top_margin</name>
+      <value>${top_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>bottom_margin</name>
+      <value>${bottom_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>replace_em_with_quote</name>
+      <value>${replace_em_with_quote}</value>			
+    </parameter>				
+
+  </task>		
+
+  <task name="pipeline_system_deleter" interactive="false">
+    <parameter>
+      <name>delete</name>
+      <value>$parent{output}/pipeline__temp/</value>
+    </parameter>
+  </task>
+  
+</taskScript>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+  <head>
+    <meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+    <title>ch_sbs_dtbookVolumeSplitter</title>
+    <style type="text/css">
+      body {margin: 2em; font-family: arial, verdana, sans-serif;}
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Transformer documentation: ch_sbs_dtbookVolumeSplitter</h1>
+    <div id="toc" class="toc">
+      <ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	  <ul>
+	    <li><a href="#success">On success</a></li>
+	    <li><a href="#failure">On error</a></li>
+	  </ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	  <ul>
+	    <li><a href="#params">Parameters (tdf)</a></li>
+	    <li><a href="#extConfig">Extended configurability</a></li>
+	  </ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+      </ul>
+    </div>
+    
+    <h2 id="purpose">Transformer Purpose</h2>
+    <p>Insert split points in a DTBook XML document given the number of
+    desired volumes. These split points are then used by a later
+    transformer, e.g.
+    the <a href="./se_tpb_dtbook2latex.html">dtbook2latex
+    transformer</a> to generate multiple volumes of a book by
+    inserting volume cover pages where the volume split points
+    are.</p>
+    
+    <h2 id="inputReqs">Input Requirements</h2>
+    <p>A DTBook document, valid to 2005-1 dtd or later.</p>
+    
+    <h2 id="output">Output</h2>
+    
+    <h3 id="success">On success</h3>
+    <p>A DTBook document containing split points which can be used to
+    separate a book into multiple volumes. Technically the split
+    points are empty div tags with a class attribute where the value
+    is "volume-split-point", i.e. <tt>&lt;div
+    class="volume-split-point"/&gt;</tt>.</p>
+    
+    <h3 id="failure">On error</h3>
+    <p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+    
+    <p>See further <a href="#params">Parameters</a>.</p>
+    
+    <h2 id="config">Configuration/Customization</h2>
+    
+    <h3 id="params">Parameters (tdf)</h3>
+    <p>See <a href="../scripts/.html">Script Documentation</a>.</p>
+    
+    <h3 id="extConfig">Extended configurability</h3>
+    <!-- details on additional config files, system variables etc -->
+    <p>None.</p>
+    
+    <h2 id="future">Further development</h2>
+    <!-- notes on refactoring; TODOs and MAYDOs -->
+    <p>None.</p>
+    
+    <h2 id="dependencies">Dependencies</h2>
+    <p>None.</p>
+    
+    <h2 id="owner">Author</h2>
+    <p>Christian Egli, SBS</p>
+    
+    <h2 id="licensing">Licensing</h2>
+    <p>LGPL</p>
+    
+  </body>
+</html>

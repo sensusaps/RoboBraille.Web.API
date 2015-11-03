@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
+		<title>se_tpb_imageConverter</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+	</head>
+	<body>
+		<h1 class="title">Transformer documentation: <em>se_tpb_imageConverter</em>
+		</h1>
+		<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#purpose">Transformer Purpose</a>
+				</li>
+				<li>
+					<a href="#inputReqs">Input Requirements</a>
+				</li>
+				<li>
+					<a href="#output">Output</a>
+					<ul>
+						<li>
+							<a href="#success">On success</a>
+						</li>
+						<li>
+							<a href="#failure">On error</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#config">Configuration/Customization</a>
+					<ul>
+						<li>
+							<a href="#params">Parameters (tdf)</a>
+						</li>
+						<li>
+							<a href="#extConfig">Extended configurability</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#future">Further development</a>
+				</li>
+				<li>
+					<a href="#dependencies">Dependencies</a>
+				</li>
+				<li>
+					<a href="#owner">Author</a>
+				</li>
+				<li>
+					<a href="#licensing">Licensing</a>
+				</li>
+			</ul>
+		</div>
+		<h2 id="purpose">Transformer Purpose</h2>
+		<p>This transformer converts images associated with an xml document and updates any references made to the converted images in the xml document.</p>
+		<h2 id="inputReqs">Input Requirements</h2>
+		<p>An xml document.</p>
+		<h2 id="output">Output</h2>
+		<h3 id="success">On success</h3>
+		<p>A modified xml document containing updated references together with the linked images and any additional resources found in the folder containing the source document.</p>
+		<h3 id="failure">On error</h3>
+		<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+		<p>A partly modified file set. Some images may not have been converted.</p>
+		<h2 id="config">Configuration/Customization</h2>
+		<h3 id="params">Parameters (tdf)</h3>
+		<!-- description on params as defined in tdf, please use the below definition list -->
+		<dl id="paramslist">
+			<dt>input</dt>
+			<dd>The input file</dd>
+			<dt>output</dt>
+			<dd>The output directory</dd>
+			<dt>converter</dt>
+			<dd>Path to executable. Leave blank to use ImageMagick</dd>
+			<dt>arguments</dt>
+			<dd>String of arguments that should be past to the executable. Use the place holders below to specify where the image's input and output path should be inserted</dd>
+			<dt>extension</dt>
+			<dd>Set the output file extension (ImageMagick uses the extension to specify the image format)</dd>
+			<dt>placeholderInput</dt>
+			<dd>The substring in the arguments string that should be replaced by the image input path. May not contain whitespace</dd>
+			<dt>placeholderOutput</dt>
+			<dd>The substring in the arguments string that should be replaced by the image output path. May not contain whitespace</dd>
+			<dt>lookForTag</dt>
+			<dd>Name of the tag that contains an image reference attribute (see below)</dd>
+			<dt>lookForAttribute</dt>
+			<dd>Name of the attribute that contains an image reference</dd>
+		</dl>
+		<h3 id="extConfig">Extended configurability</h3>
+		<p>The path to ImageMagick can be set using the pipeline user properties. Set the "pipeline.imageMagick.converter.path" to the path to imageMagick's convert.exe.</p>
+		<!-- details on additional config files, system variables etc -->
+		<h2 id="future">Further development</h2>
+		<p>Additional resources in subdirectories could be copied to output.</p>
+		<!-- notes on refactoring; TODOs and MAYDOs -->
+		<h2 id="dependencies">Dependencies</h2>
+		<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+		<p><a href="http://www.imagemagick.org">ImageMagick</a></p>
+		<h2 id="owner">Author</h2>
+		<!-- name of owner/initial committer -->
+		<p>Joel Håkansson, TPB</p>
+		<h2 id="licensing">Licensing</h2>
+		<!-- Licensing information -->
+		<p>LGPL</p>
+	</body>
+</html>

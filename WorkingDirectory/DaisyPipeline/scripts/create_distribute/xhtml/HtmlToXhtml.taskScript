@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="HtmlToXhtml">
+	<nicename>HTML To XHTML</nicename>
+	<description>Convert an HTML document to XHTML</description>
+   	<documentation uri="../../../doc/scripts/HtmlToXhtml.html"/>
+    <comment/>
+			
+	<parameter name="html" value="" required="true">
+		<nicename>Input HTML file</nicename>
+		<description>Select the input HTML file</description>
+		<datatype>
+			<file mime="text/html" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outdir" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>		
+
+	<parameter name="ignoreBogons" value="true" required="false">
+		<nicename>Strip unknown elements</nicename>
+		<description>Select whether to remove elements that are not recognized as being part of the XHTML grammar.</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="userEncoding" value="" required="false">
+		<nicename>Encoding</nicename>
+		<description>Select input file encoding - if none, the encoding will be autodetected.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+		
+	&ValidatorScriptParamsSimpleStatic;	
+			
+	<task name="int_daisy_html2xhtml" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${html}</value>
+		</parameter>
+					
+		<parameter>
+			<name>outDir</name>
+			<value>${outdir}</value>
+		</parameter>		
+		
+		<parameter>
+			<name>stripUnknownElems</name>
+			<value>${ignoreBogons}</value>
+		</parameter>				
+		
+		<parameter>
+			<name>encoding</name>
+			<value>${userEncoding}</value>
+		</parameter>				
+	</task>		
+
+	<task name="int_daisy_prettyPrinter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outdir}/$filename{html}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outdir}</value>
+		</parameter>
+	
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outdir}/$filename{html}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;												
+	</task>
+</taskScript>

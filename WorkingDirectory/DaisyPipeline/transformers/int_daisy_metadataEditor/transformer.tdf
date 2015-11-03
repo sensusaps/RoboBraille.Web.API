@@ -1,0 +1,45 @@
+<transformer version="1.1">
+	<name>Metadata Editor</name>
+	<description>Edit metadata in a file or fileset</description>
+	<classname>int_daisy_metadataEditor.MetadataEditorDriver</classname>
+	<license>LGPL</license>
+	<author>Romain Deltour</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_metadataEditor.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xhtml+xml">
+			<name>input</name>
+			<description>Path to input file.</description>
+			<example>C:/myDocuments/dtbook.xml</example>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>name</name>
+			<description>The name of the metadata.</description>
+			<example>dc:publisher</example>
+		</parameter>
+		
+		<parameter required="true" type="string">
+			<name>value</name>
+			<description>The value of the metadata.</description>
+			<example>DAISY Consortium</example>
+		</parameter>
+
+		<parameter  required="false" type="enum" >
+			<name>mode</name>
+			<description>The edition overwrite mode.</description>
+			<example>OVERWRITE</example>
+			<enum>
+   				<value>ADD</value>
+   				<value>MERGE</value>
+				<value>OVERWRITE</value>
+				<value>IGNORE</value>
+ 			</enum>
+ 			<default>MERGE</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

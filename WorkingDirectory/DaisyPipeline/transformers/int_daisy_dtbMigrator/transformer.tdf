@@ -1,0 +1,118 @@
+<transformer version="1.0">
+	<name>DTB Migrator</name>
+	<description>Migrates DTBs upwards and downwards</description>
+	<classname>int_daisy_dtbMigrator.DtbMigrator</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling, Brandon Nelson, Per Sennels, Linus Ericson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+    <documentation uri="../../doc/transformers/int_daisy_dtbMigrator.html"/>
+	
+	<parameters>	
+	    <parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>Input DTB manifest (NCC, OPF)</description>
+			<example>D:/path/to/input.opf</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>destination</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputdir/</example>
+		</parameter>		
+		
+		<parameter required="true" type="enum">
+			<name>outputVersion</name>
+			<description>The type of DTB to output</description>
+			<example>Z2005</example>
+			<enum>
+				<value>Z2005</value>
+				<value>D202</value>
+			</enum>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>inputType</name>
+			<description>
+				The type of input DTB in terms of text (NCC/NCX only or Full/Partial Text).
+				Select DETECT to have an analysis determine the type. If any other value
+				is selected, it will win and the analysis will not be performed.				
+			</description>
+			<example>DETECT</example>
+			<enum>
+				<value>DETECT</value>
+				<value>NCC_NCX_ONLY</value>
+				<value>TEXT</value>
+			</enum>
+			<default>DETECT</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>newIdentifier</name>
+		    <description>
+		    	A unique identifier of the publication. If this value is set, it will override
+		    	and replace the value given in the input DTB. If this value is not set, the
+		    	identifier given in input DTB will be used in the output.		    	
+		    </description>
+		    <example>dk_dbb_12345</example>
+		    <default/>
+		</parameter>
+		
+		<parameter required="false" type="text/css">
+			<name>outputCSS</name>
+			<description>
+				A CSS to use for output textual content files. 
+				If this value is not set, a default CSS will be used.
+			</description>
+			<example>D:/path/to/my.css</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" type="application/x-dtbresource+xml">
+			<name>outputResourceFile</name>
+			<description>
+				A Resource file to use for output z3986 filesets. 
+				If this value is not set, a default Resource file will be used.
+			</description>
+			<example>D:/path/to/my.res</example>
+			<default/>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>ncxAddNavLabelAudio</name>
+		    <description>
+		    	Whether to create an audio element for each navLabel in the NCX. This
+		    	can be costly timewise, and the default behavior is off.  		    	
+		    </description>
+		    <example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+		    <default>false</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>ncxMinNavLabelAudioLength</name>
+			<description>
+				The minimum length (in millisec) for audioclips used in NavLabel elements
+			</description>
+			<example>1000</example>
+			<default>1000</default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>dtbookTransferNCCMetadata</name>
+		    <description>
+		    	Whether to try to transfer metadata from the ncc file to the DTBook content document.
+		    </description>
+		    <example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+		    <default>false</default>
+		</parameter>
+					
+	</parameters>	
+
+</transformer>

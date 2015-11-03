@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+	<parameter name="audioTaggerDoID3" value="true" required="false" >
+		<nicename>ID3 Tagging</nicename>
+		<description>Apply ID3 tagging to Audio files in the fileset</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>								
+	<parameter name="audioTaggerDoPlaylists" value="true" required="false" >
+		<nicename>Playlist generation</nicename>
+		<description>Create playlists in the output directory</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>			
+</paramGroup>

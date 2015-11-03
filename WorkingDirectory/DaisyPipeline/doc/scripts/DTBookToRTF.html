@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTBook to RTF</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTBook to RTF</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script converts a DTBook document to RTF.</p>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+		<dt>Input DTBook</dt>
+		<dd><strong>Required.</strong> The input DTBoook document; DTBook versions supported are 1.1.0, 2002 and 2005.</dd>
+		<dt>Include TOC</dt>
+		<dd><strong>Required.</strong> A boolean indicating if a TOC should be generated</dd>
+		<dt>Output RTF</dt>
+		<dd><strong>Required.</strong> Resulting RTF document.</dd>		
+		<dt>Include Page Numbering</dt>
+		<dd><strong>Optional.</strong> A boolean indicating if page numbers should be written to the output.</dd>
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/dk_dbb_addIdsToDtbook.html">Add id attributes to DTBook</a></li>
+	<li><a href="../transformers/dk_dbb_dtbook2rtf.html">DTBook to RTF</a></li>
+	<li><a href="../transformers/pipeline_system_deleter.html">System deleter</a></li>
+</ol>
+
+</body>
+</html>

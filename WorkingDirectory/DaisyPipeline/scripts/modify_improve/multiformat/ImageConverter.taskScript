@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="ImageConverter">
+	<nicename>Image Converter</nicename>
+	<description>Converts images</description>
+   	<documentation uri="../../../doc/scripts/ImageConverter.html"/>
+    <comment></comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input xml file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="format" value=".jpg" required="false">
+		<nicename>Image format</nicename>
+		<description>Select image format</description>
+		<datatype>
+			<enum>
+				<item nicename="JPEG images" value=".jpg"/>
+				<item nicename="PNG images" value=".png"/>
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<task name="se_tpb_imageConverter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>extension</name>
+			<value>${format}</value>
+		</parameter>
+		
+	</task>
+
+</taskScript>

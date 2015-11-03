@@ -1,0 +1,42 @@
+<transformer version="1.0">
+  <name>DTBook to RTF</name>
+  <description>Transforms a DTBook 2002/2005 document to RTF</description>
+  <classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+  <license>LGPL</license>
+  <author>Ole Holst Andersen</author>
+  <support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+  <documentation uri="../../doc/transformers/dk_dbb_dtbook2rtf.html" />
+  <parameters>
+    <parameter required="true" direction="in" type="application/xml">
+      <name>xml</name>
+      <description>The DTBook 2002/2005 XML file</description>
+      <example>file:///path/to/file.xml</example>
+    </parameter>
+    <parameter required="true" type="string">
+      <name>inclTOC</name>
+      <description>Whether to include an TOC in the generated RTF document</description>
+      <example>true</example>
+      <default>false</default>
+    </parameter>
+    <parameter required="false" type="string">
+      <name>inclPagenum</name>
+      <description>Whether to write page numbers in the generated RTF document</description>
+      <example>true</example>
+      <default>false</default>
+    </parameter>
+    <parameter type="application/xml">
+      <name>xslt</name>
+      <value>${transformer_dir}/dtbook_to_rtf.xsl</value>
+    </parameter>
+    <parameter type="string">
+      <name>factory</name>
+      <value>net.sf.saxon.TransformerFactoryImpl</value>
+      <!-- <value>com.icl.saxon.TransformerFactoryImpl</value> -->
+    </parameter>
+    <parameter required="true" direction="out" type="application/rtf">
+      <name>out</name>
+      <description>The output RTF document</description>
+      <example>file:///path/to/outFile.rtf</example>
+    </parameter>
+  </parameters>
+</transformer>

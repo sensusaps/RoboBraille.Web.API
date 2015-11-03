@@ -1,0 +1,492 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Localizing and customizing Pipeline Narrator</title>
+ <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Localizing and customizing Pipeline Narrator</h1>
+  <p class="author">Martin Blomberg</p>
+  <p class="updated">Latest update: 2006-08-24</p>
+  
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#intro">Introduction</a></li>
+	<li><a href="#available">Available Localizations</a>
+		<ul>
+			<li><a href="#default">Default Configuration</a></li>
+		</ul>
+	</li>
+	<li><a href="#ntl">Narrator Transformer Localization</a>
+		<ul>
+			<!--<li><a href="#int_daisy_xmlValidator">Input Validation</a></li>-->
+			<li><a href="#se_tpb_xmldetection">Abbreviation and Acronym Detection</a></li>
+			<li><a href="#se_tpb_annonsator">Structure Announcer</a></li>
+			<li><a href="#se_tpb_xmldetection_s">Sentence Detection</a></li>
+			<li><a href="#se_tpb_syncPointNormalizer">Synchronization Point Normalizer</a></li>
+			<li><a href="#se_tpb_speechgenerator">Speech Generator</a></li>
+			<li><a href="#se_tpb_filesetcreator">File Set Creator</a></li>			
+			<li><a href="#se_tpb_dtbAudioEncoder">Audio Encoder</a></li>
+			<li><a href="#se_tpb_zed2daisy202">Z3986-2005 to Daisy 2.02 converter</a></li>
+
+		</ul>
+	</li>
+	<li><a href="#uil">User Interface Localization</a>
+		<ul>
+			<li><a href="#messages.p">Default messages.properties</a></li>
+			<li><a href="#messages_xx.p">Localized Messages</a></li>
+		</ul>
+	</li>
+	<li></li>
+	<li><a href="#commit">Committing Localizations</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+	
+	
+<h2 id="intro">Introduction</h2>
+	<p>
+		The purpose of this document is to give anyone trying to localize Pipeline Narrator 
+		clues of where to find localizable features, and of which files to edit or 
+		create new versions of. 
+		
+		<em>Localizing</em> Pipeline Narrator means adjusting Pipeline Narrator to produce 
+		digital talking books in languages not yet covered by Narrator. It could as well mean 
+		localizing the user interface. The sections <a href="#ntl">Narrator Transformer 
+		Localization</a> and <a href="#uil">User Interface Localization</a> describe 
+		each of those tasks. Note: user interface localization is not necessary in order
+		to localize the production of books.
+	</p>
+	
+	<p>
+		You'll have several chances to fill in language codes when localizing Narrator.
+		These language codes are the lower-case, two-letter codes as defined by 
+		ISO-639. You can find a full list of these codes at a number of sites, such as:
+		<a href="http://www.loc.gov/standards/iso639-2/englangn.html">
+		http://www.loc.gov/standards/iso639-2/englangn.html</a>. 
+	</p>
+	
+	<p>
+		Note: This document is not transformer documentation - to learn more about each 
+		one of the transformers, please read the respective transformer documentation 
+		which should be found in in the <code>doc/transformers/</code> directory.
+	</p>
+	
+	
+	<h2 id="available">Available Localizations</h2>
+	<p>
+		There is no neat way of finding out what localizations are
+		available in your Pipeline Narrator installation. The easiest way is 
+		to examine the files in each transformer directory and see what they
+		contain, or run a book with <tt>xml:lang="xx"</tt>, where <tt>xx</tt> is
+		your language code, and see what comes out. 
+	</p>
+	
+	<h3 id="default">Default Configuration</h3>
+	<p>
+		Pipeline Narrator is supposed to work for English texts out of the box. The default 
+		configuration is what's used at TPB when producing university level course 
+		literature in English. There are more settings than the localizable to tweak, and they're
+		described elsewhere. Please read each transformer documentation to learn more.
+	</p>
+	
+			
+
+		
+	<h2 id="ntl">Narrator Transformer Localization</h2>
+	
+	<!-- ****************************
+	      Input validation
+	     **************************** -->
+	<!--
+	<h3 id="int_daisy_xmlValidator">Input validation (int_daisy_xmlValidator)</h3>
+	<p><a href="../transformers/int_daisy_validator.html">Transformer documentation</a>.</p>
+	<p>
+		This transformer is not yet in use, but will be soon.
+	</p>
+	-->
+	
+	<!-- ****************************
+	      Abbr and Acronym detection 
+	     **************************** -->
+	<h3 id="se_tpb_xmldetection">Abbreviation and Acronym Detection (se_tpb_xmldetection)</h3>
+	<p><a href="../transformers/se_tpb_xmldetection.html">Transformer documentation</a>.</p>
+	
+	<!-- intro -->
+	<p>
+		se_tpb_xmldetection is a highly language dependant transformer when used for
+		abbreviation and acronym detection (see 
+		<a href="#se_tpb_xmldetection_s">Sentence Detection</a> for other usage). 
+		Despite the transformer name, it isn't really xml that is detected, but rather patterns 
+		and strings in the text. Such patterns and strings are defined in certain language
+		files that reside in <a href="../../transformers/se_tpb_xmldetection/lang/">
+		../../transformers/se_tpb_xmldetection/lang/</a>.
+		The language files contain abbreviations, acronyms and initialisms together
+		with their corresponding expansions, for the TTS to read. That way, the TTS
+		may be able to say "that is" instead of just "i e", and so on.
+	</p>
+	
+	<!-- write your own lang file -->
+	<p>
+		If you are using Narrator to produce digital talking books in a language not yet
+		covered by Narrator, you probably want to write your own language file. 
+		A short example follows, but you may want to consult the 
+		<a href="../transformers/se_tpb_xmldetection.html">transformer documentation</a> 
+		for a more thorough description on how to write such files.
+	</p>
+	
+	<!-- Example -->
+<pre>
+&lt;language xml:lang="en"&gt;
+    &lt;initialism before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s"&gt;
+        &lt;key&gt;
+            &lt;name&gt;ACP&lt;/name&gt;
+            &lt;expansion&gt;African, Caribbean and Pacific Countries&lt;/expansion&gt;
+        &lt;/key&gt;
+    &lt;/initialism&gt;
+
+    &lt;acronym before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s"&gt;
+        &lt;key&gt;
+            &lt;name&gt;DAISY&lt;/name&gt;
+            &lt;expansion id="daisyBook"&gt;Digital Accessible Information System&lt;/expansion&gt;
+        &lt;/key&gt;
+    &lt;/acronym&gt;
+
+    &lt;abbreviation before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$"&gt;
+        &lt;key&gt;
+            &lt;name&gt;e.g.&lt;/name&gt;
+            &lt;name&gt;eg.&lt;/name&gt;
+            &lt;expansion&gt;for example&lt;/expansion&gt;
+        &lt;/key&gt;
+    &lt;/abbreviation&gt;
+&lt;/language&gt;	
+</pre>
+	
+	<p>
+		In the above example, there are three main elements: <tt>initialism</tt>, <tt>acronym</tt>
+		and <tt>abbreviation</tt>. All three can have multiple <tt>key</tt> children.
+	</p>
+	<ul>
+		<li>
+			<p>
+				Initialisms are things supposed to be spelled out, in this example "A, C, P" 
+				rather than having the TTS mumble something quite unintelligible.
+			</p>
+		</li>
+		
+		<li>
+			<p>
+				Acronyms are supposed to be read out like a word. In this case, proper acronym
+				mark-up is added to the document.
+			</p>
+		</li>
+		
+		<li>
+			<p>
+				Abbreviations are exchanged at TTS processing-time. The expansion, instead of
+				the name, is read by the TTS. 
+			</p>
+		</li>
+	</ul>
+	
+	<p>
+		Once you have produced a file for your language, you have to tell Narrator the file exists.
+		You do so by editing the file 
+		<a href="../../transformers/se_tpb_xmldetection/lang.xml">../../transformers/se_tpb_xmldetection/lang.xml</a>,
+		adding the mapping between a language code and your new file.
+	</p>
+	
+	
+	
+	<!-- *********************
+	      Structure announcer 
+	     ********************* -->
+	<h3 id="se_tpb_annonsator">Structure Announcer (se_tpb_annonsator)</h3>
+	<p><a href="../transformers/se_tpb_annonsator.html">Transformer documentation</a>.</p>
+	<p>
+		Structure announcer adds spoken introductions and/or terminations of structures,
+		such as tables, sidebars and notes. The announcements are read by the TTS and needs a rewrite if a language
+		not yet covered by Narrator is being used. The announcements are found in
+		<a href="../../transformers/se_tpb_annonsator/type">../../transformers/se_tpb_annonsator/type</a>
+		directory. The file <a href="../../transformers/se_tpb_annonsator/type/dtbook-2005.xml">dtbook-2005.xml</a>
+		contains the announcements made in a book that complies to the DTBook 2005 standard.
+	</p>
+	
+	<p>
+		The file contains <tt>rule</tt> elements, each one with the attribute <tt>match</tt> which 
+		contains an xpath defining which elements the rule should be to applied to.
+		Typically, localizing Narrator, <em>no new rules have to be added</em>. What you need to
+		add is instead the <tt>lang</tt> child of the <tt>rule</tt> element, with
+		the <tt>lang</tt> attribute matching your language. 
+		The <tt>lang</tt> element has two optional
+		children: <tt>before</tt> and <tt>after</tt> that contain the text to be read
+		before and after any matching structure from the book.
+	</p>
+	
+	<p>
+		The file also contains an element called <tt>copy</tt>. That element contains 
+		xslt code dealing with getting spoken announcements of list items in numbered list
+		(<tt>&lt;list type="ol"...</tt>). If you want the spoken announcements to appear
+		in lists with roman numerals, you have to edit the file adding a <tt>&lt;xsl:when 
+		test="lang('xx')"&gt;...</tt> where <tt>xx</tt> is your language code. You'll see
+		tests for <tt>lang('yy')</tt> and the easiest way is just to copy one of them,
+		and change the language code and the announcement text. If you don't have numbered
+		lists using roman numerals, you can skip this and your lists will be fine anyway.
+	</p>
+	
+	
+	<!-- ********************
+	      Sentence detection 
+	     ******************** -->
+	<h3 id="se_tpb_xmldetection_s">Sentence Detection (se_tpb_xmldetection)</h3>
+	<p><a href="../transformers/se_tpb_xmldetection.html">Transformer documentation</a>.</p>
+	<p>
+		The sentence detection uses Java's <tt>java.text.BreakIterator</tt> to find sentence
+		boundaries. All localization is done automagically by Java using the document's current locale.
+	</p>
+	
+	
+	<!-- *****************************
+	      Synchronization point normalization 
+	     ***************************** -->
+	<h3 id="se_tpb_syncPointNormalizer">Synchronization Point Normalization (se_tpb_syncPointNormalizer)</h3>
+	<p><a href="../transformers/se_tpb_syncPointNormalizer.html">Transformer documentation</a>.</p>
+	<p>
+		Language agnostic.
+	</p>
+	
+	
+	
+	<!-- ******************
+	      Speech Generator
+	     ****************** -->
+	<h3 id="se_tpb_speechgen2">Speech Generation (se_tpb_speechgen2)</h3>
+	
+	<p>
+		<a href="../transformers/se_tpb_speechgen2.html">
+			Transformer documentation</a>.
+	</p>
+	
+	<p>
+		se_tpb_speechgenerator takes care of the audio file/speech generation. It has
+		several language specific features that need to be adjusted to get the most out
+		of the system.
+	</p>
+	
+	<ul>
+		<li>
+			<h4>TTS Builder Configuration</h4>
+			<p>
+				se_tpb_speechgenerator is mainly configured using the file
+				<a href="../../transformers/se_tpb_speechgenerator/ttsbuilder.xml">
+					ttsbuilder.xml</a>. That is the file to edit to change file names for
+				the following features.
+				Please refer to the 
+				<a href="../transformers/se_tpb_speechgenerator.html">
+					transformer documentation</a> and the <a href="../scripts/Narrator-multilang.html">multilanguage support documentation</a> for a more thorough description
+				of the transformer configuration.
+			</p>
+		</li>
+		
+		<li>
+			<h4>Regular Expressions</h4>
+			<p>
+				Every chunk of text sent to the TTS optionally goes through a search-replace routine.
+				The routine consists of a list of regexes to use, specified using a certain xml format.
+				At run-time, the regular expressions are read from disk according to what's in the 
+				ttsbuilder.xml-file associated with the parameter name <tt>generalRegexFilename</tt>.
+				You can edit the supplied file or create a new one and change the TTS builder 
+				configuration to point to that one instead.
+			</p>
+			<p>
+				<tt>ttsbuilder.xml</tt>: parameter name: <tt>generalRegexFilename</tt>.
+			</p>
+		</li>
+		
+		<li>
+			<h4>Years</h4>
+			<p>
+				Most numbers in text really are years. To have the TTS actually read the numbers as years,
+				not like ordinary numbers, (1952 &raquo; "nineteen fifty two" instead of 
+				"one thousand nine hundred and fifty two")
+				regular expressions can be used. For Swedish and English, the expressions
+				have already been completed and the English ones can be found in 
+				<a href="../../transformers/se_tpb_speechgenerator/config/year_en.xml">year_en.xml</a>.
+				If your language makes a difference between reading an ordinary number and reading a
+				year, a localization of Narrator should contain a localization of such a file.
+			</p>
+			<p>
+				<tt>ttsbuilder.xml</tt> parameter name: <tt>yearFilename</tt>.
+			</p>
+		</li>
+		
+		<li>
+			<h4>XSLT</h4>
+			<p>
+				Every sync point is extracted from the content document with its xml context
+				intact. An xsl transformation is done on that small xml fragment using text
+				as output format. This gives the ability to add text to some elements
+				(for example: add the word "page" prior to the text node from a <tt>pagenum</tt>) 
+				or add ssml before and after some constructs.
+			</p>
+			<p>
+				Some announcements are made using xslt instead of
+				<a href="#se_tpb_annonsator">se_tpb_annonsator</a>. The reason for that is that the
+				announcement is possible to place in the same sentence, giving the synthetic voice 
+				better flow. For example, the xslt announcement of the element 
+				<tt>&lt;pagenum id="p-7"&gt;7&lt;/pagenum&gt;</tt> would be "<tt>page 7</tt>"
+				whereas se_tpb_annonsator produces "<tt>Page. 7</tt>". Those two text strings
+				gives very different output from the synthesis. Localization of such rules 
+				is made by adding your own <tt>xml:lang='something'</tt> on the xslt 
+				<tt>match</tt>-attribute.
+			</p>
+			
+			<p>
+				<tt>ttsbuilder.xml</tt> parameter name: <tt>xsltFilename</tt>.
+			</p>
+		</li>
+		
+		<li>
+			<h4>Character Translation Table</h4>
+			<p>
+				Some TTS systems are unable to pronounce some characters. For example, 
+				an English TTS might not be able to pronounce the Swedish characters "å", "ä" and "ö".
+				To prevent TTS crashes, you are able to translate certain characters to 
+				arbitrary text strings using a simple key-value mapping. The file containing 
+				the mapping uses Java's properties xml format, with the hex codepoint as
+				key and the replacement string as the value.
+			</p>
+			<p>
+				<tt>ttsbuilder.xml</tt>: parameter name: <tt>characterTranslationTable</tt>.
+			</p>
+		</li>
+	</ul>
+	
+	
+	
+	<!-- ******************
+	      File Set Creator
+	     ****************** -->
+	<h3 id="se_tpb_filesetcreator">File Set Creator (se_tpb_filesetcreator)</h3>
+	<p><a href="../transformers/se_tpb_filesetcreator.html">Transformer documentation</a>.</p>
+	<p>
+		A Z39.86 fileset contains a resource file. To add more languages, just extend the 
+		existing file by adding more resources with another xml:lang. Note that audio must be 
+		supplied. 
+	</p>
+	
+	
+	
+	<!-- ******************
+	      Audio Encoder
+	     ****************** -->
+	<h3 id="se_tpb_dtbAudioEncoder">Audio Encoder (se_tpb_dtbAudioEncoder)</h3>
+	<p><a href="../transformers/se_tpb_dtbAudioEncoder.html">Transformer documentation</a>.</p>
+	<p>Language agnostic.</p>
+	
+	
+	
+	<!-- ******************
+		Z3986-2005 to Daisy 2.02 Converter
+	     ****************** -->
+	<h3 id="se_tpb_zed2daisy202">Z3986-2005 to Daisy 2.02 Converter (se_tpb_zed2daisy202)</h3>
+	<p><a href="../transformers/se_tpb_zed2daisy202.html">Transformer documentation</a>.</p>
+	<p>Language agnostic.</p>
+			
+	
+		<h2 id="uil">User Interface Localization</h2>
+	<p>
+		The Pipeline transformers make use of the internationalization features
+		in the DMFC package. That way the messages displayed via the standard
+		EventSender	during transformer execution are localizable. There is no need
+		to do interface localization in order to produce books in different languages.
+	</p>
+	
+	<h3 id="messages.p">Default messages.properties</h3>
+	<p>
+		In every transformer directory, there is a file called <code>messages.properties</code>.
+		The file has a simple syntax and describes a key-value mapping. The key is typically 
+		a fairly understandable and descriptive name of a message, and the value is the message 
+		itself, i.e. what's supposed to be printed on screen. <code>messages.properties</code>
+		contains the default messages as defined by the transformer developer. The language used
+		should be English. The file should not be removed or edited.
+	</p>
+	<p>
+		The following example of a <code>messages.properties</code> file comes from the 
+		<a href="../transformers/se_tpb_filesetcreator.html">se_tpb_filesetcreator</a>-transformer.
+		Lines starting with <code>#</code> are considered comments. The left hand side of the 
+		equals sign is the key (the message name) and the right hand side the value (message text).
+		The curly braces in the message text denote parameters sent 
+		by the transformer:
+	</p>
+	
+	
+	<pre>
+########## Message properties for FileSetCreator ##########
+# {0} is the current input filename
+USING_INPUT_FILE = Using input file {0}
+# {0} is the current output directory name
+USING_OUTPUT_DIR = Using output directory {0}
+SEARCHING_FOR_REFERRED_FILES = Searching for referred files...
+GENERATING_SMIL = Generating SMIL files...
+GENERATING_NCX = Generating NCX...
+GENERATING_OPF = Generating OPF...
+AUDIO_FILE_COPY = Copying audio files...
+DONE = Done!
+	</pre>
+	
+	
+	<h3 id="messages_xx.p">Localized Messages</h3>
+	<p>
+		If you'd like to rewrite some of the messages, or have messages displayed in 
+		a language other than the default English, there is the possibility to 
+		do so by adding a localized message properties file. The file must of course follow
+		the same simple syntax as <code>messages.properties</code> and also have the same
+		keys. You only need to change the values, and save the file with a name like
+		<code>messages_xx.properties</code>, where <code>xx</code> is your language code.
+		The localized file is to be placed in the transformer directory.
+	</p>
+	
+	<p>
+		The name of a Swedish message properties file is <code>messages_sv.properties</code> 
+		and to write a Swedish localization of the file shown above, one could produce
+		the following: 
+	</p>
+	
+	<pre>
+########## Message properties for FileSetCreator ##########
+USING_INPUT_FILE = Använder som indata {0}
+USING_OUTPUT_DIR = Använder som utkatalog {0}
+SEARCHING_FOR_REFERRED_FILES = Söker efter refererade filer...
+GENERATING_SMIL = Genererar SMIL-filer...
+GENERATING_NCX = Genererar NCX...
+GENERATING_OPF = Genererar OPF...
+AUDIO_FILE_COPY = Kopierar filer...
+DONE = Klart!		
+	</pre>
+		
+
+		
+<h2 id="commit">Committing Localizations</h2>
+	<p>
+		If you have produced a localization of Narrator and want to share it with others,
+		please contact one of the developers listed as administrator on the sourceforge 
+		daisymfc project members list. That way your localization may be committed to
+		the project CVS, free for anyone to download and possibly included in future releases of 
+		Pipeline Narrator.
+	</p>
+	
+
+<h2 id="owner">Author</h2>
+	<p>Martin Blomberg, TPB</p>
+<!-- name of owner/initial committer -->
+
+<h2 id="licensing">Licensing</h2>
+	<p>LGPL</p>
+<!-- Licensing information -->
+
+</body>
+</html>

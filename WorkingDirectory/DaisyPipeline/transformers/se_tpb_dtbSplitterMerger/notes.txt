@@ -1,0 +1,43 @@
+- open streams on urls instead of File objects for the prompt files
+
++- when merging 202 prompt files not separated 
+  temp fix, see DtbMerger202#fillTmpVolume
+  (check for prompt smil refs when modifying ncc's, 
+  retrieve prompt mp3 put them all in a DtbVolume's instance collection)
+  
+- ncc:files value wrong because of missing master.smil when splitting
+
++ fix copying (use Fileset instead of EFolder) when not splitting 
+  because the maxVolSize exceedes the book size (regen will follow when copying via EFolder)
++ replace DtbReportGenerator with a TransformationReporter
++ distinfo versions for 2002 and 2005 in DtbSplitter3#generateDistInfoDoc
++ replace DtbException with specific ones, catch those in the Transformer class and send nice messages
++ input params for merger
+
+- do we need book info in prompt smil; DtbSplitter202#addBookInfoToSmilPrompts
+- DtbSplitter#retrieveBookLanguage en-US en-GB
+
+
++ par elems in prompt smil files
++ limit or eliminate use of inputFile in DtbSplitter202 DtbSplitter3
+ 
++ check file names whether they are the same when merging (move to ./split)
++ progress
++ dtbsm_title duplicated when splitting d202 full text
++ images skipped when splitting d3 (one level of subfolders handled)
+
+- javadoc comments
++ documenatation in html
++ volumesPrompt default on 
+  and thus no need to check whether app started from command line or not
+
++ interactive? yes
++ messages
++ user aborted split
++ Daisy version retrieved from file (or should it be an input parameter?)
+
+_______________________
+- do not add master.smil as the FilsetImpl will print error messages when merging
+			
++ validation fails for split volumes: rel attribute not declared in DTD
+  Error in ncc.html: Attribute "rel" must be declared for element type "a". [SAXParseException]

@@ -1,0 +1,27 @@
+<transformer version="1.1">
+	<name>Distribute PEF</name>
+	<description>Packs PEF-files for distribution with a Java driven html-GUI.</description>
+	<classname>org_pef_dist.Distribute</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_dist.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/x-pef+xml">
+			<name>input</name>
+			<description>The input PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-jar">
+			<name>output</name>			
+			<description>Output text file</description>
+			<example>file:///path/to/file.txt</example>
+		</parameter>
+
+	</parameters>
+
+</transformer>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="daisyNoterefs" value="false" required="false">
+		<nicename>DAISY 2.02 style noterefs</nicename>
+		<description>Put bodyref attributes on note references (required by Daisy 2.02 skippability recommendation)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="genToc" value="false" required="false">
+		<nicename>ToC Generation</nicename>
+		<description>Generates a Table of Contents</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="genChunks" value="false" required="false">
+		<nicename>Multiple HTML Pages</nicename>
+		<description>Split the output in multiple HTML pages</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+</paramGroup>	

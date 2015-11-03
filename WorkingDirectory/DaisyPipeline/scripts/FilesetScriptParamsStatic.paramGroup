@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output folder</nicename>
+		<description>Select a directory to store the output in</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outputEncoding" value="utf-8" required="false">
+		<nicename>Output encoding</nicename>
+		<description>Select the output characterset encoding</description>
+		<datatype>
+			<enum>
+			  <item nicename="utf-8" value="utf-8" />
+			  <item nicename="iso-8859-1" value="iso-8859-1" />
+			  <item nicename="Shift-JIS" value="Shift_JIS" />			  
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="identifier" value="" required="false">
+		<nicename>Identifier</nicename>
+		<description>Add an identifier for use in the output metadata.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+		   
+    <parameter name="doAbbrAcronymDetection" value="true" required="false">
+        <nicename>Abbreviation and acronym detection</nicename>
+        <description>Perform abbreviation, initialism and acronym detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doSentenceDetection" value="true" required="false">
+        <nicename>Sentence detection</nicename>
+        <description>Perform sentence detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doWordDetection" value="false" required="false">
+        <nicename>Word detection</nicename>
+        <description>Perform word detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+
+	<parameter name="hrefTarget" value="TEXT" required="false">
+		<nicename>href Targets</nicename>
+		<description>Select The SMIL element targeted by href URIs in the content document and NCC</description>
+		<datatype>
+			<enum>
+				<item nicename="par" value="PAR"/>
+				<item nicename="text" value="TEXT"/>
+			</enum>
+		</datatype>
+	</parameter>
+
+</paramGroup>	

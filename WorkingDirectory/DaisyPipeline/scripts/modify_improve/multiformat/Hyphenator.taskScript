@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="ImageConverter">
+	<nicename>Hyphenator</nicename>
+	<description>Hyphenates an XML document</description>
+   	<documentation uri="../../../doc/scripts/Hyphenator.html"/>
+    <comment></comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input xml file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Select the output xml file</description>
+		<datatype>
+			<file mime="application/xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<task name="se_tpb_hyphenator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+	</task>
+
+</taskScript>

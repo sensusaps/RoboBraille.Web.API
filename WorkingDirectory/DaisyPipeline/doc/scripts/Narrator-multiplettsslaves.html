@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />  
+	<title>Running speechgen2 using multiple TTS slaves</title>
+	<style type="text/css">
+body {margin-left:15%; margin-right:20%; font-family: arial, verdana, sans-serif;}
+h1 {margin-top: 3em;}
+h2 {border-bottom: 1px solid #000088; margin-top: 3em;}
+h3 {border-bottom: 1px solid #000088; margin-top: 3em; width: 75%}
+dt {font-weight: bold;}
+dt {text-decoration: underline; margin-top:1em; margin-bottom:0.5em;}
+dd {margin-bottom: 0.5em;} 
+table, td {border:1px solid gray;}
+hr {width: 9em; border:none; border-top: 1px dashed #880000; margin-top: 1.5em;}
+*.summary {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; margin-top: 3em; background-color: #eeeeee; }
+pre {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; background-color: #eeeeee;}
+.fixme {border-left: 3px solid #ff0000;}
+.alert {border: 1px solid #ff0000; padding: 1em;}
+	</style>
+</head>
+<body>
+
+<h1>Running speechgen2 using multiple TTS slaves</h1>
+
+<h2>Configuring multiple TTS slaves on a local system</h2>
+<p>
+Running multiple concurrent TTS slaves on a local system only requires a bit
+of tweaking in the <code>se_tpb_speechgen2/tts/ttsbuilder.xml</code> config
+file. Simply make sure there are several instances of the the
+<code>&lt;param name="command" value="..."/&gt;</code> element within the 
+<code>&lt;tts&gt;</code> you which to run concurrently.
+</p>
+
+<p>
+The TTS slave instances will receive one sentence to process at a time, and as
+a slave instance finishes processing a sentence it will receive the next request.
+</p>
+
+<h2>Configuring distributed TTS slaves</h2>
+
+<p>
+This section describes the solution in use at TPB for using distributed TTS slaves.
+Other solutions are possible, such as running a server on each of the slaves processing
+the requests from Daisy Pipeline.
+</p>
+
+<h3>Protocol for communicating with the slaves</h3>
+<p>
+All communication with the slaves is performed using STDIN and STDOUT.
+</p>
+<p>
+Each slave reads a single sentence on STDIN and generates the corresponding wav audio.
+It then writes the length (in bytes) of the wav audio to STDOUT followed by the binary
+audio data itself. The process is repeated until it reads an empty line which causes
+the slave to exit.
+</p>
+<p>
+The TTS adapter (the master) is responsible for sending the text sentences and receiving
+the wav audio data from the slaves.
+</p>
+
+<h3>Using SSH for passwordless login</h3>
+
+<p>
+In order to run the TTS slave programs on remote systems, the communication is tunneled through SSH.
+The SSH login must be passwordless in order to be able to run without human intervention.
+</p>
+
+<p>
+A keypair needs to be generated without a passphrase on the private key. The public key is
+installed in ~/.ssh/authorized_keys on the slave machine(s).
+</p>
+
+<p>
+A bash script starts an SSH agent and adds the private key
+before pipeline itself is executed. This way, Daisy Pipeline will be able to execute
+commands on the remote machine(s) without providing a password:
+</p>
+
+<pre>...
+eval `ssh-agent -s`
+ssh-add /path/to/private/key
+java org.daisy.pipeline.ui.CommandLineUI [parameters...]
+kill -KILL $SSH_AGENT_PID
+...
+</pre>
+
+<p>Some SSH installations are picky about the file permissions on the private key. Make sure
+the owner of the file is the only one having read priveliges to it.</p>
+
+<h3>Sample ttsbuilder.xml config</h3>
+
+<p>
+In the ttsbuilder.xml config file, the command parameters executes the TTS slave programs on
+the remote machines using SSH:
+</p>
+
+<pre>
+&lt;tts&gt;
+	&lt;param name="command" value="ssh folke@192.168.0.51 tclsh current/narraFil2.tcl"/&gt;
+	&lt;param name="command" value="ssh folke@192.168.0.52 tclsh current/narraFil2.tcl"/&gt;
+	&lt;param name="command" value="ssh folke@192.168.0.53 tclsh current/narraFil2.tcl"/&gt;
+	&lt;param name="command" value="ssh folke@192.168.0.53 tclsh current/narraFil2.tcl"/&gt;
+	&lt;param name="class" value="se_tpb_speechgen2.tts.adapters.FilibusterTTS"/&gt;
+	&lt;param name="timeout" value="1200000"/&gt;
+	...
+&lt;/tts&gt;
+</pre>
+
+<p>
+In this example, four TTS instances are run distributed over three systems with the third
+system running two TTS instances and the other systems running one TTS instance each.
+The optimal number of instances to run on each system depends on the amount of system
+resources needed by each instance. TPB are currently running 15 TTS instances distributed
+over three systems.
+</p>
+
+</body>
+</html>

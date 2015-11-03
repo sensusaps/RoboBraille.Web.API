@@ -1,0 +1,104 @@
+<transformer version="1.1">
+	<name>DTB Splitter</name>
+	<description>Splits DTBooks in Daisy 2.02 and Daisy 3 into volumes</description>
+	<classname>se_tpb_dtbSplitterMerger.split.DtbSplitterTransformer</classname>
+	<license>LGPL</license>
+	<author>Piotr Kiernicki</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../../doc/transformers/se_tpb_dtbSplitter.html"/>
+	
+	<parameters>
+	    <parameter required="true" direction="in" type="application/xml">
+			<name>inputFilePath</name>
+			<description>Path to a Daisy 2.02 NCC file or Daisy 3 OPF file</description>
+			<example>D:/path/to/ncc.html</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outDirPath</name>			
+			<description>The output directory where the DTB volumes will be saved</description>
+			<example>D:/path/to/outDir/</example>
+		</parameter>	
+		
+		<parameter required="true" direction="in" type="string">
+			<name>volumeSizeInMB</name>
+			<description>
+			  Volume size in MB			
+			</description>
+			<example>700</example>
+		</parameter>
+				
+		<parameter required="false" direction="in" type="application/xml">
+			<name>promptFilesManifestPath</name>
+			<description>
+			  Path to a manifest file listing available prompt smil and mp3 files.
+			  If this param is not set, a default path will be inserted.			
+			</description>
+			<example>D:/path/to/promptFiles/manifest.xml</example>
+            <default>promptFiles/manifest.xml</default>			
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>userPrompt</name>
+			<description>
+				Standard output prompts, e.g. number of calculated volumes approval 
+				or file overwriting approval.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>keepInput</name>
+			<description>
+			  Specifies whether the input files should be kept. 
+			  The default value is "true"
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>maxSplitLevel</name>
+			<description>
+			  The value should be a digit 1 through 6, corresponding to the maximal header level 
+	 		  in the navigation control document (ncc/ncx) at which splitting shall be allowed. 
+	 		  The default value is "6"			
+			</description>
+			<example>6</example>
+			<enum>
+				<value>1</value>
+				<value>2</value>
+				<value>3</value>
+				<value>4</value>
+				<value>5</value>
+				<value>6</value>
+			</enum>
+			<default>6</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>alwaysIdSubdir</name>
+			<description>
+			  Put the book in a subdirectory named after the book identifier when the book
+			  did not need to be split.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+
+	</parameters>	
+
+</transformer>

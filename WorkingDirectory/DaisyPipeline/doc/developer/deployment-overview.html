@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta content="application/xhtml+xml; charset=utf-8" http-equiv="Content-type" />
+		<title>DAISY Pipeline - Deployment Overview</title>
+		<link href="../pipeline.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+	  <h1 class="title">DAISY Pipeline - Deployment Overview</h1>
+      <ul class="toc_auto">
+         <li>
+            <a href="#options">Fundamental deployment options</a>
+         </li>
+         <li>
+            <a href="#desktop">Typical uses of a desktop-side deployment</a>
+         </li>
+         <li>
+            <a href="#server">Typical uses of a server-side deployment</a>
+         </li>
+         <li>
+            <a href="#local">On Global and Local Functionality</a>
+         </li>
+         <li>
+            <a href="#localization">Extensibility via localization of existing Transformers or Scripts</a>
+         </li>
+         <li>
+            <a href="#additions">Extensibility via Transformer or Script development</a>
+         </li>
+         <li>
+            <a href="#business">On Existing Infrastructures and Business Logic Layers</a>
+         </li>
+         <li>
+            <a href="#uis">On User Interfaces and Targeted Builds</a>
+         </li>
+      </ul>
+	  <div class="summary">
+			<p>This document discusses overarching themes related to deploying the DAISY Pipeline within an organisation.</p>
+			<p>Target audience: system integrators, administrators, developers</p>
+	  </div> 
+	  <p class="author">Markus Gylling</p>
+	  <p class="updated">Latest update: 2007-11-26</p>
+	
+	  <h2 id="options">Fundamental deployment options</h2>
+	  <p>As defined in the <a href="http://www.daisy.org/projects/pipeline/dmfc-systemreqs.html">original system requirements document</a> of the DAISY Pipeline project,
+	  the tool is designed to allow deployment in both desktop- and serverbased environments. This means that the tool</p>
+      <ul>
+        <li>can be used as a standalone desktop application, providing transformation utilities in production environments</li>
+        <li>can be used as a service provider to other desktop applications</li>
+		<li>can be used as a webservice, with public or intranet access</li>
+	  </ul>
+	  <p>The choice of which of these deployment options to use obviously varies with which parts of the Pipeline functionality is to be exposed, and the nature of the clients.</p>
+	  
+	  <h3 id="desktop">Typical uses of a desktop-side deployment</h3>
+	  <dl>
+	  	<dt>Use as a conversion and utility tool during XML document preparation</dt>
+	  	<dd>
+	  	<p>Many organisations within the DAISY community engage in creation of XML documents that serve as a basis for output formats such as DTBs, E-text, Braille etc.</p>
+	  	<p>Via its support for (for example) RTF, ODF, and WordML as input formats, the Pipeline can serve as a utility tool for creating XML masters (typically, but not restricted to, the
+	  	DTBook format), and then manipulating/converting these further, either to enrich the master quality, or to create concrete output formats via automated processes.</p>  	
+	  	</dd>
+	  	<dt>Use for manual creation and manipulation of DTBs (and other types of filesets)</dt>
+	  	<dd>
+	  		<p>As the <a href="http://www.daisy.org/projects/pipeline/projectinfo.htm#scope">DAISY Pipeline scope</a> includes both processing of singular XML documents as well 
+	  		as <em>filesets</em> (such as DTBs), much of the functionality in the Pipeline pertains to DTBs, and includes functionality that targets pre-production, production and
+	  		post-production stages. The <a href="../summary.html">Script and Transformer summary</a> should give an overview of what the DTB-related processing options are.</p>  	  		  	
+	  	</dd>
+	  	<dt>Use for validation</dt>
+	  	<dd>
+            <p>The validation framework built into the DAISY Pipeline supports many content types and all standardized Schema languages. As such, the validation framework can be
+	  	used to perform <em>canonical</em> validation of XML documents and DTBs, but it also supports the addition of local (organisation-specific) subset rules.</p>	  	    
+	  	<p>The general philosophy regarding validation within the Pipeline is to strive to integrate validation seamlessly into production flows, by removing the need to
+	  		use separate applications for validation. This means that validation is typically integrated into other Scripts as a last (and/or intermediary) step. However, the Pipeline
+	  		can be used for validation-only purposes as well.</p>
+	  	</dd>
+	  	
+	  	<dt id="migration">Use for content migration and maintenance</dt>
+	  	<dd>
+	  	<p>The DAISY Consortium is during 2007 and 2008 investing in the "DAISY Content Migration and Safety Suite", a subproject within the Pipeline which (by building on the already existing validation framework) 
+	  	will provide functionality relating to <em>content migration and repair</em>. The migration aspect of this project will deliver tools to move DTBs between differernt versions of the DAISY standard 
+	  	(such as upgrading a Daisy 2.02 DTB to Z3986 for longevity and archival purposes, and "downgrading" a Z3986 DTB to Daisy 2.02 (for distribution purposes). A migration suite for DTBook documents will
+	  	also be provided, as well as a "repair" utility (available in a first version in the December 2007 release of the Pipeline) for DTBook documents.</p>
+	  	</dd>
+	  	
+	  </dl>
+	  
+	  <h3 id="server">Typical uses of a server-side deployment</h3>
+	  <dl>
+	  	<dt>Intranet high-speed TTS DTB renderer</dt>
+	  	<dd>
+	  	<p>The <a href="../scripts/Narrator-DtbookToDaisy.html">Narrator</a> Script within the Pipeline is a <a href="./localizing-and-customizing-pipeline-narrator.html">highly configurable</a> XML and TTS-based DTB production system 
+	  		that is built to support scalable high-speed rendering server-side.
+	  	</p>	  	
+	  	</dd>
+	  
+	  	<dt>Public or restricted conversion services</dt>
+	  	<dd>
+	  	<p>Parts of or all transformation services within the Pipeline can be exposed either publicly or to a restricted set of users (say, within the context of a university) to process and/or create various types of output media from a single input document.</p>	  	
+	  	</dd>
+	  
+	    <dt>Distribution-time output media creation</dt>
+	  	<dd>
+	  	<p>The Pipeline can be integrated as a transformation service provider at distribution time, allowing the distributed media to be dynamically taylored for a particular user or a particular user group.</p>	  	
+	  	</dd>
+
+	    <dt>Delivery-time input media control and manipulation</dt>
+	  	<dd>
+	  	<p>The Pipeline can be integrated as a service provider at input media delivery time, acting for example as a gateway for a centralized storage area that receives different types of input from multiple locations.</p>	  	
+	  	</dd>
+
+	  	<dt>Public or restricted validation services</dt>
+	  	<dd>
+	  		<p>The validation framework of the Pipeline can be exposed online to allow a set of distributed production agencies to have a single point of entry for content validation.</p>	  	
+	  	</dd>
+
+	  
+	  </dl> 
+	  
+	  <h2 id="local">On Global and Local Functionality</h2>
+	  <p>
+	  	The default (and publicly available) functionality of the DAISY Pipeline has been written to be globally applicable. 
+	  	Many times (and thanks to the fact that we are using standards), this functionality can be directly transferred and used within 
+	  	a local organisational context. However, there are cases when <em>localization</em> and/or <em>functionality additions</em> 
+	  	are needed to allow a Pipeline deployment to reach its full potential.	  
+	  </p>
+	  
+	  <h3 id="localization">Extensibility via localization of existing Transformers or Scripts</h3>
+	  <p>A majority of the Pipeline Transformers have been written to allow localization via extensions or via provision of external behavioral guidance configurations.</p>
+	  <p>Some of these extensions can be realized using only script parameters; others will need the intervention of a systems admin or a developer.</p>
+	  <p>The localization features are typically described in the Transformer documentation. As an example, see <a href="./localizing-and-customizing-pipeline-narrator.html">Localizing and customizing Pipeline Narrator</a>.</p>
+	  
+	  <h3 id="additions">Extensibility via Transformer or Script development</h3>
+	  <p>When the default Pipeline functionality does not cover all local needs, the solution is to develop one or several local Transformers (which, if they have use cases outside of your own organisation, you may choose to contribute back to the public). 
+	  Sometimes, it is enough to <em>append or replace a Transformer in an existing Script</em>; sometimes an
+	  entire Script (with one or many transformers referenced) is needed.</p>
+	  <p>A Pipeline installation can contain any combination of public and organisation-specific Transformers and Scripts. A Pipeline installation can also contain any combination of free and commercial Transformers and Scripts.</p>
+      <p>Developers, please see the <a href="./transformer-authoring-guide.html">Transformer Authoring Guide</a> for more information.</p>	  
+	  	  
+	  <h2 id="business">On Existing Infrastructures and Business Logic Layers</h2>
+	  <p>The Pipeline is written to be a context-agnostic tool to be deployed within varying technical and business infrastructures. 
+	  As such, it naturally does not provide nor impose any business logic layers; such layers must always be provided locally.</p>	  	  	   	  
+	  	  	
+	  <h2 id="uis">On User Interfaces and Targeted Builds</h2>
+	  <p>The Pipeline ships with a set of prebuilt interfaces:</p>
+	  <ul>
+	  	<li>
+            <em>The Pipeline Desktop GUI</em> (delivered May 2007). This is the default Rich Client GUI, targeting desktop usage. This GUI is a <a href="http://sourceforge.net/projects/daisymfcgui">separate project</a> from the "Pipeline Core".</li>
+	  	<li>
+            <em>The Pipeline Command-Line UI</em> (delivered spring 2006). The is the default command line interface, integrated into the Pipeline Core, targeting non-graphic desktop usage and integration into simpler application contexts.</li>
+	  	<li>
+            <em>A browser-based UI</em> (delivered spring 2008). This is a part of the turnkey server deployment kit that is being made available during 2008.</li>
+	  </ul>
+	  
+	  <p>In some circumstances, it is desirable to provide distributions which <em>limit the functionality of the Pipeline</em> for a certain use case, 
+	  and which <em>provide a user interface taylored for that limited functionality</em>.</p>
+	  <p>The Pipeline can be made to accomplish this by doing the following:</p>
+	  <ol>
+	  	<li>Provide a target subset build, which simply "filters out" any Transformers and Scripts that are not needed. This is achieved by (cloning and) manipulating the <a href="http://daisymfc.svn.sourceforge.net/viewvc/*checkout*/daisymfc/trunk/dmfc/build-core.xml">Pipeline "makefile" (which is an Ant script)</a>.</li>
+	  	<li>Provide a specialized UI, either by customizing any of the UIs mentioned above, or by writing a separate standalone UI.</li>
+	  </ol>
+	  
+
+	  
+	  
+	  
+	  
+	    
+	  
+	  
+	  
+						
+	</body>
+</html>

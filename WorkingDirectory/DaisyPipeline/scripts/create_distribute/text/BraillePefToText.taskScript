@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY BrailleFormatOutputParamsStatic SYSTEM "../../BrailleFormatOutputParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="PefToText">
+	<nicename>PEF to text</nicename>
+	<description>This script converts a PEF 2008-1 document into text.</description>
+	<documentation uri="../../../doc/scripts/PEFToText.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A PEF-file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Output text file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	&BrailleFormatOutputParamsStatic;
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+	<task name="org_pef_text/pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>table</name>
+			<value>${table}</value>
+		</parameter>
+		
+		<parameter>
+			<name>pad</name>
+			<value>${pad}</value>
+		</parameter>
+	</task>
+
+</taskScript>

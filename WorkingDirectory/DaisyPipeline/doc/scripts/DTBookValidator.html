@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTBook Validator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTBook Validator</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script validates a DTBook XML document. The validation process includes the following:</p>
+<ul>
+	<li>Validation of the document structure against the DTD.</li>
+	<li>
+	Validation of the document structure beyond the constraints expressed in the DTD.<br/>
+	These additional constraints are defined by the formal <a href="http://www.daisy.org/z3986">Z3986</a> conformance validator <a href="http://zedval.sf.net">ZedVal</a>.<br/>
+	Examples of additional constraints are:<br/>
+	<ul>
+	  <li>That the <a href="http://www.daisy.org/z3986/2005/z3986-2005.html#para_69a">metadata required by the Z3986 specification</a> is actually present</li>
+	  <li>That the link between a note reference and a note resolve</li>
+	</ul>
+	
+	</li>
+	<li>Validation of local links, that is, checking that all referenced images, CSS stylesheets, etc, are actually present.</li>
+</ul>
+
+<p><em>If you want to validate your DTBook document and add constraints that are specific to your organisation or production flow, you can use the more advanced <a href="./ConfigurableValidator.html">Configurable Validator</a> script.</em></p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>A DTBook XML document.</p>
+
+<h2 id="output">Output</h2>
+<p>By default, this script does not render any physical output; instead, messages are displayed in the user interface.
+However, by configuring the <a href="#report">XML Report setting</a>, you can have the validation result stored in an XML document.</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recmommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+
+<dl id="paramslist">	
+	<dt>Input DTBook</dt>
+	<dd><strong>Required.</strong> Path to input DTBook document</dd>		
+	<dt id="report">XML Report</dt>
+	<dd><strong>Optional.</strong> Path to a file to store an XML report in</dd>				
+	<dt>Generate Context Info</dt>
+	<dd><strong>Optional.</strong> 
+	Show additional hints on the location of the error; if available, nearest heading, nearest page, surrounding text and XML path. Default is false.</dd>
+	
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

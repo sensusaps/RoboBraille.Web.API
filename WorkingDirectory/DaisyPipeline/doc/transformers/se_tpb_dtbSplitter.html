@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_dtbSplitterMerger.split</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: se_tpb_dtbSplitterMerger.split</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>The purpose of this transformer is to split Daisy DTB file sets into subvolumes of a given size.</p>
+<p>In its current version the transformer supports splitting Daisy 2.02, Z39.86-2002 and Z39.86-2005 file sets.</p>
+
+<p>The programmatic flow of this transformer in summary:</p>
+<ol>
+<li>Try to create an <code>org.daisy.util.fileset.interfaces.Fileset</code> instance on the input file (with DTD validation turned on).</li>
+<li>If the input maximal volume size is greater than or equal to the input file set's size, copy the file set as it is to the output directory.</li>
+<li>If the input maximal volume size is smaller than the input file set's size, depending on the <code>org.daisy.util.fileset.FilesetType</code>
+		instantiate an appropriate extension of <code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter</code>: 
+		<ul>
+			<li><code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter202</code> for <code>FilesetType.DAISY_202</code></li>
+			<li><code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter3</code> for <code>FilesetType.Z3986</code></li>
+		</ul>
+		and initialize splitting the file set.</li>
+<li>Build subvolumes according to the input maximal volume size and the maximal split header level, adding appropriate volume prompt information and files.</li>
+<li>If the user prompt is on, ask the user whether the created volumes should be written to the output directory.</li>
+<li>Write the subvolumes to disk.</li>
+</ol>		
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>This transformer is meant for splitting Daisy 2.02, Z39.86-2002 or Z39.86-2005 file sets. If an <code>org.daisy.util.fileset.interfaces.Fileset</code> cannot be built or the built <code>Fileset</code> is not of a supported type, an exception will be thrown.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>In the output directory there will be a number of subfolders containing the subvolumes of the split Daisy DTB file set.</p>
+<h4>Daisy 2.02</h4>
+<p>Distribution of the SMIL and media files in the subvolumes is described in modified copies of the navigation files - ncc and full text files - placed in each subvolume. Each modified copy of a navigation file contains references to the SMIL files available in a given subvolume. References to SMIL files placed in another subvolume are replaced with prompt SMIL references telling the reader of a book to which subvolume he/she should move to be able to continue reading.</p>
+<h4>Z39.86-2002 or Z39.86-2005</h4>
+<p>Distribution of the SMIL and media files in the subvolumes is described in the distinfo.dinf file.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>inputFilePath</dt>
+	<dd>Path to a Daisy 2.02 NCC file or Z39.86-2002 / Z39.86-2005 OPF file.</dd>
+	
+	<dt>outDirPath</dt>
+	<dd>The output directory where the DTB subvolumes will be saved.</dd>
+	
+	<dt>volumeSizeInMB</dt>
+	<dd>Maximal volume size in megabytes.</dd>
+			
+	<dt>promptFilesManifestPath</dt>
+	<dd>Path to a manifest file listing available prompt SMIL and audio files. If this parameter is not set, a default path will be used.</dd>
+	
+	<dt>userPrompt</dt>
+	<dd>Specifies whether standard output prompts should be used, e.g. number of calculated volumes approval or file overwriting approval.</dd>
+	
+	<dt>keepInput</dt>
+	<dd>Specifies whether the input file sets should be kept.</dd>
+	
+	<dt>maxSplitLevel</dt>
+	<dd>The value should be a digit 1 through 6, corresponding to the maximal header level in the navigation control document (ncc/ncx) at which splitting shall be allowed.</dd>
+		
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+<p>None.</p>
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>The abstract class <code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter</code> implements base functionality needed for splitting DTB Daisy file sets, that can be used or overridden by its subclasses. Current extensions are:</p>
+<ul>
+<li><code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter202</code></li>
+<li><code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter3</code></li>
+</ul>
+
+<p>The abstract class <code>se_tpb_dtbSplitterMerger.spilt.DtbSplitter</code> may be extended to support new types of Daisy DTB file sets when they come up.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li>none</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Piotr Kiernicki, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

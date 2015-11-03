@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="WordMLtoDTBook">
+	<nicename>Word 2003 XML to DTBook</nicename>
+	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
+   	<documentation uri="../../../doc/scripts/WordMLtoDTBook.html"/>
+    <comment></comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input xml file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="images" value="true" required="false">
+		<nicename>Extract images</nicename>
+		<description>Check box to extract images</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="convertImages" value="true" required="false">
+		<nicename>Convert images to JPEG</nicename>
+		<description>Check box to convert all images into JPEG format (requires ImageMagick)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="overwrite" value="true" required="false">
+		<nicename>Overwrite existing files</nicename>
+		<description>Check box to overwrite existing files in the output directory.</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="stylesheet" value="dtbook2xhtml.xsl" required="false">
+		<nicename>Append XHTML stylesheet</nicename>
+		<description>Check box to include XHTML stylesheet for display in a browser.</description>
+		<datatype>
+			<boolean true="dtbook2xhtml.xsl" false=""/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>The title of the publication. If no value is supplied, the information is extracted from the file properties</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="author" value="" required="false">
+		<nicename>Author</nicename>
+		<description>The author of the publication. If no value is supplied, the information is extracted from the file properties</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="uid" value="" required="false">
+		<nicename>dtb:uid</nicename>
+		<description>The publications unique identifier. If no value is supplied, it will be a generated.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<task name="se_tpb_wordml2dtbook" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>filename</name>
+			<value>dtbook-tmp.xml</value>
+		</parameter>
+		
+		<parameter>
+			<name>images</name>
+			<value>${images}</value>
+		</parameter>
+		
+		<parameter>
+			<name>forceJPEG</name>
+			<value>${convertImages}</value>
+		</parameter>
+
+		<parameter>
+			<name>overwrite</name>
+			<value>${overwrite}</value>
+		</parameter>
+		
+		<parameter>
+			<name>stylesheet</name>
+			<value>${stylesheet}</value>
+		</parameter>
+		
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>
+		
+		<parameter>
+			<name>author</name>
+			<value>${author}</value>
+		</parameter>
+		
+		<parameter>
+			<name>uid</name>
+			<value>${uid}</value>
+		</parameter>
+		
+		<parameter>
+			<name>customStyle</name>
+			<value>native</value>
+		</parameter>
+		
+	</task>
+
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/dtbook-tmp.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}/dtbook.xml</value>
+		</parameter>		
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/dtbook.xml</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}/dtbook-tmp.xml</value>
+		</parameter>
+	</task>
+
+</taskScript>

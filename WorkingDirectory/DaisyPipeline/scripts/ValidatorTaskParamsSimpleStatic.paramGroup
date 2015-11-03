@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>		
+
+		<parameter>
+			<name>xmlReport</name>
+			<value>${validatorOutputXMLReport}</value>
+		</parameter>
+		
+</paramGroup>

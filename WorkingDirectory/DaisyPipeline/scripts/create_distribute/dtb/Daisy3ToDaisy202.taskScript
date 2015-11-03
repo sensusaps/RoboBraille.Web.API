@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="narrator">
+	<nicename>DAISY 3 to DAISY 2.02 [BETA]</nicename>
+	<description>Converts a full-text full-audio DAISY/NISO 2005 DTB to a Daisy 2.02 DTB</description>
+	<documentation uri="../../../doc/scripts/Daisy3ToDaisy202.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input OPF</nicename>
+		<description>Select the input Package file (OPF) document</description>
+		<datatype>
+			<file mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select directory for the output Narrator DTBs</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="202hrefTarget" value="TEXT" required="false">
+		<nicename>2.02 href target</nicename>
+		<description>Select the SMIL element targeted by href URIs: par or text</description>
+		<datatype>
+			<enum>
+				<item nicename="par" value="PAR"/>
+				<item nicename="text" value="TEXT"/>
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="validatorTimeTolerance" value="0" required="false">
+		<nicename>Time Tolerance</nicename>
+		<description>Set the time tolerance threshold in milliseconds</description>		
+		<datatype>
+				<integer min="0" max ="10000" />
+		</datatype>		
+	</parameter>
+	
+	
+	<!-- *************************
+	      z3986 Validation (zedval)
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
+		</parameter>
+	</task>
+
+	
+	<!-- ************************************
+	      Z3986-2005 to Daisy 2.02 Converter
+	     ************************************ -->
+	<task name="se_tpb_zed2daisy202" interactive="false">
+		<parameter>
+			<name>manifest</name>
+			<value>${input}</value>
+		</parameter>					
+		<parameter>
+			<name>outDir</name>
+			<value>${outputPath}</value>
+		</parameter>					
+		<parameter>
+			<name>hrefTarget</name>
+			<value>${202hrefTarget}</value>
+		</parameter>				
+	</task>
+
+	
+	<!-- *************************
+	      Daisy 2.02 Validation 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/ncc.html</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
+		</parameter>
+	</task>
+	
+	<!-- *************************
+	      Delete temporary
+	  	 ************************* --> 
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+	
+</taskScript>

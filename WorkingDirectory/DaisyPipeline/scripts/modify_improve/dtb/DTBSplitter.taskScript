@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY DTBSplitterScriptParamsStatic SYSTEM "../../DTBSplitterScriptParamsStatic.paramGroup">
+<!ENTITY DTBSplitterTaskParamsStatic SYSTEM "../../DTBSplitterTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBSplitter">
+	<nicename>DTB Splitter</nicename>
+	<description>Split a Single Volume DTB into a Multiple Volume DTB</description>
+   	<documentation uri="../../../doc/scripts/DTBSplitter.html"/>
+    <comment/>     	
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input NCC or OPF</description>
+		<datatype>
+			<file mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the directory where the output subvolumes will be saved.</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	&DTBSplitterScriptParamsStatic;
+				
+	<task name="se_tpb_dtbSplitterMerger.split" interactive="false">
+		<parameter>
+			<name>inputFilePath</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>outDirPath</name>
+			<value>${output}</value>
+		</parameter>
+
+		&DTBSplitterTaskParamsStatic;									
+	</task>
+
+</taskScript>

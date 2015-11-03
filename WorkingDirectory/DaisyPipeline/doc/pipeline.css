@@ -1,0 +1,14 @@
+body {margin-left:15%; margin-right:20%; font-family: arial, verdana, sans-serif;}
+h1 {margin-top: 3em;}
+h2 {border-bottom: 1px solid #000088; margin-top: 3em;}
+h3 {border-bottom: 1px solid #000088; margin-top: 3em;}
+dt {font-weight: bold;}
+dt {text-decoration: underline; margin-top:1em; margin-bottom:0.5em;}
+dd {margin-bottom: 0.5em;} 
+table, td {border:1px solid gray;}
+hr {width: 9em; border:none; border-top: 1px dashed #880000; margin-top: 1.5em;}
+*.summary {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; margin-top: 3em; background-color: #eeeeee; }
+pre {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; background-color: #eeeeee;}
+.fixme {border-left: 3px solid #ff0000;}
+.alert {border: 1px solid #ff0000; padding: 1em;}
+

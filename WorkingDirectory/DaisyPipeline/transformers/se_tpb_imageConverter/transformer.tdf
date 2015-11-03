@@ -1,0 +1,76 @@
+<transformer version="1.1">
+	<name>Image Converter</name>
+	<description>Converts image files in a file set.</description>
+	<classname>se_tpb_imageConverter.ImageConverter</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_imageConverter.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>converter</name>
+			<description>Path to executable. Leave blank to use ImageMagick</description>
+			<example>C:\Program\myProgram\imageconverter.exe</example>
+			<default></default>
+		</parameter>
+				
+		<parameter type="string" required="false">
+			<name>arguments</name>
+			<description>String of arguments that should be past to the executable. Use the place holders below to specify where the image's input and output path should be inserted</description>
+			<example>%1 -scale 600> %2</example>
+			<default>%1 -scale 600> %2</default>
+		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>extension</name>
+			<description>Set the output file extension</description>
+			<example>.jpg</example>
+			<default>.jpg</default>
+		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>placeholderInput</name>
+			<description>The substring in the arguments string that should be replaced by the image input path. May not contain whitespace</description>
+			<example>%1</example>
+			<default>%1</default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>placeholderOutput</name>
+			<description>The substring in the arguments string that should be replaced by the image output path. May not contain whitespace</description>
+			<example>%2</example>
+			<default>%2</default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>lookForTag</name>
+			<description>Name of the tag that contains an image reference attribute (see below)</description>
+			<example>img</example>
+			<default>img</default>
+		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>lookForAttribute</name>
+			<description>Name of the attribute that contains an image reference</description>
+			<example>src</example>
+			<default>src</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

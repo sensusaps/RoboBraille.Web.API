@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Audio Tagger</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Audio Tagger</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>
+This script manipulates the audio files in a fileset by adding <strong>ID3 tags</strong> 
+(if the audio files are MP3), and by creating <strong>playlists</strong> of various formats.</p>
+<p>The script is primarily written to support DTBs - other fileset types are not explicitly supported.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input fileset manifest file (NCC, OPF, etc)</p>
+
+
+<h2 id="output">Output</h2>
+<h3 id="id3">ID3 Tagging of MP3 files</h3>
+
+<p><a href="http://www.id3.org/id3v2.3.0">ID3 v2.3</a> tags are added to MP3 files. The values are retrieved from the input fileset. 
+The following table describes which ID3 fileds are used for what.</p>
+
+<table>
+<tr><th>ID3 tag field</th><th>Value</th></tr>
+<tr><td>Title</td><td>A label (typically heading) representing the content of the current file</td></tr>
+<tr><td>Album title</td><td>Typically a value of dc:title metadata in the input fileset</td></tr>
+<tr><td>Artist</td><td>Typically a value of dc:creator metadata in the input fileset</td></tr>
+<tr><td>Track Number</td><td>The sequential order of the current file in the input fileset presentation order</td></tr>
+</table>
+
+<h3 id="pl">Playlist generation</h3>
+<p>The following playlist types are generated:</p>
+<ul>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">M3U</a></li>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">M3U8</a> - an M3U file using Unicode character set encoding</li>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">PLS</a></li>
+<li><a href="http://xspf.org/">XSPF</a></li>
+<li><a href="http://support.microsoft.com/kb/316992">WPL</a></li>
+</ul>
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> The input fileset manifest file (NCC, OPF, etc)</dd>
+	
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The directory to store the output in. This <em>can</em> be set as the same as the input directory, but it is recommended to use another directory than the input directory.</dd>
+	
+		<dt>ID3 Tagging</dt>
+		<dd><strong>Optional.</strong> Whether to apply ID3 tagging to Audio files in the fileset. The default is true.</dd>
+
+		<dt>Playlist generation</dt>
+		<dd><strong>Optional.</strong> Whether to create playlists in the output directory. The default is true.</dd>
+	
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_filesetAudioTagger.html">Audio Tagger</a></li>
+</ol>
+</body>
+</html>

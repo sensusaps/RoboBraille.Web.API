@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>int_daisy_audioTagger</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_audioTagger</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Add ID3 tags and playlists to filesets containing audio.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer has been written with the intention to work on any file/fileset that 
+can be represented by the <code>org.daisy.util.fileset</code> package. 
+However, preference has been given to DTB filesets - other types are not explicitly supported.</p>
+
+<h2 id="output">Output</h2>
+
+<dl>
+
+<dt>Tagging of MP3 files</dt>
+<dd>ID3v23 tags are added to all MP3 files, containing values for title (heading), album title (book title) artist (author) and order (n/x) fields of these were settable based on the input fileset.</dd>
+
+<dt>Playlist generation</dt>
+<dd>The following playlist types are generated:
+<ul>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">M3U</a></li>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">M3U8</a></li>
+<li><a href="http://forums.winamp.com/showthread.php?threadid=65772">PLS</a></li>
+<li><a href="http://xspf.org/">XSPF</a></li>
+<li><a href="http://support.microsoft.com/kb/316992">WPL</a></li>
+</ul>
+</dd>
+</dl>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose members have had ID3v23 Tags added to its MP3files and/or has had playlists generated to the set output directory. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf -->
+	<dl>
+			<dt>input</dt>
+			<dd>The input fileset manifest file (ncc, opf, etc)</dd>
+				
+			<dt>output</dt>			
+			<dd>The output directory</dd>
+							
+			<dt>doID3Tagging</dt>
+			<dd>Whether to perform ID3 tagging. Defaults to true.</dd>
+				
+			<dt>doPlaylistGeneration</dt>
+			<dd>Whether to generate playlists. Defaults to true.</dd>
+	</dl>
+
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<p>None.</p>
+	
+	<h2 id="future">Further development</h2>
+	<!-- notes on refactoring; TODOs and MAYDOs -->
+	<p>Extend support for non-DTB filesets.</p>
+	
+	<h2 id="dependencies">Dependencies</h2>
+	<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+	<ul>
+		<li><a href="https://jaudiotagger.dev.java.net/">jaudiotagger.jar</a> (at time of writing: a tweaked and locally compiled version (available on pipeline SVN /lib/) that renders ID3Tags in UTF16LE, else win media player will not play the files.)</li>
+	</ul>
+	
+	<h2 id="owner">Author</h2>
+	<!-- name of owner/initial committer -->
+	<p>Markus Gylling, Daisy Consortium</p>
+	
+	<h2 id="licensing">Licensing</h2>
+	<!-- Licensing information -->
+	<p>LGPL</p>
+
+</body>
+</html>

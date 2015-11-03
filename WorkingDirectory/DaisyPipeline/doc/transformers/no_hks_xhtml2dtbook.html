@@ -1,0 +1,802 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+	<title>Transformer documentation: no_hks_xhtml2dtbook</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+	<style type="text/css">
+      body {margin: 2em; font-family: arial, verdana, sans-serif;}
+      table {border-collapse:collapse;font-size:small;}
+        td,th {border:1pt solid rgb(220,220,220);padding:2pt;}
+        th {background-color:rgb(255,255,230);}
+      span.text {font-style:italic;color:rgb(170,120,120);}
+      pre, code {font-family:monospace; color:rgb(120,120,170);}
+      code {font-size:100%;}
+      pre {font-size:small;}
+      ul {margin-bottom:0.5ex;margin-top:0.5ex;}
+      tr.x {background-color:rgb(252,252,255);}
+      ul#input-reqs li {margin-bottom:1ex;}
+	</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: no_hks_xhtml2dtbook</h1>
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a>
+        <ul>
+    		<li><a href="#twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</a></li>
+    		<li><a href="#canonicalForm">Requirements for the canonical form of the XHTML document</a></li>
+        </ul>
+    </li>
+    <li><a href="#parameters">Input parameters</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+<!-- 	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li> -->
+ 	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>To transform a valid XHTML file in the canonical form into a valid DTBook file.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+<h3 id="twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</h3>
+<p>Transformation of a general HTML document to a DTBook document, is likely to be a two stage process.
+</p>
+<ol>
+    <li>The first stage will be to turn the HTML document into a <em>canonical form</em> of an XHTML document.
+    Depending on the state of the HTML document, this will be a process consisting of both automatic and manual processing.
+    Requirements for the canonical form are given below.</li>
+    <li>The second stage is to create the DTBook document from the canonical XHTML.
+    This will be done in a completely automatic XSLT&#160;2.0 transformation process, normally controlled by the DAISY&#160;Pipeline.</li>
+</ol>
+<p>
+    The DAISY&#160;Consortium does not supply any tools for performing the first stage, as the process required probably will differ among organizations.
+    For the second stage, the DAISY&#160;Consortium has developed the <em>no_hks_xhtml2dtbook</em> transformer.
+</p>
+<h3 id="canonicalForm">Requirements for the canonical form of the XHTML document</h3>
+<ul id="input-reqs">
+    <li>The XHTML document must be a valid XHTML Transitional or XHTML Strict document.</li>
+    <li>The document <em>must</em> contain at least one <code>h1</code> element.</li>
+    <li>The first child element (in the XML sense of the term) of the <code>body</code> element should be an <code>h1</code> element.
+        Any child element placed before the first <code>h1</code>, will be ignored during transformation, and will not be present in the generated DTBook document.</li>
+    <li>All heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
+        <code>body</code> element.<br />
+        This excludes markup such as:
+<pre>
+&lt;body&gt;
+    &lt;div class="start-of-book"&gt;
+        &lt;h1&gt;The title&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Content&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+    &lt;div class="main-stuff"&gt;
+        &lt;h1&gt;Chapter 1 How it all began&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Chapter 2 How it continued&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+&lt;/body&gt;
+    </pre>
+    </li>
+    <li>
+        Heading levels must not be skipped. That is, the next heading after a <code>h3</code> can <em>not</em> be a <code>h5</code> heading.
+        It must be a <code>h4</code> heading, or one of <code>h1</code>, <code>h2</code> or <code>h3</code>.
+    </li>
+    <li>A heading <em>should not</em> have another heading on the same, or higher, level, as a
+    first <em>following sibling</em> (in the XML sense of the term).<br />
+        Thus the following kind of markup should be avoided:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    Note that the following is perfectly okay (and makes sense):
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h4&gt;A subheading on level 4&lt;/h4&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    In the cases where a heading has no relevant following siblings before a heading on the same, or higher, level, a "dummy" paragraph is
+        inserted in the generated DTBook document.<br />
+So the following piece of XHTML code:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+would be transformed into:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;/level3&gt;
+&lt;level3&gt;
+    &lt;h3&gt;A heading on level 3&lt;/h3&gt;
+    &lt;p class="dummy" /&gt;
+&lt;/level3&gt;
+&lt;level3&gt;
+    &lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+    &lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    </li>
+<!--    <li>A heading can <em>not</em> have another heading of the same type as a first <em>following sibling</em> (in the XML sense of the term).<br />
+        This excludes markup such as:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    Note that the following is perfectly okay (and makes sense):
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h4&gt;A subheading on level 4&lt;/h4&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    </li> -->
+    <li>The <code>br</code>  element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element.</li>
+    <li>The <code>span</code> element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element,
+        unless the <code>class</code> attribute ...
+        <ul>
+            <li>... starts with the string <span class="text">page-</span>,</li>
+            <li>... is equal to <span class="text">noteref</span>,</li>
+            <li>... ends with the string <span class="text">-prodnote</span>, or</li>
+            <li>... is equal to <span class="text">caption</span>, and the <code>span</code> element is evaluated to be a part of an image group
+            (<a href="#imggrp">more details</a>).</li>
+        </ul>
+This excludes markup such as:
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;span class="sentence"&gt;This is a sentence, and also a child of the body element.&lt;/span&gt;
+    &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
+    Rather, you should use:
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;p&gt;
+        &lt;span class="sentence"&gt;This is a sentence, and also a child of the body element.&lt;/span&gt;
+        &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    &lt;/p&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
+    </li>
+    <li>A <code>span</code> element, with a value for the <code>class</code> attribute starting with the string <span class="text">page-</span>,
+        must have a text content that, when normalized, is suitable to form part of an <code>id</code> attribute value in the DTBook file.<br />
+        The following four examples:
+        <pre>
+&lt;span class="page-normal"&gt;4&lt;/span&gt;
+
+&lt;span class="page-normal"&gt;
+    89
+&lt;/span&gt;
+
+&lt;span class="page-front"&gt;xiv&lt;/span&gt;
+
+&lt;span class="page-special"&gt;B-34&lt;/span&gt;</pre>
+        are perfectly okay, and will result in the <code>id</code> values <span class="text">page-4</span>, <span class="text">page-89</span>,
+        <span class="text">page-xiv</span>
+        and <span class="text">page-B-34</span>, respectively, in the DTBook file.<br />
+        The  markup:
+        <pre>
+&lt;span class="page-normal"&gt;page 4&lt;/span&gt;</pre>
+        does not comply with this requirement.
+
+    </li>
+    <li>The <code>div</code> and <code>blockquote</code> elements <em>may not</em> have <code>br</code>
+        or <code>span</code> as child elements (in the XML sense of the term).</li>
+    <li>The <code>div</code> and <code>blockquote</code> elements <em>may not</em> have text content.
+        This excludes markup such as:
+<pre>
+&lt;div&gt;
+    This is some text before the picture.
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
+    This is some text after the picture.
+&lt;/div&gt;
+</pre>
+    Instead you should use:
+<pre>
+&lt;div&gt;
+    &lt;p&gt;This is some text before the picture.&lt;/p&gt;
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
+    &lt;p&gt;This is some text after the picture.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+    or, perhaps better, skip the <code>div</code> element:
+<pre>
+&lt;p&gt;This is some text before the picture.&lt;/p&gt;
+&lt;img src="fig01.png" alt="Map: Norway" /&gt;
+&lt;p&gt;This is some text after the picture.&lt;/p&gt;
+</pre>
+    </li>
+</ul>
+
+<p>It is generally recommended to have a markup with a very "flat"
+structure. One should especially avoid having block elements inside
+block elements, as in the following example:
+</p>
+<pre>
+&lt;p&gt;This is some text before the list.
+    &lt;ul&gt;
+        &lt;li&gt;The first list item.&lt;/li&gt;
+        &lt;li&gt;This is the second and last item.&lt;/li&gt;
+    &lt;/ul&gt;
+And this is the text after the list.&lt;/p&gt;
+</pre>
+Proper markup should rather be as follows:
+<pre>
+&lt;p&gt;This is some text before the list.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;The first list item.&lt;/li&gt;
+    &lt;li&gt;This is the second and last item.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And this is the text after the list.&lt;/p&gt;
+</pre>
+
+<!-- contract definition: detailed requirements on input nature -->
+<h2 id="parameters">Parameters</h2>
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>Path to input XHTML file</dd>
+	<dt>output</dt>
+	<dd>Path to output DTBook file</dd>
+	<dt>title</dt>
+	<dd>The name of the publication. If no value is supplied, the information is extracted from the original file, if possible.</dd>	
+	<dt>uid</dt>
+	<dd>The unique identifier for the publication. If no value is supplied, the information is extracted from the original file, if possible.</dd>	
+	<dt>outputCSS</dt>
+	<dd>A CSS to use for output textual content files.</dd>	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+<p>For correct transformation from XHTML to DTBook, the following parameters must be given to the transformation style sheet:</p>
+<table width="100%">
+    <tr valign="bottom">
+        <th>Parameter name</th>
+        <th>Default value</th>
+        <th>Comments</th>
+    </tr>
+    <tr valign="top">
+        <td><code>uid</code></td>
+        <td><span class="text">[UID]</span></td>
+        <td>
+            The unique identifier for the publication.<br />
+            This parameter should be given a sensible value to be sure that the generated DTBook file has correct meta data.
+            If using DAISY Pipeline to perform the transformation, the user will be offered the opportunity to specify the identifier.
+            If the transformation is used by Pipeline as a part of a DAISY 2.02 to DAISY 3.0 DTB migration, DAISY Pipeline
+            should be able to provide an identifier based on the DAISY 2.02 DTB.
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>transformationMode</code></td>
+        <td><span class="text">standalone</span></td>
+        <td>
+            Used to define how the style sheet transforms the document. If this parameter is given the value 
+            <span class="text">DTBmigration</span>, transformation rules are used that are appropriate for a 
+            migration of a DAISY 2.02 XHTML content to a Z39-86.2005 DTBook file.<br />
+            Any other value, will result in use of transformation rules suitable for a generic XHTML to DTBook converting process.
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>title</code></td>
+        <td><span class="text">[DTB_TITLE]</span></td>
+        <td>
+            The title of the publication.<br />
+            This parameter should be given a sensible value to be sure that the generated DTBook file has correct meta data.
+            If using DAISY Pipeline to perform the transformation, the user will be offered the opportunity to specify the title.
+            If the transformation is used by Pipeline as a part of a DAISY 2.02 to DAISY 3.0 DTB migration, DAISY Pipeline
+            should be able to provide a title based on the DAISY 2.02 DTB.
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>cssURI</code></td>
+        <td><span class="text">[cssURI]</span></td>
+        <td>
+            The URI to the Cascading Style Sheet (CSS) to be used for the DTBook file.<br />
+            If this parameter is not specified, no reference will be made to a style sheet.
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>transferDcMetadata</code></td>
+        <td><span class="text">false</span></td>
+        <td>
+            This parameter is only applicable if the transformation is used as a part of a DAISY 2.02 to DAISY 3.0 DTB migration.<br />
+            If the parameter is set to <span class="text">true</span>, the transformer will try to transfer
+            appropriate meta data from the DAISY 2.02 NCC file to the generated DTBook file. In this context,
+            appropriate meta data is simply meta data with a <code>name</code> attribute value starting with
+            <span class="text">dc:</span>. Note: the <span class="text">dc:title</span> meta data is not handled
+            through this mechanism, as it is specified with the <code>title</code> parameter.
+            <br />
+            If this parameter is set to <span class="text">true</span>, the parameter <code>nccURI</code> must be specified.
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>nccURI</code></td>
+        <td><span class="text">[nccURI]</span></td>
+        <td>
+            This parameter is only applicable if the transformation is used as a part of a DAISY 2.02 to DAISY 3.0 DTB migration,
+            and if the parameter <code>transferDcMetadata</code> is set to <span class="text">true</span>.<br />
+            The parameter is used to specify the URI to the DAISY 2.02 NCC file, in order to facilitate meta data transferring as described above.<br />
+            If the transformation is used by Pipeline as a part of a DAISY 2.02 DTB to DAISY 3.0 migration, DAISY Pipeline
+            should be able to provide a suitable value for this parameter.<br />
+        </td>
+    </tr>
+</table>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>A DTBook file compliant with the DTBook 2005-2 DTD. The various elements in the XHTML file are handled according to the following information.</p>
+<table width="100%">
+    <tr valign="bottom">
+        <th>XHTML element</th>
+        <th>Generated DTBook element</th>
+        <th>Comments</th>
+    </tr>
+    <tr valign="top">
+        <td><code>head/meta</code></td>
+        <td><code>head/meta</code></td>
+        <td>
+            <ul>
+                <li>Meta data is only transferred from the XHTML document to the DTBook document if
+                the input parameter <code>transferDcMetadata</code> is set to <span class="text">false</span> (or left unspecified).
+                Follow <a href="#parameters">link to information about parameters</a>.
+                </li>
+                <li>The <code>name</code>, <code>content</code> and <code>scheme</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>head/title</code></td>
+        <td><code>frontmatter/doctitle</code></td>
+        <td/>
+    </tr>
+<!--    <tr valign="top" class="x">
+        <td><code>head/link</code>, where the value for the <code>rel</code> attribute equals <span class="text">stylesheet</span>.
+        </td>
+        <td><code>head/link</code></td>
+        <td>
+            <ul>
+                <li>The name of the style sheet, taken from the <code>href</code> attribute, is appended to the string <span class="text">dtbook_</span>.</li>
+            </ul>
+        </td>
+    </tr> -->
+    <tr valign="top">
+        <td><code>body</code></td>
+        <td><code>book</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>h1</code> to <code>h6</code></td>
+        <td><pre>
+&lt;levelx&gt;
+    &lt;hx&gt;....&lt;/hx&gt;
+    :
+    :
+&lt;/levelx&gt;
+</pre></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>If the <code>hx</code> element carries a <code>class</code> attribute, it is transferred to the corresponding
+                <code>levelx</code> element.</li>
+            </ul>
+            Specifically for the <code>h1</code> elements, the following rules apply:
+            <ul>
+                <li>If the <code>class</code> attribute equals the string <span class="text">frontmatter</span>, the
+                    generated <code>level1</code> element will be a child of the <code>frontmatter</code> element.
+                </li>
+                <li>If the <code>class</code> attribute equals the string <span class="text">rearmatter</span>, the
+                    generated <code>level1</code> element will be a child of the <code>rearmatter</code> element.
+                </li>
+                <li>If the <code>class</code> attribute has any other value, or is absent, the
+                    generated <code>level1</code> element will be a child of the <code>bodymatter</code> element.
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">sentence</span>.</td>
+        <td><code>sent</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td>
+            <code>span</code>, where the value for the <code>class</code> attribute starts
+            with
+            the string <span class="text">page-</span>
+<!--            attribute equal to <span class="text">page-front</span>,
+            <span class="text">page-normal</span> or
+            <span class="text">page-special</span> -->
+        </td>
+        <td><code>pagenum</code></td>
+        <td>
+            <ul>
+                <li>The <code>page</code> attribute gets its value from the <code>class</code> attribute,
+                    so that if this attribute has a value equal to the string
+                    <span class="text">page-normal</span>, the <code>page</code> attribute  gets
+                    the value <span class="text">normal</span>.
+                    Note that, for the generated DTBook file to be valid, the only other possible values for the XHTML
+                    <code>class</code> attribute, are the strings
+                    <span class="text">page-front</span> and <span class="text">page-special</span>.
+                    <!-- value from the <code>class</code>. -->
+                </li>
+                <li>The <code>id</code> attribute gets a value constructed by adding the string
+                    <span class="text">page-</span> to the normalized content of the <code>span</code> element.</li>
+                <li>The <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, where the value for the <code>class</code>  attribute ends with
+            the string             <span class="text">-prodnote</span>.</td>
+        <td><code>prodnote</code></td>
+        <td>
+            <ul>
+                <li>The <code>render</code> attribute gets its value from the <code>class</code> attribute,
+                    so that if this attribute has a value equal to the string
+                    <span class="text">optional-prodnote</span>, the <code>render</code> attribute gets
+                    the value <span class="text">optional</span>.
+                    Note that, for the generated DTBook file to be valid, the only other possible value for the XHTML
+                    <code>class</code> attribute, is the string
+                    <span class="text">required-prodnote</span>.
+                </li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+            If the <code>span</code> element is evaluated to be a part of an image group (<a href="#imggrp">link to more information</a>),
+            the following rules apply:
+            <ul>
+                <li>The generated <code>prodnote</code> element will be a child of an <code>imggroup</code> element.</li>
+                <li>The <code>id</code> attribute will not be copied, but will be generated by the transformation engine.</li>
+                <li>An <code>imgref</code> attribute will get an appropriate value to reference the relevant <code>img</code> element.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">noteref</span>.</td>
+        <td><code>noteref</code></td>
+        <td>
+            <ul>
+                <li>The <code>idref</code> attribute for the <code>noteref</code> element gets a value based on the value of
+                    the <code>bodyref</code> attribute for the <code>span</code> element.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">caption</span>, and the <code>span</code> element evaluated to be a part of an image group
+            (<a href="#imggrp">more information</a>).</td>
+        <td>
+        <pre>
+&lt;imggroup&gt;
+    &lt;img.../&gt;
+    &lt;caption&gt;...&lt;/caption&gt;
+    :
+&lt;/imggroup&gt;
+</pre>
+        </td>
+<!--        <td><code>caption</code>, as child of an
+            <code>imggroup</code> element
+        </td> -->
+        <td>
+            <ul>
+                <li>The <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li><code>id</code> and <code>imgref</code> attributes are created, with appropriate values.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>span</code>, with no <code>class</code>
+            attribute, or a value for the <code>class</code>            attribute different from any the ones mentioned above.</td>
+        <td><code>span</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>div</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">notebody</span>.</td>
+        <td><code>note</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>div</code>, with no <code>class</code>
+            attribute, or a value for the <code>class</code>            attribute different from the one mentioned above.</td>
+        <td><code>div</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>img</code>, where the element is evaluated to be a part of an image group.</td>
+        <td>
+        <pre>
+&lt;imggroup&gt;
+    &lt;img.../&gt;
+    :
+    :
+&lt;/imggroup&gt;
+</pre>
+        </td>
+        <td>See <a href="#imggrp">section on image groups</a>.</td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>img</code>, where the element is evaluated <em>not</em> to be a part of an image group.</td>
+        <td><code>img</code></td>
+        <td>
+            <ul>
+                <li>The <code>alt</code>, <code>src</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>ol</code></td>
+        <td><code>list</code></td>
+        <td>
+            <ul>
+                <li>The <code>type</code> attribute will have the value <span class="text">ol</span>.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>ul</code></td>
+        <td><code>list</code></td>
+        <td>
+            <ul>
+                <li>The <code>type</code> attribute will have the value <span class="text">ul</span>.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>table</code>, <code>tr</code>, <code>td</code>, <code>th</code> and <code>col</code></td>
+        <td><code>table</code>, <code>tr</code>, <code>td</code>, <code>th</code> and <code>col</code> respectively</td>
+        <td>
+            <ul>
+                <li>The <code>rowspan</code>, <code>colspan</code>, <code>valign</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
+        <td>
+            <code>p</code>, <code>blockquote</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+            <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
+            <code>br</code>
+        </td>
+        <td>            <code>p</code>, <code>blockquote</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+            <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
+            <code>br</code> respectively</td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>If the <code>br</code> element is a child (in the XML sense of the term) of the <code>body</code> element, it will not be transformed to a <code>br</code> in the DTBook.
+<!--                    However, a comment is added to the DTBook file. -->
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>a</code>, where the value of the <code>href</code> attribute
+            does not contain the string <span class="text">.smil#</span>.
+        </td>
+        <td><code>a</code></td>
+        <td>
+            <ul>
+                <li>The <code>href</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+            See also <a href="#smilRefs">References to SMIL files</a> for more information on how <code>a</code> elements are handled during transformation.
+        </td>
+    </tr>
+<!--    <tr valign="top">
+        <td><code></code></td>
+        <td><code></code></td>
+        <td></td>
+    </tr> -->
+</table>
+
+<p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
+
+<h4 id="smilRefs">References to SMIL files</h4>
+<p>
+ If, and only if, the style sheet input parameter <code>transformationMode</code> is given the value
+    <span class="text">DTBmigration</span>, then for all XHTML elements listed above, the following rule applies:
+<br />
+If the XHTML element has an <code>a</code> element as a child (in the XML sense of the term),
+    and this <code>a</code> element has an <code>href</code> attribute with a
+    value containing the string <span class="text">.smil#</span>, the value of the <code>href</code> attribute
+    is transferred to a <code>smilref</code> attribute for the DTBook element that results from the transformation of the XHTML element.
+    The <code>a</code> element will not be transformed in this process.
+</p>
+
+<p>So the following piece of XHTML code:</p>
+<pre>
+&lt;h2 id="baaw_0007"&gt;&lt;a href="baaw0004.smil#baaw_0007"&gt;Section 1.1&lt;/a&gt;&lt;/h2&gt;
+&lt;span class="page-normal" id="baaw_0008"&gt;&lt;a href="baaw0004.smil#baaw_0008"&gt;4&lt;/a&gt;&lt;/span&gt;
+&lt;span class="page-normal" id="baaw_0009"&gt;&lt;a href="baaw0004.smil#baaw_0009"&gt;5&lt;/a&gt;&lt;/span&gt;
+:
+</pre>
+would be transformed into:
+<pre>
+&lt;level2&gt;
+   &lt;h2 id="baaw_0007" smilref="baaw0004.smil#baaw_0007"&gt;Section 1.1&lt;/h2&gt;
+   &lt;pagenum page="normal" id="page-4" smilref="baaw0004.smil#baaw_0008"&gt;4&lt;/pagenum&gt;
+   &lt;pagenum page="normal" id="page-5" smilref="baaw0004.smil#baaw_0009"&gt;5&lt;/pagenum&gt;
+   :
+&lt;/level2&gt;
+</pre>
+
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<h4 id="imggrp">Required markup for image groups</h4>
+<p>
+    When an <code>img</code> element occurs in the input document,
+    an <code>imggroup</code> element is created,
+<!--    the <code>img</code> element
+    will be wrapped up in an <code>imggroup</code> element, -->
+     if the <code>img</code> element
+    has one, or both, of the following elements:
+</p>
+<ul>
+    <li><code>span</code> element, where the value for the <code>class</code> attribute ends with the string <span class="text">-prodnote</span>.</li>
+    <li><code>span</code> element, where the value for the <code>class</code> attribute is equal to the string <span class="text">caption</span>.</li>
+</ul>
+<p>
+    as the first following sibling(s) (in the XML sense of the term).
+    The <code>img</code> element, and whatever results from transformation of the two elements listed above, will be placed
+    in the <code>imggroup</code> element, and
+    appropriate values for <code>id</code> and <code>imgref</code> attributes are created for all elements in the image group.
+</p>
+
+<p>As an example, the following markup in the XHTML:</p>
+<pre>
+    :
+    &lt;h2&gt;&lt;a href="smil0026.smil#0001"&gt;Town halls in Norway&lt;/a&gt;&lt;/h2&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    &lt;img id="fig04" src="file04.png" alt="Picture: The Oslo Town Hall" /&gt;
+    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor,
+        is one of the largest brick buildings in the city.&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="optional-prodnote"&gt;&lt;a href="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/a&gt;&lt;/span&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    :
+</pre>
+<p>will result in the following markup in the generated DTBook file (<code>id</code> and <code>imgref</code> values may differ):</p>
+<pre>
+    :
+    &lt;level2&gt;
+       &lt;h2 smilref="smil0026.smil#0001"&gt;Town halls in Norway&lt;/h2&gt;
+       &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
+       &lt;imggroup id="imggrp-d1e340"&gt;
+          &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo,
+            located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
+          &lt;prodnote render="optional" imgref="img-d1e340" id="pnote-d1e340"
+                    smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/prodnote&gt;
+       &lt;/imggroup&gt;
+       &lt;p smilref="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/p&gt;
+       :
+    &lt;/level2&gt;
+    :
+</pre>
+
+<p>However, the following, very similar, markup in the XHTML:</p>
+<pre>
+    :
+    &lt;h2&gt;&lt;a href="smil0026.smil#0001"&gt;Town halls in Norway&lt;/a&gt;&lt;/h2&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    &lt;img id="fig04" src="file04.png" alt="Picture: The Oslo Town Hall" /&gt;
+    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor,
+        is one of the largest brick buildings in the city.&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="prodnote"&gt;&lt;a href="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/a&gt;&lt;/span&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    :
+</pre>
+<p>will result in the following markup in the generated DTBook file (<code>id</code> and <code>imgref</code> values may differ):</p>
+<pre>
+    :
+    &lt;level2&gt;
+       &lt;h2 smilref="smil0026.smil#0001"&gt;Town halls in Norway&lt;/h2&gt;
+       &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
+       &lt;imggroup id="imggrp-d1e340"&gt;
+          &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo,
+            located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
+       &lt;/imggroup&gt;
+       &lt;span class="prodnote" smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/span&gt;
+       &lt;p smilref="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/p&gt;
+       :
+    &lt;/level2&gt;
+    :
+</pre>
+<p>Note that this DTBook markup is in fact invalid. It is left as an exercise to the reader to trace the cause of this error back to the XHTML code.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="future">Further development</h2>
+<ul>
+    <li>Extend the transformation rules to handle more elements in the XHTML document.</li>
+    <li>Provide some mechanism for validation of the canonical XHTML document.</li>
+</ul>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+	<li>XSLT 2.0 processor</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<ul>
+	<li>Markus Gylling (TPB/DC)</li>
+	<li>Per Sennels (Huseby)</li>
+</ul>
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

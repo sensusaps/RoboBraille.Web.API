@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBookValidator">
+	<nicename>DTBook Validator</nicename>
+	<description>Validate a DTBook document against its DTD and additional schemas</description>
+   	<documentation uri="../../doc/scripts/DTBookValidator.html"/>
+     <comment>
+	     Commandline template:
+	         ${workspace_loc}/dmfc/scripts/verify/DTBookValidator.taskScript
+			--input=${workspace_loc}/samples/input/dtbook/dontworrybehappy.xml
+     </comment>
+     	
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook</nicename>
+		<description>Select the input DTBook document</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	&ValidatorScriptParamsSimpleStatic;
+
+	<parameter name="validatorGenerateContextInfo" value="false" required="false">
+		<nicename>Generate Context Info</nicename>
+		<description>Show additional hints on the location of the error</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	
+	<task name="int_daisy_validator" interactive="false">
+	
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+ 	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>		
+			<name>generateContextInfo</name>
+			<value>${validatorGenerateContextInfo}</value>		
+		</parameter>
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+										
+	</task>
+
+</taskScript>

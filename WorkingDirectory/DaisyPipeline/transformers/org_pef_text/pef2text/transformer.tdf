@@ -1,0 +1,183 @@
+<transformer version="1.1">
+	<name>PEF to Text</name>
+	<description>Converts a PEF 2008-1 file into text.</description>
+	<classname>org_pef_text.pef2text.PEF2Text</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../../doc/transformers/org_pef_pef2text.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/x-pef+xml">
+			<name>xml</name>
+			<description>The input PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="text/plain">
+			<name>out</name>			
+			<description>Output text file</description>
+			<example>file:///path/to/file.txt</example>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>deviceName</name>
+			<description>Set device name</description>
+			<example>MyEmbosser</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>embosser</name>
+			<description>Embosser make and model</description>
+			<example>Everest</example>
+			<enum>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_200</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_270</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_S</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_SR</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_4P</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_2P</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SWSF</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_BLUE_BAR</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V3</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_V3</value>
+			<value>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</value>
+			</enum>
+			<default>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>table</name>
+			<description>Braille code table</description>
+			<example>en_US</example>
+			<enum>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.EN_GB</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.DA_DK</value>
+			<value>org_daisy.BrailleEditorsTableProvider.TableType.BRF</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.DE_DE</value>
+			<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO</value>
+			<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO256</value>
+			<value>com_indexbraille.IndexTableProvider.TableType.BLUE_BAR</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.IT_IT_FIRENZE</value>
+			<value>org_daisy.BrailleEditorsTableProvider.TableType.MICROBRAILLE</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.ES_ES</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.ES_ES_TABLE_2</value>
+			<value>com_yourdolphin.SupernovaTableProvider.TableType.SV_SE_6DOT</value>
+			<value>se_tpb.CXTableProvider.TableType.SV_SE_CX</value>
+			<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.UNICODE_BRAILLE</value>
+			</enum>
+			<default>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</default>
+		</parameter>	
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>breaks</name>
+			<description>Line breaks</description>
+			<example>unix</example>
+			<enum>
+				<value>unix</value>
+				<value>dos</value>
+				<value>mac</value>
+				<value>default</value>
+			</enum>
+			<default>dos</default>
+		</parameter>	
+		
+		<parameter type="string" required="false">
+			<name>pageRange</name>
+			<description>Range to export</description>
+			<example>3-10</example>
+			<default>1-</default>
+		</parameter>
+				
+		<parameter required="false" type="string">
+			<name>alignmentOffset</name>
+			<description>Alignment offset in characters</description>
+			<example>0</example>
+			<default>0</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>mirrorAlign</name>
+			<description>Mirror recto-verso alignment</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>paperWidthFallback</name>
+			<description>Paper width error handling</description>
+			<example>true</example>
+			<enum>
+			  <value>left</value>
+			  <value>center_left</value>
+			  <value>center_right</value>
+			  <value>right</value>
+			  <value>abort</value>
+			</enum>
+			<default>left</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>papersize</name>
+			<description>Set the size of the paper</description>
+			<example>A4</example>
+			<enum>
+			  <value></value>
+				<value>org_daisy.NorthAmericaPaperProvider.PaperSize.W11500THOU_X_H11INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H10INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H11INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H12INCH</value>
+				<value>org_daisy.ISO216PaperProvider.PaperSize.A4</value>
+				<value>se_tpb.FA44PaperProvider.PaperSize.FA44</value>
+				<value>org_daisy.NorthAmericaPaperProvider.PaperSize.LETTER</value>
+			</enum>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>pad</name>
+			<description>Pad formfeed character with newline</description>
+			<example>true</example>
+			<enum>
+				<value>before</value>
+				<value>after</value>
+				<value>both</value>
+				<value>none</value>
+			</enum>
+			<default>both</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cellWidth</name>
+			<description>Set cell width in mm</description>
+			<example>6</example>
+			<default>6</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cellHeight</name>
+			<description>Set cell height in mm</description>
+			<example>10</example>
+			<default>10</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>copies</name>
+			<description>Set the number of copies when embossing</description>
+			<example>4</example>
+			<default>1</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

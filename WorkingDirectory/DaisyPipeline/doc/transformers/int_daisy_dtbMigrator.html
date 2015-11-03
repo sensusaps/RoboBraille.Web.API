@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation: int_daisy_dtbMigrator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_dtbMigrator</em></h1>
+<!-- doc.html contains primarily developer-centric information,
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Currently, this transformer migrates a valid DAISY 2.02 talking book to a Z39.86-2005 equivalent, 
+    and only this <em>forward migration</em> is documented in this document.
+    At a later stage, it will also be possible to do a
+    Z39.86-2005 to DAISY 2.02 talking book <em>backward migration</em>.
+</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A valid DAISY 2.02 talking book. Please note that no validation of this book is performed before
+transformation takes place,
+so any problems during transformation or with the result of the process, might be due to
+invalid input.
+</p>
+<p>The content document(s) associated with the talking books must comply with the restrictions given for the <em>XHTML to DTBook</em> transformer,
+see especially the section <a href="../scripts/XHTML2DTBook.html#canonicalForm" target="_blank">Requirements for the canonical form of the XHTML document</a>.
+</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>A Z39.86-2005 file set that is hopefully valid. The output is automatically validated, so watch out for error reports.</p>
+
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>Input DTB manifest (NCC, OPF)</dd>
+	<dt>destination</dt>
+	<dd>The output directory</dd>
+	<dt>outputVersion</dt>
+	<dd>The type of DTB to output</dd>	
+	<dt>inputType</dt>
+	<dd><code>DETECT</code>, <code>NCC_NCX_ONLY</code> or <code>TEXT</code>.<br /> The type of input DTB in terms of text (NCC/NCX only or Full/Partial Text).
+				Select DETECT to have an analysis determine the type. If any other value
+				is selected, it will win and the analysis will not be performed.<br />
+				Default is <code>DETECT</code>.
+				</dd>	
+	<dt>newIdentifier</dt>
+	<dd>A unique identifier of the publication. If this value is set, it will override
+		    	and replace the value given in the input DTB. If this value is not set, the
+		    	identifier given in input DTB will be used in the output.</dd>	
+	<dt>outputCSS</dt>
+	<dd>A CSS to use for output textual content files.
+				If this value is not set, a default CSS will be used.</dd>	
+	<dt>outputResourceFile</dt>
+	<dd>A Resource file to use for output z3986 filesets.
+				If this value is not set, a default Resource file will be used.</dd>	
+	<dt>ncxAddNavLabelAudio</dt>
+	<dd>Whether to create an audio element for each navLabel in the NCX. This
+		    	can be costly timewise, and the default behavior is off. </dd>	
+	<dt>ncxMinNavLabelAudioLength</dt>
+	<dd>The minimum length (in millisec) for audioclips used in NavLabel elements.</dd>	
+	<dt>dtbookTransferNCCMetadata</dt>
+	<dd>Whether to try to transfer metadata from the NCC file to the DTBook content document. The default behavior is not to transfer.</dd>	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<p>None</p>
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<h2 id="dependencies">Dependencies</h2>
+<p>XSLT 2.0 processor</p>
+
+<h2 id="owner">Author</h2>
+<ul>
+	<li>Markus Gylling (TPB/DC)</li>
+	<li>Brandon Nelson (CNIB)</li>
+	<li>Per Sennels (Huseby)</li>
+	<li>Linus Ericson (TPB)</li>
+</ul>
+<!-- name of owner/initial committer -->
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

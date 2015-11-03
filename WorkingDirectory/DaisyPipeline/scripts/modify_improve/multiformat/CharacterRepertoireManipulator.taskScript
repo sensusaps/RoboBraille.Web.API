@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY CharsetSwitcherScriptParamsStatic SYSTEM "../../CharsetSwitcherScriptParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="CharacterRepertoireManipulator">
+	<nicename>Character Repertoire Manipulator</nicename>
+	<description>Perform unicode character-to-replacementstring substitution using external table(s) and optionally non-spacing mark removal.</description>
+	<documentation uri="../../../doc/scripts/CharacterRepertoireManipulator.html"/>
+    <comment/>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input file</description>
+		<datatype>
+			<file mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="substitutionTables" value="" required="true">
+		<nicename>Substitution table(s)</nicename>
+		<description>One or several substitution tables</description>
+		<datatype>
+			<files mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="excludeCharset" value="none" required="false">
+		<nicename>Exclude</nicename>
+		<description>Name of a characterset for whose characters the substitution should not be attempted.</description>
+		<datatype>
+			<string/>
+		</datatype>	
+	</parameter>
+	
+	<parameter name="nonSpacingMark" value="false" required="false">
+		<nicename>Fallback to non-spacing mark removal</nicename>
+		<description>Fallback to non-spacing mark removal (disaccentuation) if a replacement text was not found in substitution table(s)</description>
+		<datatype>
+			<boolean />
+		</datatype>
+	</parameter>
+
+	<parameter name="latin" value="false" required="false">
+		<nicename>Fallback to Latin</nicename>
+		<description>Fallback to a transliteration to Latin if a replacement text was not found in substitution table(s)</description>
+		<datatype>
+			<boolean />
+		</datatype>
+	</parameter>
+	
+	<parameter name="ucd" value="false" required="false">
+		<nicename>Fallback to UCD names</nicename>
+		<description>Fallback to names in the UCD table if a replacement text was not found in substitution table(s)</description>
+		<datatype>
+			<boolean />
+		</datatype>
+	</parameter>
+		
+	&CharsetSwitcherScriptParamsStatic;	
+		
+	<task name="int_daisy_unicodeTranscoder" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${output}/pipeline__temp/</value>
+		</parameter>		
+						
+		<parameter>
+			<name>excludeFromSubstitution</name>
+			<value>${excludeCharset}</value>
+		</parameter>
+				
+		<parameter>
+			<name>substitutionTables</name>
+			<value>${substitutionTables}</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToNonSpacingMarkRemovalTransliteration</name>
+			<value>${nonSpacingMark}</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToLatinTransliteration</name>
+			<value>${latin}</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToUCD</name>
+			<value>${ucd}</value>
+		</parameter>		
+
+
+		<!-- static -->				
+		
+		<parameter>
+			<name>performCharacterSubstitution</name>
+			<value>true</value>
+		</parameter>
+
+		<parameter>
+			<name>outputEncoding</name>
+			<value>utf-8</value>
+		</parameter>
+		
+		<!-- end static -->
+						
+	</task>
+
+	<task name="se_tpb_charsetSwitcher" interactive="false">	
+		<parameter>
+			<name>input</name>
+			<value>${output}/pipeline__temp/$filename{input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>				
+						
+		<parameter>
+			<name>encoding</name>
+			<value>${charsetSwitcherEncoding}</value>
+		</parameter>
+		
+		<parameter>
+			<name>breaks</name>
+			<value>${charsetSwitcherLineBreaks}</value>
+		</parameter>										
+	</task>	
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+
+</taskScript>

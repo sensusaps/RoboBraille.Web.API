@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>NCC/NCX Only</name>
+	<description>Converts a Daisy 2.02 fileset to a NCC only fileset</description>
+	<classname>se_tpb_nccNcxOnly.NccNcxOnly</classname>
+	<license>LGPL</license>
+	<author>Linus Ericson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_nccNcxOnly.html"/>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbd202ncc+xml">
+			<name>manifest</name>
+			<description>The NCC/NCX file</description>
+			<example>/path/to/file.xml</example>
+		</parameter>
+	
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outDir</name>
+			<description>The output file set directory</description>
+			<example>/path/to/</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>

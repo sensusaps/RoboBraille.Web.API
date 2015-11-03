@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>DTBook to LaTeX</name>
+	<description>Transforms a DTBook 2005 document to LaTeX</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<license>LGPL</license>
+	<author>Linus Ericson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_dtbook2latex.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/dtbook2latex.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>fontsize</name>			
+		  <description>Font size for the generated LaTeX. See
+		    also the documentation of the extsizes package
+		    (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
+		  <example>17pt</example>
+		  <enum>
+		    <value>12pt</value>
+		    <value>14pt</value>
+		    <value>17pt</value>
+		    <value>20pt</value>
+		    <value>25pt</value>
+		  </enum>
+		  <default>17pt</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>font</name>			
+		  <description>Font for the generated LaTeX. This can basically be any installed TrueType or OpenType font.</description>
+		  <example>Tiresias LPfont</example>
+		  <enum>
+		    <value>Tiresias LPfont</value>
+		    <value>LMRoman10 Regular</value>
+		    <value>LMSans10 Regular</value>
+		    <value>LMTypewriter10 Regular</value>
+		  </enum>
+		  <default>Tiresias LPfont</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>pageStyle</name>			
+		  <description>Page style for the generated LaTeX.</description>
+		  <example>plain</example>
+		  <enum>
+		    <value>plain</value>
+		    <value>withPageNums</value>
+		    <value>scientific</value>
+		  </enum>
+		  <default>plain</default>
+		</parameter>
+
+		<parameter type="enum" direction="in" required="false">
+		  <name>alignment</name>			
+		  <description>Alignment for standard text</description>
+		  <example>justified</example>
+		  <enum>
+		    <value>justified</value>
+		    <value>left</value>
+		  </enum>
+		  <default>justified</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>defaultLanguage</name>			
+		  <description>Language for the babel package if no
+		  language is specified in a xml:lang tag. For all
+		  valid values check the babel documentation
+		  (http://www.ctan.org/get/macros/latex/required/babel/babel.pdf)</description>
+		  <example>english</example>
+		  <enum>
+		    <value>english</value>
+		    <value>ngerman</value>
+		    <value>USenglish</value>
+		    <value>UKenglish</value>
+		    <value>swedish</value>
+		    <value>canadian</value>
+		    <value>french</value>
+		  </enum>
+		  <default>english</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>stocksize</name>			
+		  <description>Stock size for the generated LaTeX</description>
+		  <example>a4paper</example>
+		  <enum>
+		    <value>a3paper</value>
+		    <value>a4paper</value>
+		    <value>a5paper</value>
+		    <value>letterpaper</value>
+		    <value>legalpaper</value>
+		    <value>executivepaper</value>
+		  </enum>
+		  <default>a4paper</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>line_spacing</name>			
+		  <description>Line spacing in the generated LaTeX</description>
+		  <example>onehalfspacing</example>
+		  <enum>
+		    <value>singlespacing</value>
+		    <value>onehalfspacing</value>
+		    <value>doublespacing</value>
+		  </enum>
+		  <default>singlespacing</default>
+		</parameter>
+		
+		<parameter type="string" direction="in" required="false">
+		  <name>paperwidth</name>			
+		  <description>Specific width of the paper.</description>
+		  <example>200mm</example>
+		  <default>200mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>paperheight</name>			
+		  <description>Specific height of the paper</description>
+		  <example>250mm</example>
+		  <default>250mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>left_margin</name>			
+		  <description>Specific inner margin of the paper</description>
+		  <example>28mm</example>
+		  <default>28mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>right_margin</name>			
+		  <description>Specific outer margin of the paper</description>
+		  <example>20mm</example>
+		  <default>20mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>top_margin</name>			
+		  <description>Specific top margin of the page</description>
+		  <example>20mm</example>
+		  <default>20mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>bottom_margin</name>			
+		  <description>Specific bottom margin of the page</description>
+		  <example>20mm</example>
+		  <default>20mm</default>
+		</parameter>
+
+		<parameter type="enum" direction="in" required="false">
+		  <name>replace_em_with_quote</name>			
+		  <description>Replace em with quoted text as emphasis might be hard</description>
+		  <example>false</example>
+		  <enum>
+		    <value>true</value>
+		    <value>false</value>
+		  </enum>
+		  <default>false</default>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-latex">
+			<name>out</name>
+			<description>The output LaTeX document</description>
+			<example>file:///path/to/outFile.tex</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>

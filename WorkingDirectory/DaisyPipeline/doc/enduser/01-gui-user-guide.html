@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta content="application/xhtml+xml; charset=utf-8" http-equiv="Content-Type"/>
+      <title>DAISY Pipeline GUI User Guide</title>
+      <link href="../pipeline.css" rel="stylesheet" type="text/css"/>
+   </head>
+   <body>
+
+    <h1 class="title">DAISY Pipeline GUI User Guide</h1>
+      
+   	<div id="toc" class="toc">
+		<ul>
+			<li><a href="#pipeline">DAISY Pipeline Overview</a></li>
+			<li><a href="#install">GUI Installation</a></li>
+			<li><a href="#initial">First Launch</a>
+				<ul>
+					<li><a href="#welcomeScreen">The Welcome Screen</a></li>
+				</ul>
+			</li>
+			<li><a href="#perspView">On Perspectives and Views</a></li>
+			<li><a href="#terminology">On Scripts, Jobs and Transformers</a></li>			
+			<li><a href="#jobsPersp">The Jobs Perspective</a>
+				<ul>
+					<li><a href="#jobsPerspOverview">Jobs Perspective Overview</a></li>					
+					<li><a href="#jobsPerspJobQueue">The Jobs View</a>
+						<ul>
+							<li><a href="#runJob">Running and cancelling jobs</a></li>
+							<li><a href="#deleteJob">Deleting jobs</a></li>
+						</ul>
+					</li>
+					<li><a href="#jobsPerspNewJobWizard">The New Job Wizard</a></li>
+					<li><a href="#jobsPerspProgressView">The Progress View</a></li>
+					<li><a href="#jobsPerspMessagesView">The Messages View</a>
+						<ul>
+							<li><a href="#messageInterpret">Interpreting messages</a></li>
+							<li><a href="#filterMessage">Filtering and grouping messages</a></li>
+							<li><a href="#storeMessage">Storing messages</a></li>
+						</ul>
+					</li>
+					<li><a href="#jobsPerspErrorLog">The Error Log</a></li>					
+				</ul>
+			</li>
+			<li><a href="#docsPersp">The Documentation Perspective</a></li>
+			<li><a href="#advanced">Advanced Features</a>
+				<ul>
+					<li><a href="#prefDialog">The Preferences Dialog</a></li>
+					<li><a href="#update">Applying an Update Patch</a></li>
+				</ul>
+			</li>	
+			<li><a href="#request">Making a feature request</a></li>
+			<li><a href="#bugs">Reporting a bug</a></li>
+			<li><a href="#help">Getting further help</a></li>
+		</ul>
+	</div>
+
+    
+	<h2 id="pipeline">DAISY Pipeline Overview</h2>
+	<p>The DAISY Pipeline is a <em>framework for XML- and DTB-related transformations</em>. As such, it can be employed 
+	in various contexts, relating to both content creation and distribution.</p>
+	<p>The actual functionality within the DAISY Pipeline is provided by several collaborating organizations. Most 
+	contributions are open source, and reside at <a href="http://DAISYmfc.sf.net">the DAISY Pipeline Sourceforge project</a>.</p>	
+	
+	<h3><em>You can contribute!</em></h3>
+	<p>The DAISY Pipeline fully depends on the spirit of collaborative sharing. Remember, you can contribute to the future of the Pipeline in many ways:</p> 
+	<ul>
+		<li>by developing new functionality</li> 
+		<li>by writing or reviewing documentation</li> 
+		<li>by supplying feature requests</li> 
+		<li>by reporting bugs</li>
+	</ul>
+	<p>If you want to contribute, contact any of the project participants, or send an email to 
+	<a href="mailto:markus.gylling-at-tpb.se">markus.gylling-at-tpb.se</a>.</p>
+	<p>See also the <a href="#request">Making a feature request</a> and <a href="#bugs">Reporting a bug</a> sections below.</p>
+					
+	<h2 id="install">GUI Installation</h2>
+	<p>If you read this document before having installed the Pipeline GUI, please refer to the 
+	<a href="./installation.html">Pipeline Installation Instructions</a>.</p>
+
+
+	
+	<h2 id="initial">First Launch</h2>
+	<h3 id="welcomeScreen">The Welcome Screen</h3>
+	<p>The first time you launch the Pipeline GUI, a <em>Welcome Screen</em> is opened.</p> 
+	<p>The welcome screen contains links to subpages which contain introductory information, and is intended primarily as a help for first time users.</p>
+	<p>The second time you launch the Pipeline GUI, the welcome screen is not automatically shown. If you want to get back to this screen, you can use the <kbd>Welcome</kbd> menu item in the <kbd>Help</kbd> menu.</p>
+	<p>To close the Welcome Screen, select the <kbd>Navigation</kbd> item in the <kbd>Window</kbd> Menu, select <kbd>Show System Menu</kbd>, and then select close. Alternatively, click on the close button in the top left corner of the Welcome screen.</p>
+
+
+	<p>As you launch the Pipeline the first time, you should follow the links given in the welcome screen, and read the information given there. 
+	In particular, you should go to the <a href="#prefDialog">Preferences Dialog</a> to set the paths for temporary file storage, and the location of external executables. 
+	Read more about this in the <a href="installation.html#config">Installation document</a>.</p>
+
+
+
+	<h2 id="perspView">On Perspectives and Views</h2>
+	<p>The Pipeline Graphical User Interface (GUI) uses the terms <em>Perspective</em> and <em>View</em> to refer to different parts of the interface.</p>
+	<p>A Perspective is more or less synonomous to a <em>main window</em>. This main window contains subsections, referred to as Views.</p>
+	<p>The DAISY Pipeline GUI contains two Perspectives; the <a href="#jobsPersp">Job (main) Perspective</a>, and the <a href="#docsPersp">Documentation perspective</a>. The Job Perspective in its turn contains several views, which you can read more about below in the <a href="#jobsPersp">Jobs Perspective</a> section.</p>	
+
+	<h3>Navigating between Perspectives and Views</h3>
+	<p>There are several ways to navigate among the different Perspectives and Views.</p>
+	<p>To switch between perspectives, select <kbd>Open Perspective</kbd> in the <kbd>Window</kbd> menu, and select the Perspective you wish to open.</p>
+	<img alt="Selecting a Perspective in the Window menu" src="./img/dp-001.png"/>	
+	<p>Alternatively, you can make use of the Perspective Icons in the top right corner of your current Perspective.</p>
+	<img alt="The Perspective Icons" src="./img/dp-002.png"/>
+	<br/>
+	<p>To open or set focus on a certain view, select the view you want in the <kbd>Show View</kbd> in the <kbd>Window</kbd> menu.</p>
+	<p>You can also cycle between the different Perspectives and Views by using the <kbd>Window</kbd> menus <kbd>Navigation</kbd> entry. The cycle command also has keyboard shortcuts.</p>
+
+
+
+
+	<h2 id="terminology">On Scripts, Jobs and Transformers</h2>
+	<p>The three terms <em>Script</em>, <em>Job</em> and <em>Transformer</em> are central to understanding how the DAISY Pipeline works.</p>
+	<dl>
+		<dt>Script</dt>
+		<dd>Scripts are used to drive the DAISY Pipeline. A script encapsulates a series of operations (transformers) that are applied to the input data of each job.<br/>
+		The DAISY Pipeline ships with a series of predefined Scripts; in addition, advanced users can create their own Scripts with refinements and/or variations on the predefined Scripts.<br/>
+		Documentation for the predefined Scripts exists in the <a href="#docsPersp">Documentation Perspective</a>.<br/>
+		Information on how to create your own Script is currently beyond the scope of this guide.
+		</dd>
+
+		<dt>Transformer</dt>
+		<dd>Each Script contains one or several Transformers that are applied in sequence on the input data. When a Job is being run, you can see which Transformers are actually used in the <a href="#jobsPerspProgressView">Progress View</a>.<br/>
+		Understanding how Transformers work is really only needed when you are creating your own Scripts. If you are happy and content with the predefined scripts, you need not worry about Transformers.
+		</dd>
+
+		<dt>Job</dt>
+		<dd>When you have selected a script to run, assigned what input data the script should use, configured details of the script's behavior, and selected where the output should be placed, you have created a <em>Job</em>.</dd>
+
+	</dl>
+
+			
+	<h2 id="jobsPersp">The Jobs Perspective</h2>					
+	<h3 id="jobsPerspOverview">Jobs Perspective Overview</h3>					
+	<p>The Jobs Perspective is the main window of the DAISY Pipeline GUI. Here, you configure and add jobs, run them, and monitor the progress.</p>
+		
+	<h3 id="jobsPerspJobQueue">The Jobs View</h3>
+	<p>The Jobs View can be thought of as a Job <em>queue</em>. Each Job added is available as an entry in this view. You can expand the Job to review details of the job configuration.</p>
+	<img alt="Close-up of a Job item in the Jobs View, the item is expanded showing configuration details" src="./img/dp-003.png"/>
+	<p>Depending on the state of a job, the <em>status column</em> of the Jobs view will flag the status as IDLE, RUNNING, COMPLETED, or FAILED.</p>
+	<p>If you are creating a queue of Jobs, you can reorder the queue via the arrow buttons in the top right corner of the Jobs view.</p>
+	
+	<h4 id="runJob">Running and cancelling jobs</h4>
+	<p>The <kbd>Run</kbd> menu item contains entries for running <em>all</em> or the <em>currently selected</em> job. The same applies to the cancel command.</p>
+	<p>You can also use the Run and Cancel buttons at the top left part of the Jobs View.</p>
+	<img alt="The Run button at the top left part of the Jobs View" src="./img/dp-004.png" />
+
+	<h4 id="deleteJob">Deleting jobs</h4>
+	<p>To delete one or several jobs in the queue, select the job(s), and use the <kbd>delete</kbd> key on your keyboard, or the delete button at the top right part of the Jobs View.</p>
+	<p>You can also clear all finished jobs by using the clear all finished jobs button at the at the top right part of the Jobs View.</p>
+	<img alt="The delete selected and delete finished jobs buttons at the top right part of the Jobs View" src="./img/dp-004b.png" />
+		
+	<h3 id="jobsPerspNewJobWizard">The New Job Wizard</h3>
+	<p>Jobs are added through a <em>Wizard</em>. The New Job Wizard can be launched either by selecting the <kbd>New... Pipeline Job</kbd> item in the <kbd>File</kbd> menu, or by pressing the Wizard button at the top left part of the Jobs View.</p>	
+	<p>The wizard is made up of a two-step process; first, select which Script you want to run, and then configure the Script parameters.</p>
+	<img alt="The New Job Wizard button at the top left part of the Jobs View" src="./img/dp-005.png" />
+
+
+	<h4>Wizard page 1: Select script</h4>
+	<p class="notice">If you are not acquainted with the Scripts provided and the functionality they offer, it is recommended that you first spend some time browsing the Script documentation in the <a href="#docsPersp">Documentation Perspective</a>.</p>
+	
+	<p>The first page of the Wizard provides a tree view of the available scripts. When you select a script, a tooltip (also provided in the top bar of the page) will give a brief description of the Script functionality.</p> 
+	<img alt="The Job Wizard Script selector page, with a script selected" src="./img/dp-006.png" />
+	<p>In the lower left of each of the first Wizard pages, a link to Script Help is provided. Detailed information about the Scripts, file requirements, outputs and so on is provided. This information is also available in the "Scripts" section of the <a href="#docsPersp">Documentation Perspective</a>.</p> 		
+	<p>To toggle between the script selector and the browser view, use the <kbd>F6</kbd> key.</p>
+	<p>When you have found the script you want to run, press the <kbd>next</kbd> button.</p>
+	
+	<h4>Wizard page 2: configure script</h4>
+	<p>The second page of the wizard contains all configuration options. The options are shown in two groups: <em>Required parameters</em> (needed for the script to be runnable), and <em>optional parameters</em> (that can be set if needed, but the script will run even if they are not explicitly set). Optional parameters often have <em>default values</em> that should work fine under normal circumstances.</p>
+	<p>As you select a parameter, a tooltip (also provided in the top bar of the page) will give a brief description of the parameters meaning. If this information does not suffice, please refer to the Script documentation in the <a href="#docsPersp">Documentation Perspective</a>.</p> 	
+	<img alt="The Job Wizard Script configuration page, with a parameter selected" src="./img/dp-007.png" />
+	
+	<p>Once all required parameters have been set, the <kbd>Finish</kbd> button will become enabled. Press <kbd>Finish</kbd> to finalize the Wizard and return to the Jobs view. The Job has now been added to the Jobs queue. To run the job, use the <a href="#runJob">run command</a>.</p>
+
+
+	
+	<h3 id="jobsPerspProgressView">The Progress View</h3>
+	<p>While a job is running, you can monitor the progress in the Progress View. The Progress View contains one entry for each Transformer that the script contains.</p>
+	<img alt="The progress view when a Script has finished" src="./img/dp-008.png" />
+
+	<h3 id="jobsPerspMessagesView">The Messages View</h3>
+	<p>The messages view lists the messages generated by the DAISY Pipeline while the Jobs are running. Some of these messages are informational only, for example, confirming that parts of the Job have been successful. However, other messages are critically important, and notice should be taken. For example, if a job fails, the reason for the failure will be provided here. Similarly, when a Job includes validation, the result of the validation will be reported here.</p>
+	<p>There are four main types of messages:</p>
+	<dl id="messageType">
+		<dt>INFO</dt>
+		<dd>This message type is informational; giving you progress and context information.</dd>
+		<dt>WARNING</dt>
+		<dd>This message type indicates that a possibly problematic event has occured; the Job may complete as intended, but extra caution should be taken to assure the result is OK.</dd>
+		<dt>ERROR</dt>
+		<dd>This message type indicates that an error has occured that either caused the Job to abort prematurely, or caused the output to be erroneous or incomplete.</dd>
+		<dt>DEBUG</dt>
+		<dd>This message type is for running the Pipeline in Debug mode, something which you may be asked to do if you encounter a bug, and the developer or support technician requests more information. Note that this message type is <a href="#filterMessage">filtered out</a> by default, meaning that in order to see these messages, you need to turn off the DEBUG message filter.</dd>
+	</dl>
+	<p>The message type is listed for each message in the right column of the Messages table view.</p>
+
+	<h4 id="messageInterpret">Interpreting messages</h4>
+	<p>Given the wide variety of functionality within the Pipeline, there is a vast amount of messages that can be emitted. For this reason, it is not possible to give explanations of all messages in this manual. If you recieve messages that you find difficult to interpret, you are suggested to ask for help on the <a href="#help">DAISY support list</a>.</p>
+	<p>Below is a list that explains <em>some</em> of the messages. (This list will be expanded as time goes on.)</p>
+	<ul>
+		<li>
+			<p><em>Failed deleting temporary resource</em></p>		
+			<p>The Pipeline uses temporary directories to store data during job execution. Generally, the temporary directory that is set in the Paths section of the <a href="#prefDialog">Preferences dialog</a> is used.</p>
+			<p>However, some scripts use <em>a temporary subdirectory of your output directory</em> to store temporary data. In some instances (such as when this directory is in use by another application), the Pipeline can not delete these files.</p>
+			<p>The files are typically stored in a subdirectory of your output directory called "pipeline__temp". If the "Failed deleting temporary resource" message has appeared, you can manually delete this folder after the job has finished.</p>
+		</li>
+		<li>
+			<p><em>null</em></p>		
+			<p>An admittedly nihilistic message that, if it is of type ERROR, indicates that you have encountered a bug.</p>
+			<p>If the problem is confirmed to be a bug, you should open the <a href="#jobsPerspErrorLog">Error Log</a>, save the information there to a log file, and report the bug to the <a href="#bugs">Pipeline bugtracking system</a>, providing the log file as an attachment.</p>
+		</li>
+	</ul>
+
+
+	<h4 id="filterMessage">Filtering and grouping messages</h4>
+	<p>Messages can be <em>filtered</em> (meaning: to show or not to show messages of a certain <a href="#messageType">type</a>). Messages can also be <em>grouped</em> by type and per Job.</p>
+	<p>The filtering and grouping options are available in the right top corner of the Messages View. There is a dedicated icon for filtering each message type.</p>
+	<p>You can also access this functionality via the View menu in the Messages Tool Bar (appearing as a downwards white triangle icon). Alternatively, in the <kbd>Window</kbd> menu's <kbd>Navigation</kbd> entry, select the <kbd>Show View Menu</kbd> command while the Messages View has focus.</p>
+	<img alt="the filtering and grouping options dialog" src="./img/dp-009.png" />
+	
+	<h4 id="storeMessage">Storing messages</h4>
+	<p>By selecting the <kbd>export messages</kbd> option in the top right corner of the Messages View, you can save messages as a log file.</p>
+	<img alt="the export messages button" src="./img/dp-010.png" />
+	
+	
+	<h3 id="jobsPerspErrorLog">The Error Log</h3>
+	<p>The Error Log is not shown by default. To show it, select <kbd>Show View...</kbd>, <kbd>Error Log</kbd> from the <kbd>Window</kbd> menu item.</p>
+	<img alt="Opening the Error Log from the Window menu" src="./img/dp-012.png" />
+	<p>Under normal circumstances, you will not need to engage in the information in the Error Log. The information here is mainly intended for developers trying to fix a bug, or systems administrators trying to solve a problem.</p>
+																											
+	<h2 id="docsPersp">The Documentation Perspective</h2>
+	<p>The documentation perspective contains three different categories of documents:</p>
+	<dl>
+		<dt>Help</dt>
+		<dd>General help documents; installation, configuration etc.</dd>	
+
+		<dt>Scripts</dt>
+		<dd>Documentation on each one of the prepared Scripts that ship with the default install of the DAISY Pipeline. If your installation contains custom (home-made) Scripts, documentation for it may or may not be available here.</dd>	
+
+		<dt>Transformers</dt>
+		<dd>Documentation on Transformers (which are what the scripts actually use to do their job). Transformer documentation is primarily developer oriented. If you are not creating your own script, you probably will not need to read the documents in this category.</dd>
+	</dl>
+	<img alt="The three document category tabs in the Documentation Perspective" src="./img/dp-013.png" />
+	<p>As you select a document in one of the tabs in the document list, the document will load in the browser window in the right part of the screen.</p>
+	<p>To toggle between the documentation tree view and the browser view, use the <kbd>F6</kbd> key.</p>
+
+
+	<h2 id="advanced">Advanced Features</h2>
+	
+	<h3 id="prefDialog">The Preferences Dialog</h3>
+	<p>The Preferences Dialog can be accessed via the <kbd>Preferences</kbd> entry in the <kbd>Window</kbd> menu item.</p>
+	<p>This dialog contains various settings for configuring the appearance of the GUI. You can also modify keyboard shortcuts here.</p>
+	<p>The most important part of this dialog is the <em>Paths</em> section. You can read about what the different entries here	mean in the <a href="installation.html#config">Installation document</a>.</p>
+	<img alt="The Paths section of the Preferences dialog" src="./img/dp-011.png" />
+
+	<h3 id="update">Applying an Update Patch</h3>
+	<p>The DAISY Pipeline can be updated by applying zipped patches provided by the development team. This feature is available via the <kbd>Updates...</kbd> entry in the <kbd>Help</kbd> item of the main menu bar.</p>
+	<img alt="The Update menu action" src="./img/dp-014.png" />
+	<p>The wizard will ask you to select the ZIP file containing the update patch, and if the patch is valid it will show its content along with some textual description. Then, click on the "Finish" button to apply the software update.</p>
+	<img alt="The Update Wizard" src="./img/dp-015.png"/>
+	<p>Note that update patches will usually consist in small software updates (such as the import of new Pipeline scripts, documentation files, etc). Greater changes will probably require a new installation and will not be available as update patches.</p>
+
+	<h2 id="request">Making a Feature Request</h2>
+	<p>To make a feature request, please sign on to SourceForge, and use the <a href="http://sourceforge.net/tracker/?group_id=134191&amp;atid=729302">DAISY Pipeline Feature Request tracker</a>.</p>
+	<p>If you want to discuss a feature before making a request for it, you may subscribe to the DAISY Pipeline interest group emailing list. To do this, please contact <a href="mailto:markus.gylling-at-tpb.se">markus.gylling-at-tpb.se</a>.</p>
+	<h2 id="bugs">Reporting a bug</h2>	
+	<p>To report a bug, please sign on to SourceForge, and use the 
+	<a href="http://sourceforge.net/tracker/?group_id=134191&amp;atid=729299">DAISY Pipeline Bug tracker</a>. If you are sure this is a bug that pertains to the GUI, please use the 
+	<a href="http://sourceforge.net/tracker/?group_id=162777&amp;atid=951926">DAISY Pipeline GUI Bug tracker</a>. If you are in doubt, use any of the trackers, and the administrators will make sure the bug ends up in the right place.</p>
+	
+	<h2 id="help">Getting further help</h2>
+	<p>If you need help or have some other type of question, you should primarily use the DAISY Consortium Training and Technical Support emailing list. Information on how to subscribe to this list is available on <a href="http://www.daisy.org/get_involved/join-lists.asp">http://www.daisy.org/get_involved/join-lists.asp</a>.</p>
+
+</body>
+</html>

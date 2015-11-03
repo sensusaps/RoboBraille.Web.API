@@ -1,0 +1,49 @@
+<transformer version="1.1">
+	<name>Fileset Audio Tagger</name>
+	<description>Generate audio playlists, and ID3 tags on mp3 files.</description>
+	<classname>int_daisy_filesetAudioTagger.FilesetAudioTagger</classname>
+	<jar>lib/jaudiotagger.jar</jar>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_filesetAudioTagger.html"/>	
+	
+	<parameters>
+		
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input fileset manifest file (ncc, opf, etc)</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+							
+		<parameter required="false" direction="in" type="enum">
+			<name>doID3Tagging</name>
+			<description>Perform ID3 tagging</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>						
+				
+		<parameter required="false" direction="in" type="enum">
+			<name>doPlaylistGeneration</name>
+			<description>Generate playlists</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>						
+													
+	</parameters>	
+
+</transformer>

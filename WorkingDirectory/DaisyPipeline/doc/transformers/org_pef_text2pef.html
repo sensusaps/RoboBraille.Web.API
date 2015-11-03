@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>org_pef_text/text2pef</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Transformer documentation: <em>org_pef_text/text2pef</em>
+</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#purpose">Transformer Purpose</a> </li>
+  <li><a href="#inputReqs">Input Requirements</a> </li>
+  <li><a href="#output">Output</a> 
+    <ul>
+      <li><a href="#success">On success</a> </li>
+      <li><a href="#failure">On error</a> </li>
+    </ul>
+  </li>
+  <li><a href="#config">Configuration/Customization</a> 
+    <ul>
+      <li><a href="#params">Parameters (tdf)</a> </li>
+      <li><a href="#extConfig">Extended configurability</a> </li>
+    </ul>
+  </li>
+  <li><a href="#future">Further development</a> </li>
+  <li><a href="#dependencies">Dependencies</a> </li>
+  <li><a href="#owner">Author</a> </li>
+  <li><a href="#licensing">Licensing</a> </li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+
+<p>The purpose of this transformer is to convert a braille text file into a PEF
+2008-1 document.</p>
+
+<p><em>Note: This implementation is based on the December 9, 2009 Public Draft
+of the PEF 1.0 Specification.</em> </p>
+<!-- brief summary of purpose -->
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>A braille text file.</p>
+<!-- contract definition: detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+
+<p>A PEF 2008-1 document.</p>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf, please use the below definition list -->
+<dl id="paramslist">
+  <dt>input</dt>
+    <dd>Path to input text file</dd>
+  <dt>output</dt>
+    <dd>Path to output PEF 2008-1 document</dd>
+  <dt>mode</dt>
+    <dd>Optional. Read mode</dd>
+  <dt>author</dt>
+    <dd>Optional. Document author</dd>
+  <dt>title</dt>
+    <dd>Optional. Document title</dd>
+  <dt>identifier</dt>
+    <dd>Optional. Document identifier</dd>
+  <dt>language</dt>
+    <dd>Optional. Document language</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>None</p>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+
+<h2 id="owner">Author</h2>
+
+<p>Joel Håkansson, TPB</p>
+<!-- name of owner/initial committer -->
+
+<h2 id="licensing">Licensing</h2>
+
+<p>LGPL</p>
+<!-- Licensing information -->
+</body>
+</html>

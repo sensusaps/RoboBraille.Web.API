@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Fileset Generator - Daisy 2.02 Text-Only [BETA]</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Fileset Generator - Daisy 2.02 Text-Only</em> [BETA]</h1>
+
+<div id="toc" class="toc">
+	<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a></li>
+	<li><a href="#config">Configuration</a></li>
+	<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>
+This script is used to generated Text-Only Daisy 2.02 Filesets from a DTBook or XHTML source. 
+Such filesets can then be opened in a Daisy production tool of your choice to record the audio.
+</p> 
+
+<p>Note - this script does <strong>not</strong> generate audio using TTS, for that purpose, have a look at the <a href="./Narrator-DtbookToDaisy.html">Narrator script</a>.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>A DTBook file or an XHTML file (this depends on which of the Fileset Generator scripts you have chosen.</p>
+
+<p class="alert">Note - it is recommended that the first element in your input document body is a heading. Any elements preceeding the first heading while be maintained in the content document, but will not become part of the DAISY DTB synchronization.</p>
+
+<h2 id="output">Output</h2>
+<p>A Daisy 2.02 Text-Only fileset.</p>
+<p><em>Note - at the time of writing, the LPStudio/Pro "<code>lpp</code>" file is not included in the output, which means that the DTB can not be opened in LPStudio/Pro.</em></p>
+
+<h2 id="config">Configuration</h2>
+
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> Select the input file (XHTML or DTBook, depending on which of the Fileset Generator scripts you have chosen).</dd>
+		
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Select the directory to store the result in. This directory can <strong>not</strong> be the same as the input directory, or the script will abort.</dd>
+
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> While the default output characterset encoding is Unicode(utf-8) some heritage DAISY production tools (such as Sigtuna DAR, LPStudio Plus and LPStudio/Pro) does not support Unicode properly. For this reason, it is sometimes necessary to select another output encoding than utf-8.
+		<em>If you are not sure what this means, leave this setting at its default value</em>. If the output character set you want is not available in the selection dialog, leave it at its default value and run a separate pass with the Pipeline <a href="CharsetSwitcher.html">Charset Switcher script</a> after the Daisy 2.02 fileset has been generated.  
+		</dd>
+
+		<dt>Identifier</dt>
+		<dd><strong>Optional.</strong> Add a publication identifier to use in the output metadata. Use this only if your input document does not already contain an identifier (such as dc:identifier or dtb:uid).</dd>
+		
+		<dt>href Target</dt>
+		<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC.</dd>		
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/se_tpb_dtbookFix.html">Dtbook Fix</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+	<li><a href="../transformers/se_tpb_xmldetection.html">Acronym and Abbreviation detection</a></li>
+	<li><a href="../transformers/uk_rnib_dtbook2xhtml.html">DTBook to XHTML</a></li>
+	<li><a href="../transformers/int_daisy_mixedContentNormalizer.html">Mixed content normalizer</a></li>
+	<li><a href="../transformers/int_daisy_filesetGenerator.html">Fileset Generator</a></li>
+	<li><a href="../transformers/int_daisy_prettyPrinter.html">Pretty Printer</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>	
+</ol>
+
+</body>
+</html>

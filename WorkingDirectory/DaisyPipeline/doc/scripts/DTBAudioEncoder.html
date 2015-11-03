@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTB Audio Encoder</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTB Audio Encoder</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script will convert wave files in a DTB to MP3.</p>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> The manifest member of the input fileset (NCC, OPF, DTBook file, etc)</dd>
+
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Directory to store the result in. This can not be same directory as the input directory.</dd>
+
+		<dt>Bitrate</dt>
+		<dd><strong>Optional.</strong> Select the bitrate of the encoded files. Default is 32.</dd>
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/se_tpb_dtbAudioEncoder.html">DTB Audio Encoder</a></li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>org_pef_dtbook2pef</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Transformer documentation: <em>org_pef_dtbook2pef</em> </h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#purpose">Transformer Purpose</a> </li>
+  <li><a href="#inputReqs">Input Requirements</a> </li>
+  <li><a href="#output">Output</a> 
+    <ul>
+      <li><a href="#success">On success</a> </li>
+      <li><a href="#failure">On error</a> </li>
+    </ul>
+  </li>
+  <li><a href="#config">Configuration/Customization</a> 
+    <ul>
+      <li><a href="#params">Parameters (tdf)</a> </li>
+      <li><a href="#extConfig">Extended configurability</a> </li>
+    </ul>
+  </li>
+  <li><a href="#future">Further development</a> </li>
+  <li><a href="#dependencies">Dependencies</a> </li>
+  <li><a href="#owner">Author</a> </li>
+  <li><a href="#licensing">Licensing</a> </li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+
+<p>The main purpose of this transformer is to convert DTBook into PEF 2008-1.
+However, other input formats as well as other output formats are possible to
+implement within the boundaries of the transformer. In the general case, the
+transformer can convert structural XML into text-oriented display formats, i.e.
+formats that have a fixed width in characters per row. Focus has been on
+braille, specifically braille books, therefore pages, sections and volumes have
+been considered for the programming interfaces. The recommended way to obtain
+braille formats other than PEF (such as american ascii braille) is to feed the
+output from this transformer as input to the <a
+href="org_pef_pef2text.html">pef2text</a> transformer.</p>
+<!-- brief summary of purpose -->
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>A DTBook document. The input document is assumed to have soft hyphen
+characters (U+00AD) at all desired hyphenation points.</p>
+
+<p>A particular conversion setup may have further requirements.</p>
+<!-- contract definition: detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<p>A text-oriented display format, such as PEF 2008-1.</p>
+
+<h3 id="success">On success</h3>
+
+<p>A text-oriented display format, such as PEF 2008-1.</p>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf, please use the below definition list -->
+<dl id="paramslist">
+  <dt>input</dt>
+    <dd>The input xml file</dd>
+  <dt>output</dt>
+    <dd>The output xml file</dd>
+  <dt>identifier</dt>
+    <dd>Publication identifier</dd>
+  <dt>date</dt>
+    <dd>Publication date. Leave blank to use today's date formatted as defined
+      by dateFormat.</dd>
+  <dt>setup</dt>
+    <dd>Conversion setup</dd>
+  <dt>outputFormat</dt>
+    <dd>Output format</dd>
+  <dt>config</dt>
+    <dd>Path to configuration settings</dd>
+  <dt>duplex</dt>
+    <dd>Emboss sheets on both sides</dd>
+  <dt>writeTempFiles</dt>
+    <dd>Write temporary files. If true, a copy of the current temp file is
+      written to the directory specified by <em>tempFilesDirectory</em> after
+      each task has completed. The naming scheme is:
+      "debug_dtbook2pef_[step]_[task name]".</dd>
+  <dt>tempFilesDirectory</dt>
+    <dd>Path to the temporary files directory</dd>
+  <dt>dateFormat</dt>
+    <dd>Date format, see
+      http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html.
+      Note that, while other date formats can be generated, PEF 2008-1 requires
+      ISO8601. Using other date formats will cause the resulting file to be
+      invalid.</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+
+<p>For extended configurability, see javadoc documentation or <a
+href="../../transformers/org_pef_dtbook2pef/package.html">package.html</a></p>
+<!-- details on additional config files, system variables etc -->
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>Saxon 8</p>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+
+<h2 id="owner">Author</h2>
+
+<p>Joel Håkansson, TPB</p>
+<!-- name of owner/initial committer -->
+
+<h2 id="licensing">Licensing</h2>
+
+<p>LGPL</p>
+<!-- Licensing information -->
+</body>
+</html>

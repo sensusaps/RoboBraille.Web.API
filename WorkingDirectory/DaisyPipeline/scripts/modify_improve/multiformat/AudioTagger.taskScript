@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../../AudioTaggerScriptParamsStatic.paramGroup">
+<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../../AudioTaggerTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="AudioTagger">
+	<nicename>Audio Tagger</nicename>
+	<description>Add ID3 Tags and/or Playlists to filesets containing audio</description>
+   	<documentation uri="../../../doc/scripts/AudioTagger.html"/>
+     <comment>
+	     Commandline template (dont forget to modify paths):
+				D:\data\workspace\dmfc\scripts\manipulation\simple\AudioTagger.taskScript
+	                --audioTaggerInputFile=E:\dmfctest\hauy.202.rev4\ncc.html 
+	                --audioTaggerOutputPath=E:\dmfctest\hauy.202.rev4\out\
+     </comment>
+			
+	<parameter name="audioTaggerInputFile" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input manifest file (NCC, OPF, etc)</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="audioTaggerOutputPath" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>		
+			
+	&AudioTaggerScriptParamsStatic;		
+												
+	<task name="int_daisy_filesetAudioTagger" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${audioTaggerInputFile}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${audioTaggerOutputPath}</value>
+		</parameter>		
+		
+		&AudioTaggerTaskParamsStatic;
+		
+	</task>
+
+
+</taskScript>

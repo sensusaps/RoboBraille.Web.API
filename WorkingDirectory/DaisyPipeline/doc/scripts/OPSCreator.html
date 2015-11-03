@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: EPUB Creator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>EPUB Creator</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script creates an EPUB <a href="http://www.idpf.org">Open Publication Structure (OPS) 2.0</a> publication.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input to the script is one or several DTBook or XHTML documents.</p>
+<p>If you are adding several documents, ensure that they are added in the logical order of the presentation (Chapter1.xml; Chapter2.xml) etc.</p>
+<p>When selecting an input document, only point to the root/manifest file (XHTML or DTBook document); auxilliary files (CSS, images, etc) are added automatically.</p>
+
+<div class="alert">
+	<p>The OPS Specification is quite picky about what kind of text documents can be used within an EPUB. You can only use XHTML 1.1 (not 1.0) documents, or DTBook 2005-2 (not 2005-1 or 2005-3) documents.</p>
+	<p>If you add a document of a type not supported by the specification, this script will issue a warning and then <em>attempt</em> to convert the document into an allowed version, preferrably XHTML 1.1.</p>
+</div>
+
+<h2 id="output">Output</h2>
+<p>An OPS 2.0 publication, including an NCX. The OPS publication is wrapped in an <a href="../transformers/int_daisy_ocfCreator.html">OCF container</a>.</p>
+<p>If the NCX is not created according to your expectations, note that you can
+<a href="../transformers/int_daisy_opsCreator.html#extConfig">configure how the NCX is generated</a>. Be warned however that this is 
+a rather complex endeavour that requires XML knowledge.</p>
+
+<p class="alert">Note - the OPS creator does not (yet) support the <code>XML Island</code> and <code>fallback</code> features of OPS 2.0.</p>
+
+<!--
+<p>The output OPS publication is validated, but at the moment this validation does not encompass full conformance validation; it is merely a rough sanity check.</p>
+-->
+
+<p>The output OPS publication is validated using the IDPF.org <em>EpubChecker</em> tool</p>
+
+<h3 id="metadata">Handling of metadata</h3>
+<p>As the default case, it is expected that the input documents contain all required Dublin Core metadata. However, it is possible to specify metadata values explicitly when running the script (see <a href="#config">Configuration</a> below).</p>
+<p>If you set an explicit value for a metadata item, and that item exists in the content document as well, your explicit value will take precedence.</p>
+
+<h2 id="config">Configuration</h2>
+
+	<dl id="paramslist">
+		<dt>Input file(s)</dt>
+		<dd><strong>Required.</strong> One or several DTBook or XHTML documents, added in proper order.</dd>
+		
+		<dt>Output OCF</dt>
+		<dd><strong>Required.</strong> Output OCF (*.epub) file</dd>
+		
+		<dt>forceXhtml</dt>			
+		<dd><strong>Optional.</strong> Force XHTML-based EPUB (even with DTBook 2005-2 input). Defaults to <code>true</code>.</dd>
+		
+		<dt>dc:title</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Title (OPS required)</dd>
+
+		<dt>dc:identifier</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Identifier (OPS required)</dd>
+
+		<dt>dc:language</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Language. A <a href="http://www.ietf.org/rfc/rfc3066.txt">language code</a>. (OPS required)</dd>
+	
+		<dt>dc:creator</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Creator</dd>
+
+		<dt>dc:publisher</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Publisher</dd>
+
+		<dt>dc:date</dt>			
+		<dd><strong>Optional.</strong> Dublin Core Date (date of publication). Must be in format <code>YYYY(-MM-DD)</code></dd>
+
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_opsCreator.html">OPS Creator</a></li>
+	<li><a href="../transformers/int_daisy_unicodeNormalizer.html">Unicode Normalizer</a></li>
+	<li><a href="../transformers/int_daisy_prettyPrinter.html">Pretty Printer</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>	
+	<li><a href="../transformers/int_daisy_ocfCreator.html">OCF Creator</a></li>		
+</ol>
+
+</body>
+</html>

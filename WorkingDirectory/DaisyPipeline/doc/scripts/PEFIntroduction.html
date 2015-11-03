@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>Introduction to PEF</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1>Introduction to PEF</h1>
+
+<p>Today, anyone who comes in contact with braille is occasionally confronted
+with braille files that do not emboss correctly. To amend this, you need
+several skills. First you need to understand the text. This, in turn, means
+that you need to know braille, the languages used and (sometimes) the topic
+of the text. Secondly, you need knowledge about plausible character and
+braille encoding combinations and how to adjust your software/embosser
+accordingly. Depending on the differences between your current encoding
+combination and the intended encoding combination, this process could
+potentially involve hours of trial and error - if you are lucky enough to
+have all these skills, that is.</p>
+
+<p>A common, unambiguous exchange format is needed to efficiently share
+braille in electronic form. There are several reasons behind the development
+of PEF:</p>
+<ul>
+  <li>To facilitate ordering of additional braille copies at a later point in
+    time</li>
+  <li>To ensure readability of the material many years from now</li>
+  <li>To reduce costs for embossing</li>
+  <li>To enable easy file sharing (e.g. braille music) across regions having
+    different embosser settings or software</li>
+</ul>
+
+<h2>What is PEF?</h2>
+
+<p>The Portable Embosser Format (PEF) is a data format for representing
+braille books, accurately and unambiguously.</p>
+
+<p>PEF is a digital braille hardcopy - the PDF of braille books, if you
+will.</p>
+
+<p>PEF can be used for braille embossing and archiving anywhere in the world,
+no matter where nor how it was produced. It allows new features to be added,
+such as ink overlay or tactile graphics, thus enabling a completely automated
+reproduction of advanced braille books.</p>
+
+<p>PEF is built on XML, Unicode and Dublin Core. Three well known, widely
+used and reliable technologies.</p>
+
+<h2>What about ASCII braille?</h2>
+
+<p>Many important aspects of ASCII braille are undefined. These aspects are
+interpreted differently depending on the embosser and/or software used.</p>
+
+<p>Furthermore, ASCII braille lacks even the most basic facilities to ensure
+that it is possible to identify, verify, read and store. For example:</p>
+<ul>
+  <li>ASCII braille depends on an alternate interpretation of regular ASCII
+    characters, but provides no means of how to differentiate one
+    interpretation from another.</li>
+  <li>Common characters like .?()+$% and # render different braille patterns
+    depending on embosser and/or software locale. The reality is that one
+    can’t send an ASCII braille file to an embosser without braille
+    knowledge.</li>
+  <li>A user keeping a collection of ASCII braille files cannot rely on
+    embedded metadata when searching or organizing, such as one can with for
+    example mp3-files. In fact, no additional information whatsoever can be
+    attributed to an ASCII file.</li>
+</ul>
+
+<p>A stray file that has been taken out of context or transferred from one
+computer to another can be very difficult to make sense of, even for a
+skilled transcriber or braille user.</p>
+
+<h2>Why use PEF?</h2>
+
+<p>PEF takes care of these problems.</p>
+<ul>
+  <li>A PEF file provides metadata, i.e. information about its contents that
+    can be used for tracing, tracking, organizing and searching.</li>
+  <li>PEF is a proper file format, defined in a publicly available standard.
+    There is never any doubt about how to interpret or use the contents of a
+    PEF file.</li>
+  <li>Publishing and republishing can be achieved quickly and easily, without
+    worrying about embosser or software settings.</li>
+</ul>
+
+<h2>Using PEF today</h2>
+
+<p>It is possible to use PEF today. Scripts in the Daisy Pipeline allow you
+to:</p>
+<ul>
+  <li>emboss a PEF file</li>
+  <li>input an ASCII braille file and get a PEF file as output</li>
+  <li>input a PEF file and get an ASCII braille file as output</li>
+  <li>convert between different ASCII braille formats</li>
+</ul>
+
+<h2>Simple distribution</h2>
+
+<p>A package file prototype (a JAR file) has been developed that enables
+instant embossing of PEF files on Windows, Mac and Linux platforms, without
+any software installation (JRE 1.5 or newer must be available on the system).
+The package file contains braille, embossing software and a fully accessible
+web interface.</p>
+
+<p>Through the web interface you can:</p>
+<ul>
+  <li>set up the target embosser</li>
+  <li>find information about the publication</li>
+  <li>emboss the publication, in its entirety or a selection of pages</li>
+</ul>
+
+<p>The embossing software is so small that it can be redistributed every time
+a user asks for braille. In fact, it is often smaller than a PEF file on its
+own.</p>
+
+<h2>Contact us</h2>
+
+<p>If your organization thinks that PEF is a good idea and wants to support
+it, let us know.</p>
+
+<p>Read more about PEF on the Daisy website
+(http://www.daisy.org/projects/braille/braille_workarea/pef/pef-specification.html)
+or contact joel.hakansson(at)tpb.se for more information.</p>
+</body>
+</html>

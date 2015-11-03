@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type'
+	content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_unicodeTranscoder</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: int_daisy_unicodeTranscoder</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Performs character set transcoding on all XML documents in a
+fileset, roundtripping through a Unicode representation.</p>
+<p>Can optionally replace characters in the XML file with
+substitution strings. This latter feature is intended primarily for use
+when preparing an XML file for a specific output medium: one example is
+speech synthesizers (who typically doesnt recognize and pronounce all
+characters in the Unicode repertoire). Another example is when an XML document is being prepared for Braille.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer is written to work on any file/fileset that can
+be represented by the <code>org.daisy.util.fileset</code> package.</p>
+<p>Character set transcoding will only be done on XML members of the
+input fileset; all other types of members pass through untouched.</p>
+<p>If no file in the fileset is of type XML, then the whole fileset
+will pass through untouched. It is therefore safe to place this
+transformer in contexts whose dataflow varies considerably.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose XML members has been transcoded, and
+optionally has had certain characters substituted by replacement
+strings. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>No specific recovery scheme. On error, this transformer will send
+a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>input</dt>
+	<dd>The input XML file (standalone or manifest)</dd>
+
+	<dt>output</dt>	
+	<dd>The output directory</dd>
+	
+	<dt>outputEncoding</dt>
+	<dd>Character set encoding of the output file(s). If not set, the input characterset will be maintained.</dd>
+	
+	<dt>performCharacterSubstitution</dt>
+	<dd>Enables/disables the optional character substitution process.</dd>
+	
+	<dt>substitutionTables</dt>
+	<dd>An optional list of tables containing substitution strings. The provided table must comply to the Java Properties XML format. This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+	
+	<dt>excludeFromSubstitution</dt>
+	<dd>A character set name defining a set of characters that should be excluded from translation. This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+	
+	<dt>fallbackToLatinTransliteration</dt>
+    <dd>Determines whether a character substitution attempt should fallback to a transliteration to Latin attempt if a replacement text was not found in user provided substitution table(s). This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+	
+	<dt>fallbackToNonSpacingMarkRemovalTransliteration</dt>
+	<dd>Determines whether a character substitution attempt should fallback to a transliteration to nonspacing mark removal (typically disaccentuation) attempt if a replacement text was not found in user provided substitution table(s). This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+	
+	<dt>fallbackToUCD</dt>
+ 	<dd>Determines whether a character substitution attempt should fallback to names in the UCD table if a replacement text is not found in user provided substitution table(s). This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+	
+	<dt>substituteInAttributeValues</dt>
+	<dd>Determines whether character substitution processing should be applied to attribute values. If this is set to false, substitution processing will only be applied to element text nodes. This parameter only has effect if the parameter performCharacterReplacement is set to true.</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+
+<h4>Replacement processing</h4>
+  <p>The substitution is made using different attempts in a series of preference;
+  each successor is considered a fallback to its predecessor.</p>
+  <ol>
+    <li>Locate a replacement string in one or several user provided tables;</li>
+    <li>Optional fallback: attempt to create a replacement using transliteration by nonspacing mark removal;</li>
+    <li>Optional fallback: attempt to create a replacement using transliteration to Latin characters;</li>
+    <li>Optional fallback: retrieve a replacement string based on UCD names</li>
+  </ol>
+  
+  <p>All fallbacks are disabled by default.</p>
+  
+  <p>By setting an "exclusion reportoire" a set of characters are defined which are considered "allowed": replacement
+  will not be attempted on a character that is a member of an excluded repertoire.</p>
+
+  <p>The use of this class <em>may</em> result in a change in unicode character composition between input and output. 
+  If you need a certain normalization form, normalize after the use of this class.</p>
+  
+<h4>Replacement string table syntax</h4>
+<p>The character translation table with a mapping between characters
+and their replacement strings must comply to the xml format used in
+java.util.Properties. See <a
+	href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a>
+and <a
+	href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html">java.util.Properties</a>
+for details.</p>
+
+<p>The key attribute of the entry element must be a hex value
+representing a unicode codepoint, and the entry element value an
+arbitrary length string of characters.</p>
+
+<p>Example of replacement text table (this also exists as a real
+file (example-table.xml) in the transformer directory):</p>
+
+<pre><code>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+&lt;properties&gt;		
+	&lt;comment&gt;
+	  This is an example of an input translation table for int_daisy_unicodeTranscoder.
+	  The key attribute contains the hex codepoint to be translated,
+	  and the entry text node the replacement string.
+	  The entries match two hebrew characters and some other stuff.
+	  The table can be built using: www.unicode.org/Public/UNIDATA/UnicodeData.txt
+	&lt;/comment&gt;	
+	&lt;entry key=&quot;05E2&quot;&gt;hebrew ayin&lt;/entry&gt;	
+	&lt;entry key=&quot;05DD&quot;&gt;hebrew final mem&lt;/entry&gt;		
+	&lt;entry key=&quot;00A5&quot;&gt;currency yen&lt;/entry&gt;
+	&lt;entry key=&quot;00AE&quot;&gt;registered sign&lt;/entry&gt;
+&lt;/properties&gt;
+	</code></pre>
+
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<p>Note: after a priori code review, the sjsxp StAX implementation
+seems safer to use than Woodstox when it comes to transcoding. This
+should be tested.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li><a
+		href="http://www-306.ibm.com/software/globalization/icu/index.jsp">IBM
+	icu4j</a> (at time of writing: icu4j_3_4_4.jar)</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling, Daisy Consortium</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>int_daisy_filesetRenamer</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_filesetRenamer</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Rename select members of a fileset using customizable token-based name patterns.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer has been written with the intention to work on any file/fileset that can be represented by the <code>org.daisy.util.fileset</code> package. However, preference has been given to DTB filesets - other types are not explicitly supported.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose members have been renamed using the renaming approach defined by inparameters. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will attempt to copy the fileset <em>unrenamed</em> to the destination. If it fails even with this, it will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf -->
+	<dl>
+		<dt>input</dt>
+		<dd>pathspec of the manifest member of input fileset</dd>
+
+		<dt>output</dt>
+		<dd>pathspec of output directory</dd>
+		
+		<dt id="renamingPattern">renamingPattern</dt>
+		<dd>
+		    The type of renaming to apply, described as a series of plus-separated tokens.
+		    The token list includes: 
+		    <ul>
+			    <li><strong>uid</strong>: A string representing a unique identifier of the fileset</li> 
+			    <li><strong>rnd(n)</strong>: A random string guaranteed to be unique within the fileset. The 'n' parameter in the parenthesis is a positive integer, indicating the number of hyphen-separated groups of four characters to use. Example: rnd(2) will result in the string 'fooh-baar'.</li>
+			    <li><strong>fixed(string)</strong>: A fixed string, whose value is given within the parenthesis. Example: 'fixed(daisy)'.</li>
+			    <li><strong>label</strong>: A string representing a label of the individual file (a heading, content descriptor, name or similar). Depending on input fileset type, this cannot always be set.</li>
+			    <li><strong>seq</strong>: A string representing this files position within a sequence of all the files of the same type within the fileset. The first occuring audiofile will have value '1', the first occuring imagefile will have value '1', etc.</li>    
+			    <li><strong>echo</strong>: A string representing an echo of the input filename. (To use for example in conjunction with the filesystemSafe parameter.)</li>
+		    </ul>		    
+		    Examples of complete renaming patterns are:
+		    <ul>
+		    	<li>seq+label</li>
+		    	<li>uid+seq</li>	    
+		    	<li>fixed(dtb)+seq</li>
+		    	<li>uid+seq+label</li>
+		    	<li>rnd(4)</li>
+		    	<li>uid+rnd(2)</li>		    	
+		    	<li>echo</li>		    			    	
+		    </ul>
+		</dd>
+		
+		<dt id="exclude">exclude</dt>
+		<dd>
+		A comma separated list of file type names to <em>exclude</em> from the renaming process.<br/>
+		Names that can be used are: <em>XmlFile, Xhtml10File, DtbookFile, OpfFile, SmilFile, <br/>
+									ImageFile, JpgFile, BmpFile, PngFile, SvgFile,<br/>
+									CssFile,<br/>
+									AudioFile, Mp3File, Mp2File, WavFile.</em><br/>
+									Note that some file types encapsulate others: if you use XmlFile,
+									then <strong>all</strong> XML files will be excluded (Smil, Dtbook, Opf, Xhtml etc).
+		</dd>
+		
+		<dt>filesystemSafe</dt>
+		<dd>Whether output names should only include filesystem (and DAISY DTB) safe characters: A-Z, a-z, 0-9, hyphen, underscore.</dd>
+
+		<dt>maxFilenameLength</dt>
+		<dd>The maximum number of characters in the output filename, <em>excluding the extension</em>. Default is 60.</dd>
+
+	</dl>
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<p>None.</p>
+	
+	<h2 id="future">Further development</h2>
+	<!-- notes on refactoring; TODOs and MAYDOs -->
+	<p>Extend support for non-DTB filesets.</p>
+	
+	<h2 id="dependencies">Dependencies</h2>
+	<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+	<ul>
+		<li><a href="http://www-306.ibm.com/software/globalization/icu/index.jsp">IBM icu4j</a> (at time of writing: icu4j_3_4_4.jar)</li>
+	</ul>
+	
+	<h2 id="owner">Author</h2>
+	<!-- name of owner/initial committer -->
+	<p>Markus Gylling, Daisy Consortium</p>
+	
+	<h2 id="licensing">Licensing</h2>
+	<!-- Licensing information -->
+	<p>LGPL</p>
+
+</body>
+</html>

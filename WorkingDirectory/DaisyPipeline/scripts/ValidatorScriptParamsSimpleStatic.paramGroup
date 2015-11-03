@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="validatorOutputXMLReport" value="" required="false">
+		<nicename>XML Validation Report</nicename>
+		<description>Select a file to store a Validation XML report in</description>
+		<datatype>
+			<file mime="application/xml" type="output"/>
+		</datatype>
+	</parameter>
+	
+</paramGroup>	

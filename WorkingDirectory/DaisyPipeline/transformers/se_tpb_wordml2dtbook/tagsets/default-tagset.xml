@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook tagset.xsd">
+	<standardWord version="4">
+		<paragraphs>
+			<tag name="heading 1" listOverride="true"><map value="h1"/></tag>
+			<tag name="heading 2" listOverride="true"><map value="h2"/></tag>
+			<tag name="heading 3" listOverride="true"><map value="h3"/></tag>
+			<tag name="heading 4" listOverride="true"><map value="h4"/></tag>
+			<tag name="heading 5" listOverride="true"><map value="h5"/></tag>
+			<tag name="heading 6" listOverride="true"><map value="h6"/></tag>
+			<tag name="Block Text">
+				<map value="p">
+					<attribute name="group" value="blockquote"/>
+				</map>
+			</tag>
+			<tag name="caption">
+				<map value="caption">
+					<attribute name="group" value="imggroup"/>
+				</map>
+			</tag>
+			<tag name="list">
+				<map value="li"/>
+			</tag>
+			<!-- Added for Word 2007 -->
+			<tag name="List">
+				<map value="li">
+					<attribute name="group" value="p-list"/>
+				</map>
+			</tag>
+			<!--
+			<tag name="List Number" listOverride="true">
+				<wrap value="list" addId="false" merge="true">
+					<using value="li"/>
+					<attribute name="type" value="ol"/>
+				</wrap>
+			</tag>
+			<tag name="List Bullet" listOverride="true">
+				<wrap value="list" addId="false" merge="true">
+					<using value="li"/>
+					<attribute name="type" value="ul"/>
+				</wrap>
+			</tag>-->
+		</paragraphs>
+		<character>
+			<tag name="HTML Cite">
+				<map value="cite"/>
+			</tag>
+			<tag name="HTML Code">
+				<map value="code"/>
+			</tag>
+			<tag name="HTML Definition">
+				<map value="dfn"/>
+			</tag>
+			<tag name="HTML Keyboard">
+				<map value="kbd"/>
+			</tag>
+			<tag name="HTML Sample">
+				<map value="samp"/>
+			</tag>
+			<tag name="Strong"><map value="strong"/></tag>
+			<tag name="Emphasis"><map value="em"/></tag>
+			<tag name="page number"><pagenum/></tag>
+		</character>
+	</standardWord>
+</mappings>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_nccNcxOnly</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_nccNcxOnly</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Creates an NCC/NCX only fileset from a Daisy 2.02 or z3986-2005 fileset.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>Any valid Daisy 2.02 or z3986-2005 fileset should do.</p>
+
+<h2 id="output">Output</h2>
+<p>If the input is a Daisy 2.02 fileset, the output will be a NCC-only (i.e. no textual content
+document) Daisy 2.02 fileset.</p>
+<p>If the input is a z3986-2005 fileset, the output will be a NCX-only (i.e. no DTBook document) 
+z3986-2005 fileset.</p>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+<p>A valid Daisy 2.02 or z3986-2005 fileset is created.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will throw an exception and abort.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>manifest</dt>
+	<dd>The manifest file of the input fileset (i.e. the ncc.html of a Daisy 2.02 fileset,
+	    and the .opf file of a z3986-2005 fileset.</dd>
+	
+	<dt>outDir</dt>
+	<dd>The directory to write the NCC/NCX-only fileset to.</dd>
+	</dl>
+	
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>Support for z3986-2005 filesets has not been implemented yet.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>None.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

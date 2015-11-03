@@ -1,0 +1,733 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+
+  
+  <meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />
+
+  
+
+
+  
+  <title>Transformer documentation: se_tpb_speechgen2</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+
+<body>
+
+
+<h1 class="title">Transformer documentation: <em>se_tpb_speechgen2</em></h1>
+
+
+<!-- doc.html contains primarily developer-centric information, not end-user-centric information. However, when describing extended configuration, remember that end users may come in contact with that information. -->
+<div id="toc" class="toc">
+<ul>
+
+
+  <li><a href="#purpose">Transformer Purpose</a></li>
+
+
+  <li><a href="#inputReqs">Input Requirements</a></li>
+
+
+  <li><a href="#output">Output</a>
+    
+    <ul>
+
+
+      <li><a href="#success">On success</a></li>
+
+
+      <li><a href="#failure">On error</a></li>
+
+
+    
+    </ul>
+
+
+  </li>
+
+
+  <li><a href="#config">Configuration/Customization</a>
+    
+    <ul>
+
+
+      <li><a href="#params">Parameters (tdf)</a></li>
+
+
+      <li><a href="#extConfig">Extended
+configurability</a></li>
+
+
+      <li><a href="#wrappers">TTS Java wrappers</a>
+        
+        <ul>
+
+
+          <li><a href="#loquendo">Loquendo</a></li>
+
+
+        
+        </ul>
+
+
+      </li>
+
+
+    
+    </ul>
+
+
+  </li>
+
+
+  <li><a href="#future">Further development</a></li>
+
+
+  <li><a href="#dependencies">Dependencies</a></li>
+
+
+  <li><a href="#owner">Author</a></li>
+
+
+  <li><a href="#licensing">Licensing</a></li>
+
+
+</ul>
+
+
+</div>
+
+
+<h2 id="purpose">Transformer Purpose</h2>
+
+
+<!-- brief summary of purpose -->
+<p>Generates audio for a full-text <tt>dtbook</tt>
+file.&nbsp;Makes the input file and generated audio ready for <a href="se_tpb_filesetcreator.html">se_tpb_filesetcreator</a>.&nbsp;</p>
+
+
+<p>This transformer is able to manipulate its input before it is
+passed to the tts system. The text is extracted from the document as
+xml fragments and xslt can be used on a sync point level. Arbitrary
+unicode codepoints can be replaced by user-defined strings, and it is
+also possible to&nbsp;use regular expressions in a
+search-replace-manner.&nbsp;</p>
+
+
+<p>This transformer is using a 2-pass approach, i.e. first
+reading though the input file, extracting xml fragments to pass to the
+the different TTS-systems, and then reads through the file once more to
+collect the generated audio files.</p>
+
+
+<p>Regardless the audio kind, attributes will be placed on
+elements representing synch points. Those attributes are <tt>smil:clipBegin</tt>,
+<tt>smil:clipEnd</tt> and <tt>smil:src</tt>
+with namespace URI <tt>http://www.w3.org/2001/SMIL20/</tt>.
+</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+
+<!-- contract definition: detailed requirements on input nature -->
+<p>This transformer is written to work with a manuscript, that is
+a dtbook-2005-1 or dtbook-2005-2 document possibly enriched with
+elements and attributes from other namespaces. The input document must
+be "synch point normalized", see <a title="se_tpb_syncPointNormalizer" href="se_tpb_syncPointNormalizer.html">
+se_tpb_syncPointNormalizer </a> for such transformation. </p>
+
+
+<p> Some elements are supposed to be announced audible. Those
+elements must have attributes holding the say-before and say-after text
+strings. <a title="se_tpb_annonsator" href="se_tpb_annonsator.html"> se_tpb_annonsator </a>
+can be used to add those attributes to a <tt>dtbook</tt>
+document. Since those attribute names are configurable, make sure they
+match whatever se_tpb_annonsator uses. </p>
+
+
+<h2 id="output">Output</h2>
+
+
+<h3 id="success">On success</h3>
+
+
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>Given the expected input the transformer outputs a manuscript,
+that is a dtbook-2005-1 or dtbook-2005-2 document with
+additional attributes indicating corresponding audio. Those
+attributes,&nbsp;<tt>clipBegin</tt>,&nbsp;<tt>clipEnd</tt>
+and&nbsp;<tt>src</tt>,
+namespace URI <tt>http://www.w3.org/2001/SMIL20/</tt>,
+point out which elements should be represented by audio in the
+generated talking book. Output also includes the generated audio files
+referrenced by the smil-attributes. </p>
+
+
+<p><tt>sent</tt>-level synchronization should be
+used, although configurable. Other usage has not been tested.</p>
+
+
+<h3 id="failure">On error</h3>
+
+
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>No specific recovery scheme. On error, this transformer will
+send a fatal message, then throw an exception and abort.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+
+<h3 id="params">Parameters (tdf)</h3>
+
+
+<!-- description on params as defined in tdf, please use the below definition list -->
+<dl id="paramslist">
+
+
+  <dt>inputFilename</dt>
+
+
+  <dd>required="true"<br />
+
+
+The input manuscript file.<br />
+
+
+Example: <tt>/home/books/manuscript.xml</tt> </dd>
+
+
+  <dt>outputDirectory</dt>
+
+
+  <dd>required="true"<br />
+
+
+Path to the output directory<br />
+
+
+Example: <tt>/home/books/audio</tt> </dd>
+
+
+  <dt>outputFilename</dt>
+
+
+  <dd>required="true"<br />
+
+
+The desired name of the output manuscript.<br />
+
+
+Example: <tt>/home/books/audio/speechgen-manuscript.xml</tt>
+  </dd>
+
+
+  <dt>concurrentAudioMerge</dt>
+
+
+  <dd>required="false"<br />
+
+
+Whether the merge of the audio should be done concurrent to the speech
+generation or not. Due to license, some TTS systems spend most of their
+time sleeping just to avoid being too effective, Loquendo is an example
+of that. If that is the case, why not use the time doing something
+useful instead, like merging tiny audio clips? Parallel threads will be
+spawned to merge the audio.<br />
+
+
+Possible enum values:
+    
+    <ul>
+
+
+      <li><tt>true</tt></li>
+
+
+      <li><tt>false</tt></li>
+
+
+    
+    </ul>
+
+
+Default: <tt>true</tt> </dd>
+
+
+  <dt>mp3Output</dt>
+
+
+  <dd>required="false"<br />
+
+
+Is mp3 the preferred audio output format? The default option is wav.<br />
+
+
+Possible enum values:
+    
+    <ul>
+
+
+      <li><tt>true</tt></li>
+
+
+      <li><tt>false</tt></li>
+
+
+    
+    </ul>
+
+
+Default: <tt>false</tt> </dd>
+
+  <dt>multiLang</dt>
+
+
+  <dd>required="false"<br />
+
+
+Select whether to use the multi-language support of the TTSBuilder or to always use the default TTS engine configure in ttsBuilder.xml.<br />
+
+
+Possible enum values:
+    
+    <ul>
+
+
+      <li><tt>true</tt></li>
+
+
+      <li><tt>false</tt></li>
+
+
+    
+    </ul>
+
+
+Default: <tt>true</tt> </dd>
+
+
+  <dt>sgConfigFilename</dt>
+
+
+  <dd>required="false"<br />
+
+
+Speech generator configuration file. See <a title="Speech Generator Configuration" href="#sgConfig">Speech
+Generator Configuration</a> for details.<br />
+
+
+Example: <tt>/home/config/file.xml</tt><br />
+
+
+Default: <tt>${transformer_dir}/config/sgConfig.xml</tt></dd>
+
+
+  <dt>ttsBuilderConfig</dt>
+
+
+  <dd>required="false"<br />
+
+
+The tts builder configuration file. See <a title="TTS Builder Configuration" href="#ttsb">TTS
+Builder Configuration</a> for details.<br />
+
+
+Example: <tt>/home/ttsbfiles/file.xml</tt><br />
+
+
+Default: <tt>${transformer_dir}/ttsbuilder.xml</tt> </dd>
+
+
+  <dt>ttsBuilderRNG</dt>
+
+
+  <dd>required="false"<br />
+
+
+Tests for the tts builder configuration file using relaxng with
+embedded schematron.<br />
+
+
+Example: <tt>/home/ttsbfiles/file.rng</tt><br />
+
+
+Default: <tt>${transformer_dir}/ttsbuilder-configtest.rng</tt>
+  </dd>
+
+<dt>doSmilSyncAttributeBasedSyncPointLocation</dt>
+<dd>required="false", default=false<br />
+Determines whether synchronization points should be located using an attribute <tt>sync</tt> in the SMIL namespace in the input document.<br/>
+This defaults to false, which means that the original behavior of transformer is the default. 
+</dd>
+
+</dl>
+
+
+<h3 id="extConfig">Extended configurability</h3>
+
+
+<!-- details on additional config files, system variables etc -->
+<h4 id="sgConfig">Speech Generator Configuration</h4>
+
+
+<p>The file pointed to by the tdf variable sgConfig provides the
+possibility to affect the processing of the document. Things like on
+which elements to synch, merge audio and so on, are configured there. A
+description of the possibilities follows together with a short example:
+</p>
+
+
+<dl>
+
+
+  <dt>/sgConfig/absoluteSynch/item</dt>
+
+
+  <dd>The names of the the elements that should be synch points,
+no matter where they are.</dd>
+
+
+  <dt>/sgConfig/containsSynch/item</dt>
+
+
+  <dd>The name of the element for synch point level.</dd>
+
+
+  <dt>/sgConfig/announceAttributes/item</dt>
+
+
+  <dd>Elements of this type show which attributes contain
+announcements. Two elements of this kind is allowed, with id values <tt>before</tt>
+(which tells us about which attributes contains "say-before" content)
+and <tt>after</tt> (which tells us about which attributes
+contains "say-after" content). On those elements three attributes (plus
+id) must be placed:
+    
+    <ul>
+
+
+      <li><tt>uri</tt>: the namespace uri of the
+announce-attributes.</li>
+
+
+      <li><tt>prefix</tt>: the namespace prefix.</li>
+
+
+      <li><tt>local</tt>: the attribute's local name.</li>
+
+
+    
+    </ul>
+
+
+The element body is empty. </dd>
+
+
+  <dt>/sgConfig/mergeAudio/item</dt>
+
+
+  <dd>Elements at which to divide the audio into different files.
+The values can be seen as the element-only xpath tail. <tt>level/hd</tt>
+rather than <tt>//level/hd</tt>, that is. </dd>
+
+
+  <dt>/sgConfig/silence</dt>
+
+
+  <dd>There is a possibility to add extra silence after and/or
+before certain events in the talking book. Silence is added at the end
+of a synch point, never at the beginning. In the current
+implementation, the duration of the desired silence is provided in
+milliseconds and extra silence can be added upon five different events:
+    
+    <ul>
+
+
+      <li><tt>afterLast</tt>: After the last phrase
+in an audio clip. Typical usage would be when audio is merged at a
+heading, this ability would add silence just before the heading.</li>
+
+
+      <li><tt>afterFirst</tt>: After the first phrase
+in an audio clip. Typical usage would be just after a heading.</li>
+
+
+      <li><tt>beforeAnnouncement</tt>: Before an
+audible announcement.</li>
+
+
+      <li><tt>afterAnnouncement</tt>: After an
+audible announcement.</li>
+
+
+      <li><tt>afterRegularPhrase</tt>: After every
+regular phrase that's generated.</li>
+
+
+    
+    </ul>
+
+
+  </dd>
+
+
+</dl>
+
+
+<p>An example follows:</p>
+
+
+<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;sgConfig&gt;<br /><br />    &lt;absoluteSynch&gt;<br />	&lt;item&gt;pagenum&lt;/item&gt;<br />	&lt;item&gt;noteref&lt;/item&gt;<br />	&lt;item&gt;annoref&lt;/item&gt;<br />	&lt;item&gt;linenum&lt;/item&gt;<br />    &lt;/absoluteSynch&gt;<br />	<br />    &lt;containsSynch&gt;<br />	&lt;item&gt;sent&lt;/item&gt;<br />    &lt;/containsSynch&gt;<br />	<br />    &lt;announceAttributes&gt;<br />	&lt;item id="before" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="before"/&gt;<br />	&lt;item id="after" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="after"/&gt;<br />    &lt;/announceAttributes&gt;<br />	<br />    &lt;mergeAudio&gt;<br />	&lt;item&gt;h1&lt;/item&gt;<br />	&lt;item&gt;h2&lt;/item&gt;<br />	&lt;item&gt;h3&lt;/item&gt;<br />	&lt;item&gt;h4&lt;/item&gt;<br />	&lt;item&gt;h5&lt;/item&gt;<br />	&lt;item&gt;h6&lt;/item&gt;<br />	&lt;item&gt;level/hd&lt;/item&gt;<br />    &lt;/mergeAudio&gt;<br />	<br />    &lt;silence&gt;<br />	&lt;afterLast&gt;2000&lt;/afterLast&gt;<br />	&lt;afterFirst&gt;800&lt;/afterFirst&gt;<br />	&lt;beforeAnnouncement&gt;300&lt;/beforeAnnouncement&gt;<br />	&lt;afterAnnouncement&gt;300&lt;/afterAnnouncement&gt;<br />	&lt;afterRegularPhrase&gt;200&lt;/afterRegularPhrase&gt;<br />    &lt;/silence&gt;<br />	<br />&lt;/sgConfig&gt;<br />	</pre>
+
+
+<h4 id="ttsb">TTS Builder Configuration</h4>
+
+
+<p><tt>se_tpb_speechgenerator</tt> uses a simple
+factory/builder to get hold of TTS implementations. The factory must be
+configured properly since it is not able to locate TTS systems on its
+own. The configuration consists of sections that are operating system
+specific. As subsections, there are language specific sections. Each
+language must contain no more than one TTS system. During runtime, the
+TTS Builder configuration file is validated using relaxng and
+schematron, but since a DTD is a compact way of showing a document's
+structure, here's one: </p>
+
+
+<pre>&lt;!DOCTYPE ttsbuilder [<br /> &lt;!ELEMENT ttsbuilder (os+)&gt;<br /> &lt;!ELEMENT os (property*, lang*)&gt;<br /> &lt;!ELEMENT property (EMPTY)&gt;<br /> &lt;!ELEMENT lang (tts)&gt;<br /> &lt;!ELEMENT tts (param+)&gt;<br /> &lt;!ELEMENT param (EMPTY)&gt;<br /> <br /> &lt;!ATTLIST property name CDATA #REQUIRED&gt;<br /> &lt;!ATTLIST property match CDATA #REQUIRED&gt;<br /> &lt;!ATTLIST lang lang CDATA #REQUIRED&gt;<br /> &lt;!ATTLIST tts default (true) CDATA #IMPLIED&gt;<br /> &lt;!ATTLIST tts instances CDATA #IMPLIED&gt;<br /> &lt;!ATTLIST param name CDATA #REQUIRED&gt;<br /> &lt;!ATTLIST param value CDATA #REQUIRED&gt;<br />]&gt;<br /></pre>
+
+
+<p>Besides the rules expressible in a DTD, there are a few
+others, asserted using schematron:</p>
+
+
+<ul>
+
+
+  <li>The length of the <tt>lang</tt>-attribute
+value must be 2. This is to follow the ISO-639 2-letter lower-case
+standard used in Java.</li>
+
+
+<!-- <li>The <tt>lang</tt>-attribute is lower-case.</li> -->
+  <li><tt>lang</tt>-siblings don't have the same <tt>lang</tt>-attribute
+value.</li>
+
+
+  <li>For each <tt>os</tt>, there is not more than
+one descendant <tt>tts</tt> which has got the attribute <tt>default="true"</tt>
+to be used as fallback.</li>
+
+
+  <li>For each <tt>tts</tt>, there must not be two
+descendant <tt>param</tt>s with the same value for
+attribute <tt>name</tt>, except for the value command. For
+each <tt>name="command"</tt> entry, one instance of the
+class given by the
+    <tt>name="class"</tt> entry will be created, given the
+command value, and the
+other parameters in a map.&nbsp;</li>
+
+
+  <li>For each <tt>tts</tt>, there is a <tt>param</tt>
+with name attribute <tt>value="class"</tt></li>
+
+
+</ul>
+
+<p>More information on the per-language TTS engine selection is available
+ in the <a href="../scripts/Narrator-multilang.html">Speechgen2 multi-language support</a>
+ separate documentation.</p>
+ 
+<p> Configuration of a TTS mainly consists of parameters for a
+certain TTS wrapper, such as Java class name or command to run a TTS
+program. Each TTS system needs its own Java-wrapper, and hence their
+configuration can differ extensively. The wrapper communicate with the
+TTS system of your choice. The properties read from the TTS Builder
+Configuration are passed to the TTS Java wrapper constructor together
+with a some utility functions wrapped together in the class
+<tt>se_tpb_speechgen2.tts.TTSUtils</tt>. The TTSUtils
+instance will also have a look at some configuration
+parameters to be able to provide desired functionality, e.g. regex
+filtering, character substitution and so on. TTSUtils will look at
+parameters described below. After that,&nbsp;it's up to the wrapper
+to decide what to do with remaining&nbsp;parameters. This gives a
+developer great possibilities when it comes to creating a TTS wrapper
+and its configuration.&nbsp;</p>
+
+
+<p>TTSUtils will treat parameters as follows:</p>
+
+
+<ul>
+
+
+  <li> <tt>regex</tt> - comma separated urls
+pointing to files containing regular expressions in a
+search-replace-manner.</li>
+
+
+  <li><tt>xslt</tt> -&nbsp;comma separated urls
+pointing to xslt files supposed to be applied to every sync point xml
+fragment.</li>
+
+
+  <li><tt>year</tt> -&nbsp;url pointing to a file
+containing regular expressions specific for pronouncing years properly.</li>
+
+
+  <li><tt>characterSubstitutionTables</tt> - a
+comma separated list of absolute file paths to character substitution
+tables. If this parameter is present, the program will look for the
+following two:
+    
+    <ul>
+
+
+      <li> <tt>characterExcludeFromSubstitution</tt>
+- name of character set to exclude from substitution. </li>
+
+
+      <li> <tt>characterFallbackStates</tt> - what
+to do if no mapping is found, the following values are valid:
+        
+        <dl>
+
+
+          <dt>fallbackToNonSpacingMarkRemovalTransliteration</dt>
+
+
+          <dd>Determines whether a character substitution attempt
+should fallback to a transliteration to nonspacing mark removal
+(typically disaccentuation) attempt if a replacement text was not found
+in user provided substitution table(s). </dd>
+
+
+          <dt>fallbackToLatinTransliteration</dt>
+
+
+          <dd>Determines whether a character substitution attempt
+should fallback to a transliteration to Latin attempt if a replacement
+text was not found in user provided substitution table(s). </dd>
+
+
+          <dt>fallbackToUCD</dt>
+
+
+          <dd>Determines whether a character substitution attempt
+should fallback to names in the UCD table if a replacement text is not
+found in user provided substitution table(s). </dd>
+
+
+        
+        </dl>
+
+
+      </li>
+
+
+    
+    </ul>
+
+
+  </li>
+
+
+  <li><tt>timeout</tt> - Milliseconds to wait for the
+tts before throwing an exception.<span style="font-family: monospace;">&nbsp;</span></li>
+
+
+</ul>
+
+
+The java wrapper can choose to care about the rest of the parameters
+sent to it, and it can choose to use the functions in TTSUtils.<br />
+
+
+<p>An example of the configuration follows:</p>
+
+
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br /><br />&lt;!-- the Java class parameter must be supplied --&gt;<br />&lt;!-- ${transformer_dir} variable will be evaluated to the directory where se_tpb_speechgenerator resides. --&gt;<br /><br />&lt;ttsbuilder&gt;<br />&lt;!--******************************************************************************<br />Windows<br />*******************************************************************************--&gt;<br />    &lt;os&gt;<br />        &lt;!-- all properties must match java's System.getProperties()-properties.<br />        Standard regex match for an os to be usable in this program. --&gt;<br />        &lt;property name="os.name" match="[Ww]indows.*" /&gt;<br /><br />        &lt;lang lang="en"&gt;<br />            &lt;!-- since xml:lang determines which tts to use when in <br />            this program, provide only one tts per language! --&gt; <br /> <br />            &lt;!-- this is configuration for one tts impl. the "default" attribute <br />            should be set to true for one configuration for each os. --&gt;<br /><br />            &lt;tts default="true"&gt;<br /><br />                &lt;!-- the Java class name --&gt;<br />                &lt;param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/&gt;<br /><br />                &lt;!-- the binary SAPI-talking program used for tts conversion --&gt;<br />                &lt;param <br />	            name="command" <br />	            value="${transformer_dir}/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/&gt; <br />	<br />	            &lt;!-- an xml file containing simple search-replace regex rules. --&gt;<br />	            &lt;param name="regex" value="${transformer_dir}/regex/general.xml"/&gt;<br />	<br />		    &lt;!-- xslt applied on each synchpoint --&gt;<br />	            &lt;param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/&gt;<br />	<br />	            &lt;!-- an xml file containing simple search-replace regex rules.<br />	            Those rules specifically replaces years in digits with text. --&gt;<br />	            &lt;param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/&gt;<br />	<br />	            &lt;!-- SAPI specific parameter: The value will be used to embed the text in<br />	            SAPI's xml-like way. This value will result in the following tags<br />	            surrounding the input text: <br />	            &lt;voice optional="Gender=Male"&gt;&lt;/voice&gt;<br />	            Where the starting point is &lt;voice optional=""&gt;&lt;/voice&gt;.<br />	            More on SAPI xml codes: <br />	            http://msdn.microsoft.com/library/default.asp?url=/library/en-us/SAPI51sr/Whitepapers/WP_XML_TTS_Tutorial.asp<br />	            --&gt;<br />	            &lt;param name="sapiVoiceSelection" value="Gender=Male"/&gt;<br />	<br />	            &lt;!-- An ability to filter characters and replace them with custom strings. --&gt;<br />	            &lt;param <br />	                name="characterSubstitutionTables" <br />	                value="${transformer_dir}/character-translation-table.xml"/&gt;<br />	<br />	                &lt;!-- The encoding of the character translation table. --&gt;<br />	            &lt;param name="characterFallbackStates" value="fallbackToLatinTransliteration"/&gt; <br />	        &lt;/tts&gt;<br />	    &lt;/lang&gt;<br />	&lt;/os&gt;<br />	<br />	<br />	&lt;!--******************************************************************************<br />	Linux<br />	*******************************************************************************--&gt;<br />	&lt;os&gt;<br />	    &lt;property name="os.name" match="[Ll]inux.*" /&gt;<br />		<br />            &lt;lang lang="en"&gt;<br />                &lt;tts default="true"&gt;<br />		    &lt;param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/&gt;<br />		    &lt;param name="regex" value="${transformer_dir}/regex/general.xml"/&gt;<br />		    &lt;param name="ttsProperties" value="${transformer_dir}/conf/loquendo.xml"/&gt;<br />		    &lt;param name="xslt" value="${transformer_dir}/xslt/loquendo-en.xsl"/&gt;<br />		    &lt;param name="year" value="${transformer_dir}/regex/year_en.xml"/&gt;<br />				<br />		    &lt;!-- character substitution choises --&gt;<br />		    &lt;param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/&gt;<br />	        &lt;/tts&gt;<br />            &lt;/lang&gt;<br />	&lt;/os&gt;<br />&lt;/ttsbuilder&gt;<br /></pre>
+
+
+<h3 id="wrappers">TTS Java wrappers</h3>
+
+
+<p>The transformer comes with two java TTS wrappers. One is named
+LocalStreamTTS and it works in a very simple way. It communicates with
+an external TTS program by the standard input and output streams. That
+is, it pipes to the external program's standard input stream first a
+filename, linebreak, and&nbsp;then- using 1 line -  the phrase to be
+generated and written to the file pointed out. The external program
+generates the audio, writes it to the file, and then prints "OK" to its
+standard output stream. If the external program reads an empty line, it
+means it is time to exit. If the program does not print "OK" Narrator will stop.</p>
+
+<p>If you need to use a TTS system that can not be used this way, it is
+possible to develop your own&nbsp;TTS Java wrapper. To do so, you
+develop a java class that implements the <span style="font-family: monospace;">se_tpb_speechgen2.tts.TTSAdapter</span> interface. The class should have a constructor taking to parameters, the first one an instance of <span style="font-family: monospace;">se_tpb_speechgen2.tts.TTSUtils</span>, and the other one&nbsp;a <span style="font-family: monospace;">java.util.Map</span> containing parameters from the configuration file.&nbsp;This lets you use the TTS system -
+and possible inter-process communication - of your choice. Once you
+have set up a proper TTS Builder Configuration your new TTS wrapper is
+ready to run.</p>
+
+<h2 id="future">Further development</h2>
+
+
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<ul>
+
+
+  <li>Refactoring: Instead of letting se_tpb_speechgen2
+figuring out which elements represent synch points by searching for
+certain element structures with text nodes, an attribute must be
+present on those elements, making the synch point search trivial.
+Identifying synch points should only be assigned to one transformer,
+and a possible candidate in the Narrator transformer chain would be <a title="se_tpb_syncPointNormalizer" href="se_tpb_syncPointNormalizer.html">se_tpb_syncPointNormalizer</a>.
+  </li>
+
+
+  <li>RNG/Schematron test the Speech Generator Configuration file
+before running.</li>
+
+
+  <li>Generate audio for non-empty <tt>dc:Creator</tt>
+and <tt>dc:Title</tt>. Since the fileset creator uses
+those elements in the absence of <tt>docAuthor</tt> and <tt>docTitle</tt>
+it would be nice to be able to supply audio as well.</li>
+
+  <li>Develop a Java wrapper for use with FreeTTS. </li>
+
+
+</ul>
+
+
+<h2 id="dependencies">Dependencies</h2>
+
+
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>May need to access some TTS system, which is not part of the
+Daisy Pipeline.</p>
+
+
+<h2 id="owner">Author</h2>
+
+
+<!-- name of owner/initial committer -->
+<p>Martin Blomberg, TPB.</p>
+
+
+<h2 id="licensing">Licensing</h2>
+
+
+<!-- Licensing information -->
+<p>LGPL</p>
+
+
+</body>
+</html>

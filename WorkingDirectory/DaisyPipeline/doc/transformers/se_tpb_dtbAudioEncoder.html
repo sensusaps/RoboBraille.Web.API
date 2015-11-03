@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_dtbAudioEncoder</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_dtbAudioEncoder</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>The purpose of this transformer is to encode WAVE files (*.wav) into MP3 file (*.mp3)
+in a DAISY/NISO 2005 or Daisy 2.02 <acronym title="Digital Talking Book">DTB</acronym>.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A DAISY/NISO 2005 or Daisy 2.02 fileset.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>A DAISY/NISO 2005 or Daisy 2.02 fileset, with all WAVE files converted into MP3.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will throw an exception and abort execution.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl>
+		<dt>manifest</dt>
+		<dd>Path to a Daisy 2.02 (ncc.html) or DAISY/NISO 2005 (.opf) manifest file.</dd>
+		<dt>outDir</dt>
+		<dd>The output directory.</dd>
+		<dt>bitrate</dt>
+		<dd>The bitrate of the encoded files. (default 32 kbit/s)</dd>
+		<dt>stereo</dt>
+		<dd>The stereo mode of the encoded files. (default mono)</dd>
+		<dt>freq</dt>
+		<dd>The sample rate of the encoded files. (default 22050 Hz)</dd>
+		<dt>filesetType</dt>
+		<dd>Specifies the type of the input fileset. (default Daisy 2.02)</dd>		
+	</dl>
+	
+<h2 id="future">Further development</h2>
+<p>This transformer could be extended to support multiple input and output audio formats.
+The possibility to select a target fileset size instead of bitrate and frequency configuration
+is another possible further development.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>This transformer uses LAME for MP3 encoding. Refer to the <a href="../enduser/installing-lame.html">LAME installation instructions</a>
+for information on how to install and configure LAME.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

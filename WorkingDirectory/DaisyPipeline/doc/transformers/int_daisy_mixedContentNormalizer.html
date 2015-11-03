@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_mixedContentNormalizer</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_mixedContentNormalizer</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<ul>
+<li>Normalize <em>mixed content models</em> as a step towards making the text nodes of an xml document suitable for a DTB context.</li>
+<li>Optionally add <em>synchronization marker</em> attributes that indicate positions in the XML document that would server well as SMIL text targets.</li> 
+</ul>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>Any XML document. The normalization process can be specialized and optimized for particular namespaces; however, the routine can be applied to arbitrary namespaces as well, albeit with non-predictable results.</p>
+<p>Encounters of namespaces unrecognized to the normalizer will yield a warning: support for new namespaces are given an XML configuration file, see <a href="#extConfig">extended configurability</a></p>
+
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>An XML document with any mixed content siblings normalized by means of inserted "wrapper" elements.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl id="paramslist">
+		<dt>input</dt>
+		<dd>Input XML file</dd>
+		<dt>output</dt>
+		<dd>Output XML file; <strong>can</strong> be same as input file</dd>
+		<dt>addSyncPoints</dt>
+		<dd>Whether to add sync point marker attributes</dd>
+		<dt>implementation</dt>
+		<dd>name of implementation to use, defaults to <code>dom</code>.</dd>
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<h4>Customizing the DOM-based normalizers behavior</h4>
+	<p>The xml file <code>int_daisy_mixedContentNormalizer/dom/DOMConfig.xml</code> contains per-namespace configuraton options. See inline comments for further details.</p> 
+	
+<h2 id="future">Further development</h2>
+
+
+<h2 id="dependencies">Dependencies</h2>
+<p>Apache Xerces, or any DOM3LS compliant parser.</p>
+
+<h2 id="owner">Author</h2>
+<p>Markus Gylling</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

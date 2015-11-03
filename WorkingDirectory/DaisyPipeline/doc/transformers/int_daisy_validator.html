@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>int_daisy_validator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: int_daisy_validator</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>An input- and validation type agnostic validator, supporting multi-layered validation.</p>
+<p>The main idea is to be able to feed the transformer "any" type of content; if 
+there is a validator for the particular content type on the system, the content will be 
+validated - using standardized API common to all implementations.</p>
+<p>
+This agnosticism can be 'hidden' from users by having parallell scripts with more specific stated purposes.
+If one wants to limit the validator to only accepting a certain input type, use the <em>requireInputType</em> parameter
+</p>
+
+<p>The second main idea is to be able to apply multi-layered validation in one pass: 
+for example, validate a Dtbook document against the canonical DTD and RelaxNG (from ZedVal), 
+and then also to application- and organization specific subset rules. All using a schema type of your liking: RelaxNG, Schematron, XSD, 
+or namedropped implementations of <em>org.daisy.util.fileset.validation.delegate.ValidatorDelegate</em>.</p>
+
+<p>Benefits of this approach are:</p>
+<ul>
+<li>neither users nor pipelines dont have to "know" what kind of content is currently being handled,</li>
+<li>... which also allows content to be heterogenous in a particular pipeline</li>
+<li>allows (as inherited from the factory pattern) implementations to be changed without modifying code.</li>
+</ul>
+
+<p>The programmatic flow of this transformer in summary:</p>
+<ol>
+<li>Try to create a org.daisy.util.fileset.Fileset instance on the input file (with DTD validation turned on).</li>
+<li>If Fileset can represent this type of fileset, check if org.daisy.util.fileset.validator.ValidatorFactory can produce a Validator for the type of fileset.</li>
+<li>If a fileset validator can be produced, run a Fileset validation. If <em>ValidatorDelegate</em>s were suppiled as inparams, attach and execute these delegates.</li>
+<li>If a fileset instance could not be created (because input type was not supported by the Fileset package), and if input is xml and has a DTD (prolog identifiers), run a standard DTD validation pass.</li>
+<li>If additional schema (RNG, XSD, SCH) resources (one or several) were supplied as inparam, or if inline (non-DTD) schemas were present, attempt an anonymous jaxp.validation run using javax.xml.validation.SchemaFactory.</li>
+<li>Inform the user on what kind of validation was actually done, and what the result was.</li>     
+</ol>		
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>This transformer is input agnostic; will throw an exception if it cannot validate the given content type.</p>
+
+<h2 id="output">Output</h2>
+<!-- Section on XML Output added my Martin Blomberg 2007-03-08 -->
+<p>This transformer can be configured to output the validation results to an xml file. 
+The xml report follows a simple scheme and is divided into three parts: head, body and foot.</p>
+
+<h4>Head</h4>
+The file starts with a <tt>head</tt> section containing the elements 
+<tt>pipelineVersion</tt> and <tt>javaVersion</tt>. They hold information about
+which versions of Daisy Pipeline and Java that are being used. The
+Pipeline version seen there is the result of the call <tt>org.daisy.pipeline.Version.getVersion()</tt>,
+the Java version is fetched from Java's system properties.
+
+<h4>Body</h4>
+The <tt>body</tt> section contains all messages reported from the transformer, both
+validation errors and possible exceptions thrown. The <tt>message</tt> element - used for validation errors - has no
+child text node, but instead four attributes containing the information:
+<dl>
+
+<dt>file</dt>
+<dd>a URI to the file in which the error/warning occured.</dd>
+
+<dt>level</dt>
+<dd>Indicates the error level, possible values are <tt>Severe error</tt>, <tt>Error</tt> and <tt>Warning</tt>.</dd>
+
+<dt>msg</dt>
+<dd>A message describing the error.</dd>
+
+<dt>line</dt>
+<dd>The line number of the end of the text where the error occurred.</dd>
+
+<dt>col</dt>
+<dd>The column number of the end of the text where the error occurred.</dd>
+</dl>
+
+<p>The <tt>exception</tt> element is used in a similar way to indicate that an exception 
+was thrown during validation. No child text node, instead the following attributes:</p>
+<dl>
+<dt>level</dt>
+<dd>Indicates the error level, always <tt>Severe error</tt> when it comes to exceptions.</dd>
+
+<dt>msg</dt>
+<dd>The exception message.</dd>
+
+<dt>str</dt>
+<dd>The exception stacktrace.</dd>
+
+</dl>
+
+<p>Those two elements may occur in any order inside the <tt>body</tt> element.</p>
+
+<h4>Foot</h4>
+The <tt>foot</tt> section contains the element <tt>executionTime</tt>
+which shows the validator execution time using <tt>a h:mm:ss.ms</tt> format.
+
+<h4>Short Example</h4>
+And putting the three parts together gives us the following example:
+
+<pre>
+&lt;?xml version='1.0' encoding='UTF-8'?>
+&lt;?xml-stylesheet type="text/xsl" href="validator.xsl"?>
+&lt;validator xmlns="http://www.daisy.org/ns/pipeline/validator/">
+    &lt;head>
+        &lt;pipelineVersion>2006-10-17&lt;/pipelineVersion>
+        &lt;javaVersion>1.5.0_05&lt;/javaVersion>
+    &lt;/head>
+    
+    &lt;body>
+        &lt;message file="file://d:/foo.xml" line="-1" col="-1" msg="File not found: dinewfeat02.jpg" level="Severe error" />
+        &lt;message file="file://d:/foo.xml" msg="File not found: dicd01.jpg" col="-1" line="-1" level="Severe error" />
+        &lt;message file="file://d:/foo.xml" col="41" level="Error" msg="bad character content for element" line="49526" />
+    &lt;/body>
+    
+    &lt;foot>
+        &lt;executionTime>0:00:16.141&lt;/executionTime>
+    &lt;/foot>
+&lt;/validator>
+</pre>
+
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send
+a fatal message, then throw an exception and abort.</p>
+
+<p>On inability to locate a validator for the input content type, 
+this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
+
+
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>input</dt>
+	<dd>Path to input file/fileset manifest to be validated</dd>
+	
+	<dt>requireInputType</dt>	
+	<dd>
+		A string describing one input type that is required, else an error will be generated.
+		The strings are enumerated in the transformer TDF. They either consist of a Fileset nicename, or an XML document root element name.
+		If the value is set to "off" no input type requirements will be enforced, ie a validation will be attempted regardless of input type.
+	</dd>
+		
+	<dt>schemas</dt>
+	<dd>
+				Comma separated list of schema identifiers to validate the input document against. 
+				Identifiers may be expressed as filepaths, public or system IDs.
+				RelaxNG, W3C Schema, Schematron and Compound are allowed types of schemas.
+				Schemas that occur inline in the validated document do not need to be namedropped here.
+	
+	</dd>
+	
+	<dt>delegates</dt>
+	<dd>
+		Comma separated list of delegates (implementations of org.daisy.util.fileset.validation.delegate.ValidatorDelegate)
+	</dd>
+	
+	
+	<dt>forceImplementation</dt>
+	<dd>
+	A fully qualified name of an implementation of a org.daisy.util.fileset.validation.Validator. 
+	Use this parameter to force the validator to use the named implementation (overriding default assignment)
+	</dd>
+	
+	<dt>generateContextInfo</dt>
+	<dd>
+	Sets whether to attempt generating additional information than that provided in a standard javax.xml.stream.Location.
+	This a grammar specific process in some parts. New grammars are added by modifying org.daisy.util.xml.stax.ExtendedLocationTokens.xml.
+	New types of information can be added by extending the InformationType enum in org.daisy.util.xml.stax.ExtendedLocationProvider.
+	</dd>
+	
+	<dt>abortThreshold</dt>
+	<dd>Validation error severity level - when to perform a Transformer abort</dd>
+			
+	<dt>abortOnException</dt>
+	<dd>Whether to perform a Transformer abort when a caught exception occurs</dd>
+	
+	<dt>xmlReport</dt>
+	<dd>The destination of the generated xml report/output.</dd>
+	
+	<dt>xmlStylesheet</dt>
+	<dd>The value of the <tt>xml-stylesheet</tt> processing instruction in the generated xml output.</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>The transformer is basically a wrapper around abstract factory and discovery patterns: given an arbitrary input content
+type, the transformer will use factories to attempt to produce a validator that can validate the content.</p>
+
+<p>The two main factory implementations used are:</p>
+<ul>
+<li><code>org.daisy.util.fileset.validation.ValidatoryFactory</code>, which is a content-centric producer of validators for various types of filesets (DTBs, wellknown document types, etc)</li>
+<li>The <code>org.daisy.util.xml.validation.jaxp.SchemaFactory</code> package, which contains RelaxNG and Schematron extensions to the base XSD support that the <code>javax.xml.validation</code> package that the JRE provides.</li>
+</ul>
+
+<p>These two factories can be extended to support more types of filesets, and more types of schemalanguages respectively.</p>
+
+<p>Output of Report documents to given locations is another possible enhancement.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li>zedval.jar</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling, Daisy Consortium</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

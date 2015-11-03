@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Fileset renamer</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Fileset renamer</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>
+This script renames the members of a fileset (such as the files of a DTB). The renaming process
+can be customized by</p>
+<ul>
+<li>Selecting a specific name <em>pattern</em> to apply (see <a href="#config">Configuration</a>)</li>
+<li>Defining a set of file <em>types</em> (such images, SMIL files, etc ) that should be <em>excluded</em> from the renaming process.</li>
+</ul>
+<p>The script is primarily written to support DTBs - other fileset types are not explicitly supported.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>The input fileset manifest file (NCC, OPF, etc)</p>
+
+<h2 id="output">Output</h2>
+<p>A fileset in which certain members have been renamed according to the configuration.</p>
+
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> Select the input manifest file (NCC, OPF, etc)</dd>
+		
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Select the directory to store the result in. This directory can <strong>not</strong> be the same as the input directory, or the script will abort.</dd>
+	
+		<dt>Renaming pattern</dt>
+		<dd>
+		<strong>Optional.</strong> Renaming pattern to apply.
+		<p>A renaming pattern consists of a sequence of <em>tokens</em>. A token is a symbol for a certain kind of information.</p>
+		<p>The following table defines the available tokens.</p>
+		<table>
+			<tr><th>token</th><th>meaning</th></tr>
+			<tr><td>label</td><td>A label of the current file - typically corresponding to the first heading in the file. This cannot always be set.</td></tr>
+			<tr><td>uid</td><td>A unique identifier from the fileset (such as a DTB) to which the file belongs. This can be values of dc:identifier or dtb:uid metadata.</td></tr>
+			<tr><td>seq</td><td>Represents the sequential position of this file within the presentation. If this is audio file 34 out of 100 audio files, the value will be '034'.</td></tr>		
+			<tr><td>echo</td><td>An echo of the input filename.</td></tr>		
+			<tr><td>fixed</td><td>A fixed string. The string is expressed within parenthesis; fixed(the string)</td></tr>				
+			<tr><td>rnd</td><td>A random string. The length of the string is expressed within parenthesis; rnd(2), where each increment will add 4 random characters to the name.</td></tr>							
+		</table> 
+		
+		<p>If a renaming pattern contains several tokens, they are separated by plus signs. Pattern examples:</p>
+		<code>
+			seq+label <br/>
+			uid+seq <br/>
+			fixed(dtb)+seq <br/>
+			echo <br/>
+  			uid+rnd(2) <br/>
+  			uid+seq+label <br/>
+		</code>
+		
+		</dd>
+	
+		<dt>File types to exclude</dt>
+		<dd>
+		<strong>Optional.</strong> A comma separated list of file types to exclude from the renaming process. 
+		<p>The default is to exclude images, CSS files and XML files, which means that the default value is <code>XmlFile, CssFile, ImageFile</code>.</p>
+		<p>Names for file types that can be used in the exclude list are:<br/> 
+		<code>XmlFile, Xhtml10File, DtbookFile, OpfFile, SmilFile, ImageFile, JpgFile, BmpFile, PngFile, SvgFile, CssFile, AudioFile, Mp3File, Mp2File, WavFile</code>.</p>
+		<p>	Note that some file types infer others: if you add <code>XmlFile</code> to the exclude list, then <strong>all</strong> XML files will be excluded (Smil, Dtbook, Opf, Xhtml etc).</p>
+		</dd>	
+		
+		<dt>Use filesystem safe names</dt>
+		<dd><strong>Optional.</strong> Use only the characters A-Z,a-z,0-9, hyphen and underscore in output filenames. Default is true.</dd>
+
+
+		<dt>Max filename length</dt>
+		<dd><strong>Optional.</strong> The maximum number of characters in the output filename, excluding extension. Default is 60.</dd>
+	
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_filesetRenamer.html">Fileset Renamer</a></li>
+</ol>
+</body>
+</html>

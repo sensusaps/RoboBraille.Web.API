@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="papersize" value="org_daisy.ISO216PaperProvider.PaperSize.A4" required="true">
+		<nicename>Paper size</nicename>
+		<description>Set the size of the paper</description>
+		<datatype>
+			<enum>
+				<item nicename="11.5 inch x 11 inch" value="org_daisy.NorthAmericaPaperProvider.PaperSize.W11500THOU_X_H11INCH"/>
+				<item nicename="210 mm wide, 10 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H10INCH"/>
+				<item nicename="210 mm wide, 11 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H11INCH"/>
+				<item nicename="210 mm wide, 12 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H12INCH"/>
+				<item nicename="A4" value="org_daisy.ISO216PaperProvider.PaperSize.A4"/>
+				<item nicename="FA44" value="se_tpb.FA44PaperProvider.PaperSize.FA44"/>
+				<item nicename="Letter" value="org_daisy.NorthAmericaPaperProvider.PaperSize.LETTER"/>
+			</enum>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

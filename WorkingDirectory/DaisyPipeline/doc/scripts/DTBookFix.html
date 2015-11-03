@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>Pipeline Script: DTBook Fix</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Pipeline Script: DTBook Fix</h1>
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#inputReqs">Input Requirements</a></li>
+  <li><a href="#output">Output</a></li>
+  <li><a href="#config">Configuration</a></li>
+  <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>This script will attempt to <em>repair</em> and <em>tidy</em> a suboptimal
+DTBook document. The script is primarily intended to address structural
+problems that occur in files that are output from automated conversion
+processes, such as the WordML to DTBook Script.</p>
+
+<p>The actual manipulation routines performed are described in the <a
+href="#cats">DTBookFix Categories</a> section below.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>A DTBook document. As is seldom the case in the Pipeline, the document
+need not be valid.</p>
+
+<p>Note that the manipulations that are performed are heavily dependent on
+which version of DTBook is used (<code>2005-1</code>, <code>2005-2</code>,
+etc). If your input document is of a version that is not supported by all or
+some of the manipulation routines that are performed, these routines will be
+disabled, and warnings will be issued.</p>
+
+<h2 id="output">Output</h2>
+
+<p>Depending on the input document version and your settings, the output
+document will have had anything from zero to several different structural
+modifications. <em>Note that no guarantees are made that the output will be
+valid</em>.</p>
+
+<p>The input document is validated at the end of the process, so watch the
+validation messages that are issued towards the end of the process.</p>
+
+<p>If you keep encountering DTBook documents with recurring problems that are
+not fixed by this Script, please contact the Pipeline development team.</p>
+
+<h2 id="config">Configuration</h2>
+<dl id="paramslist">
+  <dt>Input file</dt>
+    <dd><strong>Required</strong>. Select input DTBook file</dd>
+  <dt>Output directory</dt>
+    <dd><strong>Required</strong>. Select where to store the output
+    result.</dd>
+  <dt>Active Categories</dt>
+    <dd>Select the type of manipulation to be performed by activating one or
+      several Categories.<br />
+      <!-- Note that by default, the Repair category is only run if the input is invalid; 
+                                          			however you can override that behavior by activating the Force Repair option.<br/> -->
+       Read more on what is included in each category in the <a
+      href="#cats">DTBookFix Categories</a> section below.</dd>
+  <dt>Force Execution</dt>
+    <dd><strong>Optional</strong>. When checked, DTBookFix will run all
+      selected categories disregarding the input documents state (by default,
+      the Repair category is run only if the document is invalid, and the
+      Tidy category is run only of the document is valid).</dd>
+  <dt>Simplify heading layout</dt>
+    <dd>This is an <strong>optional</strong> routine within the Tidy
+      category. Check the box to simplify the level structure by removing
+      redundant levels.<br />
+      See further <a href="#levelclean">Level cleanup </a> below. </dd>
+  <dt>Tidy inline whitespace</dt>
+    <dd>This is an <strong>optional</strong> in Tidy category. Check box to
+      move leading and trailing whitespace outside of em, strong, sub, sup,
+      noteref and pagenum elements.<br />
+      See further <a href="#tidyinlinewhitespace">Tidy inline whitespace</a>
+      below.</dd>
+  <dt>Fix Character set</dt>
+    <dd>This is an <strong>optional</strong> routine within the Repair
+      category. Check box to attempt to fix an invalid stated character set.
+      See further <a href="#charsetrecoder">Character Set recoder</a>
+    below.</dd>
+</dl>
+
+<h2 id="cats">DTBookFix Categories</h2>
+
+<p>This section gives a technical summary of the manipulations that are done
+within each DTBookFix manipulation category.</p>
+
+<h3>The Repair Category</h3>
+<dl>
+  <!--
+              	<dt>Level normalizer</dt>
+              	<dd>Inexplicably geeky.</dd>
+              -->
+  <dt>Level splitter</dt>
+    <dd>Splits a level into several levels if a certain <code>level1-6</code>
+      element has several headings on the same level.</dd>
+  <dt>Level 1-6 repair</dt>
+    <dd>Inserts <code>level1-6</code> elements where needed to meet the
+      requirements on proper nesting</dd>
+  <dt>Illegal heading removal</dt>
+    <dd>Changes an illegal heading (for example, an <code>h3</code> element
+      inside a <code>level2</code> element) into a <code>p</code> element.
+      The <code>p</code> element will have the class attribute value of the
+      original heading element name (e.g. <code>&lt;p class="h3"&gt;</code>).
+    </dd>
+  <dt>Flatten redundant nesting</dt>
+    <dd>Removes nested p</dd>
+  <dt>Complete structure</dt>
+    <dd>Adds an empty paragraph if the last element in the level is a
+    heading</dd>
+  <dt>List repair</dt>
+    <dd><ul>
+        <li>Wraps a <code>list</code> in <code>li</code> when the parent of
+          the list is another list.</li>
+        <li>adds a <code>type</code> attribute if missing (default value is
+          "pl")</li>
+        <li>Corrects the <code>depth</code> attribute if it is incorrect</li>
+        <li>Removes the <code>enum</code> attribute if the list is not
+        ordered</li>
+        <li>Removes the <code>start</code> attribute if the list is not
+          ordered</li>
+      </ul>
+    </dd>
+  <dt id="charsetrecoder">Character Set recoder</dt>
+    <dd>This will run a <em>character set detection</em> algorithm on the
+      input file, disregarding any stated characterset, and then recode the
+      entire file. Only enable this if you have explicit issues with
+      character display, or when your document is reported to be malformed
+      with stated reasons similar to "invalid byte sequence" or similar.</dd>
+  <dt>IDREF repair</dt>
+    <dd><ul>
+        <li>Adds the <code>idref</code> attribute to <code>noteref</code> and
+          <code>annoref</code> elements if missing</li>
+        <li>Estimate and give the <code>idref</code> attribute a value if
+          empty</li>
+        <li>Add a hash mark in the beginning of all idref attributes that
+          don't contain a hash mark.</li>
+      </ul>
+    </dd>
+  <dt>Empty elements remover</dt>
+    <dd>Removes empty/whitespace elements that must have children.</dd>
+  <dt>Page number type repair</dt>
+    <dd><p>Changes the <code>type</code> attribute of the
+      <code>pagenum</code> element to match the contents of the element (i.e.
+      the page number value).</p>
+      <p>Incorrect "normal" page numbers will be changed to "front" if the
+      contents contains roman numerals and the element is located in the
+      frontmatter of the book. Incorrect "front" page numbers will be changed
+      to "normal" if the contents contains arabic numbers. Otherwise the page
+      attribute will be changed to "special" if it is incorrect.</p>
+    </dd>
+  <dt>Metadata repair</dt>
+    <dd><ul>
+        <li>Fixes Dublin Core metadata name case errors (i.e.
+          <code>dc:title</code> is changed to <code>dc:Title</code>)</li>
+        <li>Removes unknown Dublin Core metadata (i.e. dc:Hello)</li>
+        <li>Adds a <code>dtb:uid</code> from <code>dc:Identifier</code>, if
+          missing</li>
+        <li>Adds a <code>dc:Title</code> from the first <code>doctitle</code>
+          element of the book, if missing</li>
+      </ul>
+    </dd>
+</dl>
+
+<h3>The Tidy Category</h3>
+<dl>
+  <dt id="levelclean">Level cleanup</dt>
+    <dd>Simplifies the level structure by removing redundant levels
+      (subordinate levels will be moved upwards). Note that the headings of
+      the affected levels will also change, which will alter the appearance
+      of the layout.</dd>
+  <dt>Pagenum mover</dt>
+    <dd><ul>
+        <li>Pagenums in headings are placed before the heading</li>
+        <li>Pagenums in words are placed after the word.</li>
+      </ul>
+    </dd>
+  <dt>Change inline pagenum to block</dt>
+    <dd>Removes otherwise empty p or li around pagenum (except p in td)</dd>
+  <dt>Empty elements remover</dt>
+    <dd>Removes empty/whitespace elements (p, em, strong, sub, sup), unless
+      required for validity. E.g. an empty p that is preceded by a heading
+      and followed only by other empty p is not removed.</dd>
+  <dt>Author and Title addition</dt>
+    <dd>Inserts docauthor and doctitle elements to frontmatter using Dublin
+      Core metadata.</dd>
+  <dt id="tidyinlinewhitespace">Tidy inline whitespace</dt>
+    <dd>Moves leading and trailing whitespace outside of em, strong, sub, sup
+      and pagenum elements. For example: "this is an&lt;em&gt; example
+      &lt;/em&gt;of what&lt;strong&gt; Tidy inline whitespace
+      &lt;/strong&gt;does" will change to: "this is an
+      &lt;em&gt;example&lt;/em&gt; of what &lt;strong&gt;Tidy inline
+      whitespace&lt;/strong&gt; does". This is a requirement for accurate
+      braille rendering.</dd>
+  <dt>Indenter</dt>
+    <dd>Performs a "pretty print" of the XML elements in the document.</dd>
+</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+
+<p>The documents linked below are parts of the <em>Transformer technical
+documentation</em>. These are developer and systems-administrator centric
+documents.</p>
+<ol>
+  <li><a
+  href="../transformers/se_tpb_dtbookfix.html">se_tpb_dtbookFix</a></li>
+</ol>
+</body>
+</html>

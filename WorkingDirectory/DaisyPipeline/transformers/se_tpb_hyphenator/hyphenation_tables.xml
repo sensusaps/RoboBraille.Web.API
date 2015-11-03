@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>		
+	<comment>
+	  A list with relative paths to TEX hyphenation rules tables.
+	</comment>
+
+	<entry key="en">rules/ukhyph.tex</entry>	
+	<entry key="en-US">rules/ushyph.tex</entry>
+	<entry key="en-GB">rules/ukhyph.tex</entry>
+
+	<entry key="sv">rules/sehyph.tex</entry>
+	<entry key="sv-SE">rules/sehyph.tex</entry>
+
+	<entry key="no">rules/nohyphbx.tex</entry>
+	<entry key="no-NO">rules/nohyphbx.tex</entry>
+
+	<entry key="de">rules/dehyph_x.tex</entry>
+	<entry key="de-DE">rules/dehyph_x.tex</entry>
+
+	<entry key="fr">rules/frhyph_x.tex</entry>
+	<entry key="fr-FR">rules/frhyph_x.tex</entry>
+	
+	<entry key="fi">rules/fihyph.tex</entry>
+	<entry key="fi-FI">rules/fihyph.tex</entry>
+
+</properties>

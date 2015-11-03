@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>PEF File Merger</name>
+	<description>Merges several PEF files into one.</description>
+	<classname>org_pef_pefFileMerger.PEFFileMerger</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_pefFileMerger.html"/>
+
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-filesystemDirectory">
+			<name>input</name>
+			<description>Input directory</description>
+			<example>file:///path/to/input/folder/</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-pef+xml">
+			<name>output</name>
+			<description>The output PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>identifier</name>
+			<description>Identifier for the merged file</description>
+			<example>pef-00001</example>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>sortType</name>
+			<description>Sort type</description>
+			<example>true</example>
+			<enum>
+				<value>numeral_grouping</value>
+				<value>standard</value>
+			</enum>
+			<default>numeral_grouping</default>
+		</parameter>
+
+	</parameters>	
+
+</transformer>

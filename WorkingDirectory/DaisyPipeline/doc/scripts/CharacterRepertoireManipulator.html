@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Character Repertoire Manipulator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Character Repertoire Manipulator</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script lets you <em>manipulate the character repertoire</em> of the XML documents in a fileset. Practically, this means to <em>replace a certain character with one or several other characters</em>.</p>
+<p>Character repertoire manipulation is done for example when preparing an XML file for a specific output medium. 
+One example is speech synthesizers, who typically doesnt recognize and correctly pronounce all
+characters in the Unicode repertoire. Another example is when an XML document is being prepared for Braille.</p>
+
+<p>The manipulation process is multilayered. You can use tables that explicitly define replacement strings for a set of characters.
+You can also use generic Unicode-based <em>transliteration</em> routines. See further <a href="#config">Configuration.</a>.</p>
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> The input XML file. This can either be a fileset manifest (NCC, OPF, etc) or a standalone XML document. If it is a manifest, all XML files of the fileset will be manipulated.</dd>
+	
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The directory to store the result in</dd>
+	
+		<dt>Substitution table(s)</dt>
+		<dd>A list of one or several tables containing substitution strings. See <a href="#substTableSyntax">Substituion Table Syntax</a>.</dd>
+	
+		<dt>Exclude</dt>
+		<dd><strong>Optional.</strong> The name of a character set defining a set of characters that should be <strong>excluded</strong> from substitution. Default is <em>none</em>.</dd>
+	
+		<dt>Fallback to non-spacing mark removal</dt>
+		<dd><strong>Optional.</strong> Determines whether a character substitution attempt should fallback to a transliteration to nonspacing mark removal (typically disaccentuation) attempt if a replacement text was not found in user provided substitution table(s). Default is <em>false</em>.</dd>
+	
+		<dt>Fallback to Latin</dt>
+		<dd><strong>Optional.</strong> Determines whether a character substitution attempt should fallback to a transliteration to Latin attempt if a replacement text was not found in user provided substitution table(s). Default is <em>false</em>.</dd>
+	
+		<dt>Fallback to UCD names</dt>
+		<dd><strong>Optional.</strong> Determines whether a character substitution attempt should fallback to names in the UCD table if a replacement text is not found in user provided substitution table(s). Default is <em>false</em>.</dd>
+	
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> Select the output characterset encoding. If not set, the output encoding will be the default <strong>utf-8</strong>.</dd>
+			
+		<dt>Linebreaks</dt>
+		<dd><strong>Optional.</strong>Select the type of linebreak to use; values are UNIX, Mac, Dos or System default. The default is the system default.</dd>
+
+	</dl>
+		
+	<h3 id="substTableSyntax">Substituion Table Syntax</h3>
+<p>The character translation table with a mapping between characters
+and their replacement strings must comply to the xml format used in
+java.util.Properties. See <a
+	href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a>
+and <a
+	href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html">java.util.Properties</a>
+for details.</p>
+
+<p>The key attribute of the entry element must be a hex value
+representing a unicode codepoint, and the entry element value an
+arbitrary length string of characters.</p>
+
+<p>Example of replacement text table (this also exists as a real
+file (example-table.xml) in the transformer directory):</p>
+
+<pre><code>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+&lt;properties&gt;		
+	&lt;comment&gt;
+	  This is an example of an input translation table for int_daisy_unicodeTranscoder.
+	  The key attribute contains the hex codepoint to be translated,
+	  and the entry text node the replacement string.
+	  The entries match two hebrew characters and some other stuff.
+	  The table can be built using: www.unicode.org/Public/UNIDATA/UnicodeData.txt
+	&lt;/comment&gt;	
+	&lt;entry key=&quot;05E2&quot;&gt;hebrew ayin&lt;/entry&gt;	
+	&lt;entry key=&quot;05DD&quot;&gt;hebrew final mem&lt;/entry&gt;		
+	&lt;entry key=&quot;00A5&quot;&gt;currency yen&lt;/entry&gt;
+	&lt;entry key=&quot;00AE&quot;&gt;registered sign&lt;/entry&gt;
+&lt;/properties&gt;
+	</code></pre>
+
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/int_daisy_unicodeTranscoder.html">Unicode Transcoder</a></li>
+	<li><a href="../transformers/se_tpb_charsetSwitcher.html">Charset Switcher</a></li>	
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
+		<title>Pipeline Script: Image Converter</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css"></link>
+	</head>
+	<body>
+		<h1 class="title">Pipeline Script: <em>Image Converter</em>
+		</h1>
+		<!-- script documentation contains primarily end-user-centric information -->
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#overview">Overview</a>
+				</li>
+				<li>
+					<a href="#inputReqs">Input Requirements</a>
+				</li>
+				<li>
+					<a href="#output">Output</a>
+				</li>
+				<li>
+					<a href="#config">Configuration</a>
+				</li>
+				<li>
+					<a href="#transformers">Appendix: List of Transformers used</a>
+				</li>
+			</ul>
+		</div>
+		<h2 id="overview">Overview</h2>
+		<p>This script converts images associated with a dtbook or xhtml document into jpeg or 
+png images.</p>
+		<h2 id="inputReqs">Input Requirements</h2>
+		<p>A dtbook or xhtml document containing resolvable image references.</p>
+		<h2 id="output">Output</h2>
+		<p>A modified dtbook or html document containing updated references together with the linked 
+images and any additional resources found in the folder containing the source document.</p>
+		<h2 id="config">Configuration</h2>
+		<dl id="paramslist">
+			<dt>Input file</dt>
+			<dd>Path to input xml file</dd>
+			<dt>Output directory</dt>
+			<dd>Path to the output directory</dd>
+			<dt>Image format</dt>
+			<dd>Target image format</dd>
+		</dl>
+		<h2 id="transformers">Appendix: List of Transformers used</h2>
+		<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+		<ol>
+			<li>
+				<a href="../transformers/se_tpb_imageConverter.html">se_tpb_imageConverter</a>
+			</li>
+		</ol>
+	</body>
+</html>

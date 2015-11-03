@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="history.xsl"?>
+<history xmlns="rnib.org.uk/tbs#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="rnib.org.uk/tbs# history.xsd">
+	<purpose>
+		<para>This transformer produces DTBook from WordML</para>
+	</purpose>
+	<revision>
+		<version>1.0</version>
+		<date>30 August 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Initial issue with DMFC in mind</para>
+		</description>
+		<remark>
+			<para>Only flat lists work</para>
+			<para>No bold or italic other than characterstyles</para>
+			<para>Tables don't come out right if they include rowspanning</para>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.1</version>
+		<date>28 October 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for standard footnotes</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.01</version>
+		<date>7 November 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed XE-data</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.1</version>
+		<date>28 December 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed spaces in pagenum id's</para>
+			<para>Fixed a problem with smartTags</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.11</version>
+		<date>28 March 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Fixed a problem with lists.</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2</version>
+		<date>28 April 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Externalized tag set definitions and created an XML schema for them.</para>
+			<para>Fixed a precedence problem.</para>
+			<para>Added attribute "merge" to wrap element (tag set definitions). The effect is that all consecutive paras using the same style will be included in the same outer element.</para>
+			<para>Added element "attribute" to wrap element (tag set definitions).</para>
+			<para>Added support for rowspan in tables</para>
+			<para>Added support for image alt-text</para>
+			<para>Changed naming convention for images</para>
+			<para>Added page-attribute: normal (for arabic numerals), front (for roman numerals), special (otherwise)</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2.1</version>
+		<date>17 May 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for hierarchical lists.</para>
+			<para>Added meta-elements containing info on this conversion (version and date)</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2.1.1</version>
+		<date>12 June 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Changed namespace url</para>
+			<para>Removed an unused namespace</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.3</version>
+		<date>26 June 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Extended support for attributes</para>
+			<para>Removed imggroup element from image rule (this can be added through a paragraph style).</para>
+			<para>Added support for "list style" headings</para>
+			<para>Removed unused constructs from the schema</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.3.01</version>
+		<date>22 August 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Changed the class-attribute for the first level1 to colophon. 
+				Added class="chapter" to all other level1</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4</version>
+		<date>8 September 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Made processing more general in several places</para>
+			<para>Fixed numbering of real footnotes.</para>
+			<para>Added frontmatter. Now, everything preceding the first 
+				heading will become part of frontmatter.</para>
+			<para>Externalized revision history and generated a schema definition for it.</para>
+			<para>Modularized the stylesheet according to task.</para>
+			<para>Changed the name of some input parameters and added one called "stylesheet". 
+				This one sets the assigned stylesheet in the output, or none if '' is specified.
+				The default value is 'dtbook2xhtml.xsl'</para>
+			<para>Added param for using original extension for image files.</para>
+			<para>Changed the pattern for @id on pagenum to "page-[no]"</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4.1</version>
+		<date>10 October 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added @version="2005-1" to dtbook element</para>
+			<para>Added meta elements for "dc:Title" and "dtb:uid"</para>
+			<para>Removed dependency on sun-package</para>
+			<para>Added "#" to @idref on noteref</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4.1.1</version>
+		<date>17 January 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added @xml:lang to dtbook element</para>
+			<para>Added meta elements for "dc:Language", "dc:Date" and "dc:Publisher"</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4.1.2</version>
+		<date>2 February 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>If no headings exist in the document, the text is now inserted into bodymatter instead of frontmatter.</para>
+			<para>If a heading is not followed by either sub-sections or paragraphs, an empty paragraph is inserted.</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4.2</version>
+		<date>11 April 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>Headers and footers have been removed from the processing flow, because they caused p in p (and are irrelevant to the flow of the text).</para>
+			<para>Changed processing of wx:sect as not to generate multiple bodymatter.</para>
+			<para>--- Other changes ---</para>
+			<para>Modularized output properties.</para>
+			<para>Modularized input parameters.</para>
+			<para>Changed default value of the stylesheet parameter to ''</para>
+		</description>
+		<remark>
+			<para>--- Known bugs ---</para>
+			<para>* Footnote references</para>
+			<para>A footnote reference that has been explicitly labelled in Word, will appear twice in DTBook.</para>
+			<para>* Lists</para>
+			<para>Mixing several different list styles consecutively in Word may generate duplicate list items if at least one of them have been defined in the customization files.</para>
+			<para>* Fragmentation of inline elements</para>
+			<para>Inline elements are sometimes rendered as several consecutive elements, e.g. &lt;em&gt;wo&lt;/em&gt;&lt;em&gt;rd&lt;/em&gt;. The extent of this problem depends on the fragmentation of the original file. It can be mended somewhat by unchecking the "Store random number to improve merge accuracy" box under "Privacy options" in the Options pane in Word before authoring the document.</para>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.0</version>
+		<date>7 May 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>The condition for the wrapper operation was changed to prevent duplication of text when used together with footnotes.</para>
+			<para>Handling of lists togehter the with wrapper operation was changed to prevent duplication of text and to improve list output accuracy.</para>
+			<para>Added postprocessing of inline elements to prevent fragmentation of consecutive elements such as em and strong. For example, &lt;em&gt;wo&lt;/em&gt;&lt;em&gt;rd&lt;/em&gt; will now be rendered as &lt;em&gt;word&lt;/em&gt;.</para>
+			<para>--- Other changes ---</para>
+			<para>Added ability to convert emphasis, strong, subscript and superscript inline formatting into tags.</para>
+			<para>Added some postprocessing touch-up, e.g. removal of empty p, moving of pagenums inside h[x] and docauthor/doctitle completion.</para>
+			<para>Changed tdf to include all defined stylesheet parameters.</para>
+			<para>Updated code to reflect changes in the Pipeline API.</para>
+			<para>Code restructuring.</para>
+			<para>Added restriction on the tagset: xs:NMTOKEN instead of xs:string on element names and attribute names.</para>
+			<para>Added parameters author and title.</para>
+			<para>Added some validation and warnings.</para>
+			<para>Changed list processing to avoid recursive processing</para>
+			<!-- 
+Notes:
+1. Defragmenter kanske också bör ta bort <em>hej</em> <em>då</em>?
+2. Ta bort lokal customizing (rk)
+3. Validera default and custom tagset.
+-->
+		</description>
+		<remark>
+			<para>--- Known bugs ---</para>
+			<para>Lists, Footnote references. For description, see previous version.</para>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.1</version>
+		<date>25 June 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added pretty printing to aid debugging.</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.2</version>
+		<date>4 July 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added conversion to JPEG using ImageMagick</para>
+			<para>Added support for multiple references to the same image data</para>
+			<para>Added experimental support for linked images (undocumented)</para>
+			<para>Updated documentation</para>
+			<para>Synchronized image processing in java and xslt code</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.3</version>
+		<date>3 September 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed the extended list processing from default tag set</para>
+			<para>Changed to a less tidy post processing. An empty p-tag in levelx is restored if empty or if hx is the last element. A p-tag around a pagenum is retained if inside a td.</para>
+			<para></para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.4</version>
+		<date>12 September 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for relaxed pagenum id generation to allow multiple pages with the same value.</para>
+			<para>Added ImageMagick path check</para>
+			<para>Added option to switch dtbook version</para>
+			<para>Stylesheet option now includes default.css</para>
+			<para>Removed outputing of header/footer comments</para>
+			<para>Included removal of empty em, strong, sub and sup</para>
+			<para>Updated transformer documentation</para>
+			<para>Changed a few prompts</para>
+			<para>Updated document templates</para>
+			<para>Fixed a flaw in pagenum-fix</para>
+			<para>Fixed a problem with duplicate img-tag generation</para>
+			<para>Fixed a problem with link extensions</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.9.0</version>
+		<date>18 October 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>Resolved the list bug first described in version 1.4.2 with new block/list processing.</para>
+			<para>--- Other changes ---</para>
+			<para>Moved repairing/tidying processes to DTBookFix</para>
+			<para>Updated scripts to include DTBookFix</para>
+			<para>Improved accuracy of text size check</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.9.1</version>
+		<date>17 December 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Other changes ---</para>
+			<para>Improved defragmentation of inline elements</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.9.2</version>
+		<date>18 March 2008</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>Resolved a problem with non textual content in footnotes</para>
+			<para>--- Other changes ---</para>
+			<para>Added conversion rules for the "Save As Daisy" template to the "Simple" scripts</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
+</history>

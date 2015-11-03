@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type'
+	content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_metadataEditor</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>Metadata
+Editor</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>This transformer is able to edit a metadata key/value in a file
+or fileset.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>This transformer currently support edition of metadata of:</p>
+<ul>
+	<li>DTBook documents</li>
+	<li>XHTML documents</li>
+	<li>NCC  documents of DAISY 2.02 DTBs</li>
+	<li>OPF package files</li>
+</ul>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+<p>On success, the metadata set of the input file will be modified
+according to the parameters configuration. Be aware that the input file
+is modified by this transformer.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send a fatal message, then throw
+an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf, please use the below definition list -->
+<dl id="paramslist">
+	<dt>input</dt>
+	<dd>The file or fileset manifest to edit the metadata of.</dd>
+
+	<dt>name</dt>
+	<dd>The name of the metadata to edit</dd>
+
+	<dt>value</dt>
+	<dd>A comma-separated list of values for the metadata. Leading and
+	trailing whitespace around the values is ignored.</dd>
+
+	<dt>mode</dt>
+	<dd>The edition mode. This can be:
+	<dl>
+		<dt>ADD</dt>
+		<dd>Appends a new metadata value even if previous values already
+		exist (this can however be impossible for some non-repeatable
+		metadata, e.g. as specified in the <a
+			href="http://www.niso.org/workrooms/daisy/Z39-86-2005.html#XMeta">X-Metadata
+		section</a> of the DAISY Z39.86-2005 specification, in which case it will
+		revert to the 'IGNORE' mode).</dd>
+		<dt>MERGE</dt>
+		<dd>Merges the value with the existing metadata content: does
+		nothing if a metadata with the same name and value is already present,
+		appends a new value otherwise.</dd>
+		<dt>OVERWRITE</dt>
+		<dd>Overwrites the first occurrence of the metadata of the given
+		name with the given value.</dd>
+		<dt>IGNORE</dt>
+		<dd>Adds a new metadata only if no metadata with the given name
+		is already present.</dd>
+	</dl>
+	</dd>
+</dl>
+
+<h2 id="future">Further development</h2>
+<p>The transformer may be extended to support more file types.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>None.</p>
+
+<h2 id="owner">Author</h2>
+<p>Romain Deltour, DAISY Consortium.</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL.</p>
+
+</body>
+</html>

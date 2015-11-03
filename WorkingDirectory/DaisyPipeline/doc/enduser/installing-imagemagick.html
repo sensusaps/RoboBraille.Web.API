@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Installing ImageMagick for use within the Daisy Pipeline</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css" />
+	</head>
+	<body>
+		<h1>Installing ImageMagick for use within the Daisy Pipeline</h1>
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#install">Installing ImageMagick</a>
+					<ul>
+						<li><a href="#win">On Windows</a></li>
+						<li><a href="#mac">On Mac OS X</a></li>
+						<li><a href="#linux">On Linux</a></li>
+					</ul>
+				</li>
+				<li><a href="#configure">Configuring the ImageMagick convert path in the DAISY Pipeline</a></li>
+			</ul>
+		</div>
+
+		<h2 id="install">Installing ImageMagick</h2>
+
+		<h3 id="win">On Windows</h3>
+		<p>Download and install the latest binary release available on the <a href="http://www.imagemagick.org/script/binary-releases.php#windows">ImageMagick website</a></p>
+		
+		<h3 id="mac">On Mac OS X</h3>
+		<p>The DAISY Pipeline disk image (.dmg) comes with a package installer that will install ImageMagick in <code>/usr/local/bin</code></p>
+		<p>You can also choose to install ImageMagick from unix port systems such as <a href="http://www.macports.org/">MacPorts</a> or <a href="http://www.finkproject.org/">Fink</a></p>
+		
+		<h3 id="linux">On Linux</h3>
+		<p>It is to install ImageMagick via the standard package system used by your Linux distribution (e.g. DEB or RPM). See your distribution documentation for more details.</p>
+		
+		
+		<h2 id="configure">Configuring the ImageMagick convert path in the DAISY Pipeline</h2>
+		<ul>
+			<li>If you are using the Pipeline GUI, go to <code>Windows &gt; Preferences &gt; Paths</code> and make sure that the "convert" path entry points to the ImageMagick convert executable (e.g. <code>C:\Program File\ImageMagick\convert.exe</code>)</li>
+			<li>If you are using the Pipeline CommandLine version or have embedded the Pipeline as a component in another system, do the following:
+				<ul>
+					<li>Locate the <code>pipeline.user.properties</code> file by navigating to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.user.properties within that directory.</li>
+					<li>Open pipeline.user.properties in an XML or text editor, and make sure that the entry with the key <code>pipeline.imageMagick.convert.path</code> points to the convert.exe file.<br />
+		<p>For example, if you installed ImageMagick to <code>C:\Program File\ImageMagick\</code>, the resulting element in pipeline.user.properties should read:</p>
+		<pre><code>
+	&lt;entry key="pipeline.imageMagick.convert.path"&gt;C:\Program File\ImageMagick\convert.exe&lt;/entry&gt;
+		</code></pre>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</body>
+</html>

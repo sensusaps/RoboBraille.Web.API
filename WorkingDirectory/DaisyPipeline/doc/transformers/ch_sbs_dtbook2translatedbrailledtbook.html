@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+  <head>
+    <meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+    <title>ch_sbs_dtbook2translatedbrailledtbook</title>
+    <style type="text/css">
+      body {margin: 2em; font-family: arial, verdana, sans-serif;}
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Transformer documentation: ch_sbs_dtbook2translatedbrailledtbook</h1>
+    <div id="toc" class="toc">
+      <ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	  <ul>
+	    <li><a href="#success">On success</a></li>
+	    <li><a href="#failure">On error</a></li>
+	  </ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	  <ul>
+	    <li><a href="#params">Parameters (tdf)</a></li>
+	    <li><a href="#extConfig">Extended configurability</a></li>
+	  </ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+      </ul>
+    </div>
+    
+    <h2 id="purpose">Transformer Purpose</h2>
+    <p>Translate all text in a DTBook document to Braille. The
+    resulting DTBook could be formatted and converted to PEF for
+    example.</p>
+    
+    <h2 id="inputReqs">Input Requirements</h2>
+    <p>A DTBook document, valid to 2005-1 dtd or later.</p>
+    
+    <h2 id="output">Output</h2>
+    <p>A DTBook document containing Braille.</p> 
+    
+    <h3 id="success">On success</h3>
+    <p>A valid DTBook document containing Braille.</p>
+    
+    <h3 id="failure">On error</h3>
+    <p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+    
+    <p>See further <a href="#params">Parameters</a>.</p>
+    
+    <h2 id="config">Configuration/Customization</h2>
+    
+    <h3 id="params">Parameters (tdf)</h3>
+    <p>See <a href="../scripts/DTBookToTranslatedBrailleDTBook.html">Script Documentation</a>.</p>
+    
+    <h3 id="extConfig">Extended configurability</h3>
+    <!-- details on additional config files, system variables etc -->
+    <p>None.</p>
+    
+    <h2 id="future">Further development</h2>
+    <!-- notes on refactoring; TODOs and MAYDOs -->
+    <p>Add support for more
+    languages. <a href="http://code.google.com/p/liblouis/">Liblouis</a>
+    supports many languages in the form of Braille translation tables.
+    It doesn't however have a mapping between an ISO language code,
+    contraction grade and a specific Braille translation table. This
+    mapping is currently embedded in the transformer xsl. This should
+    be extended and probably refactored to be part of Liblouis.</p>
+    
+    
+    <h2 id="dependencies">Dependencies</h2>
+    <ul>
+      <li>A
+      working <a href="http://code.google.com/p/liblouis/">Liblouis</a>
+      installation</li>
+    </ul>
+    
+    <h2 id="owner">Author</h2>
+    <p>Christian Egli, SBS</p>
+    <p>Bernhard Wagner, SBS</p>
+    
+    <h2 id="licensing">Licensing</h2>
+    <p>LGPL</p>
+    
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-smil/SMIL10.dtd">
+<smil>
+	<head>
+		<meta name="ncc:totalElapsedTime" content="00:00:00"/>
+		<meta name="ncc:timeInThisSmil" content="00:00:02"/>
+		<layout>
+			<region id="txtView"/>
+		</layout>
+	</head>
+	<body>
+		<seq dur="1.646s">
+			<par id="cd10">
+				<audio src="skiva_10.mp3" clip-begin="npt=0.000s" clip-end="npt=1.646s" id="info_0010" />
+			</par>
+		</seq>
+	</body>
+</smil>

@@ -1,0 +1,40 @@
+<transformer version="1.1">
+	<name>Hyphenator</name>
+	<description>desc...</description>
+	<classname>se_tpb_hyphenator.Hyphenator</classname>
+	<jar>lib/texhyphj.jar</jar>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_hyphenator.html"/>	
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>Input XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>
+			<description>Output XML file</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>breakLimitBegin</name>
+			<description>Number of characters from the beginning where a break is allowed to first occur</description>
+			<example>2</example>
+			<default>2</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>breakLimitEnd</name>
+			<description>Number of characters from the end where a break is allowed to last occur</description>
+			<example>2</example>
+			<default>2</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

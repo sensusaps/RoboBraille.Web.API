@@ -1,0 +1,70 @@
+<transformer version="1.1">
+	<name>DTB Merger</name>
+	<description>Merges multivolume DTBooks in Daisy 2.02 and Daisy 3 into a single volume</description>
+	<classname>se_tpb_dtbSplitterMerger.merge.DtbMergerTransformer</classname>
+	<license>LGPL</license>
+	<author>Piotr Kiernicki</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../../doc/transformers/se_tpb_dtbMerger.html"/>	
+	
+	<parameters>
+	
+	    <parameter required="true" direction="in" type="string">
+			<name>multiVolumeDTBPath</name>
+			<description>
+				Path to a multivolume talking book main directory.
+				The directory should contain subdirectories with the book's volumes.
+			</description>
+			<example>D:/path/to/volumes</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outDirPath</name>			
+			<description>
+				An output directory where the book's merged version will be saved.
+			</description>
+			<example>D:/path/to/outDir/</example>
+		</parameter>	
+		
+		<parameter required="false" type="enum">
+			<name>userPrompt</name>
+			<description>
+				Standard output prompts, e.g. file overwriting approval.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>keepInput</name>
+			<description>
+			  Specifies whether the input files should be kept. 
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>		
+
+		<parameter required="false" direction="in" type="enum">
+			<name>keepRedundant</name>
+			<description>
+			  Specifies whether files such as prompt files or distInfo.dinf should be kept.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>		
+
+	</parameters>	
+
+</transformer>

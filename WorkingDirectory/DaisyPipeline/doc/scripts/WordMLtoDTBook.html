@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
+		<title>Pipeline Script: WordML to DTBook</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css"></link>
+	</head>
+	<body>
+		<h1 class="title">Pipeline Script: <em>WordML
+to DTBook</em>
+		</h1>
+		<!-- script documentation contains primarily end-user-centric information -->
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#overview">Overview</a>
+				</li>
+				<li>
+					<a href="#inputReqs">Input Requirements</a>
+				</li>
+				<li>
+					<a href="#output">Output</a>
+				</li>
+				<li>
+					<a href="#config">Configuration</a>
+				</li>
+				<li>
+					<a href="#transformers">Appendix: List of
+Transformers used</a>
+				</li>
+			</ul>
+		</div>
+		<h2 id="overview">Overview</h2>
+		<!-- brief summary of purpose and whats going on. What does this script do really? -->
+		<p>This script converts Word documents saved as XML from within Word 2003 into DTBook. The purpose is to provide an automatic conversion process from structured Word files into DTBook. The output can be used for further processing by other scripts in the Daisy Pipeline, e.g. to produce a Daisy book.</p>
+		<p class="alert">This documentation covers both the simle script "Word 2003 XML to DTBook" and the advanced script "Word 2003 XML to DTBook (production)". What applies to the simple script also apply to the "Word 2003 XML to XHTML" script.</p>
+		<h2 id="inputReqs">Input Requirements</h2>
+		<!-- detailed requirements on input nature -->
+		<p>This script accepts Word documents saved as XML from within Word 2003 as input. To ensure that the output is error free, the following restrictions apply.</p>
+		<h3>Text flows</h3>
+		<p>Only use a single flow of text. Most people only use one text flow, you would have to put some effort into your layout before breaking this rule by accident.</p>
+		<h3>Floating objects</h3>
+		<p>Never use floating objects. This applies to images as well as to text
+and other objects. A floating object is an object that is positioned on
+a page without reference to surrounding text. To test if an
+object is floating, insert about a page of text on any page
+preceding the object. If the object remains on the same page and
+position as before but the text is different, then it is a floating
+object.</p>
+		<h3>Footnotes</h3>
+		<p>To create high quality output containing footnotes, use the footnotes feature in Word.</p>
+		<p><em>Note: A production facility with knowledge in DTBook markup might benefit more from semi automatic footnote creation, especially when working with OCR material. Refer to the transformer documentation for further details.</em></p>
+		<h3>Paragraph styles</h3>
+		<p>The following built-in paragraph styles can be used to structure the document: heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, block text.</p>
+		<p>The style names given here are in English, the actual names as they appear in Word may be different depending on which version of Word you have purchased. The localized style names will work as described.</p>
+		<p>Using styles not defined in this list will not cause an error, but will not enhance the result in any way.</p>
+		<p><em>Note: The script can be customized to accept other styles. Refer to the transformer documentation for further details.</em></p>
+		<p>It is recommended, although not an absolute requirement, that the first heading in a document is a heading 1 and that following headings never have a greater number than the preceding heading plus one. Not following this recommendation will still create an error free output, but might cause subsequent scrips that use it to fail.</p>
+		<p class="alert">Note! Never use a paragraph style on a section of a paragraph. This is a very common mistake and can be very hard to spot. The most common mistake is to select the entire paragraph <em>except</em> the paragraph marker, thus appearing perfectly fine upon visual inspection. The output will be error free, but it will not reflect the authors intention. This is not a malfunction of the script, but a design flaw/feature in Word.</p>
+		<h3>Character styles</h3>
+		<p>The following built-in character styles can be used to structure the document: strong, emphasis, page number.</p>
+		<p>The style names given here are in English, the actual names as they appear in Word may be different depending on which version of Word you have purchased. The localized style names will work as described.</p>
+		<p>Using styles not defined in this list will not cause an error, but will not enhance the result in any way.</p>
+		<p><em>Note: The script can be customized to accept other styles. Refer to the transformer documentation for further details.</em></p>
+		<h3>Manual formatting</h3>
+		<p>The following manual formating is preserved: italic, bold, superscript and subscript. Any other formatting done directly on, or close to, a group of characters will not enhance the result and should only be used for layout that does not communicate anything important to the reader. If the layout is important to the reader (as it should be), use styles to express it.</p>
+		<h3>Lists</h3>
+		<p>Use list nesting on list styles only (identified by a list icon next to the name in the Styles and Formatting Pane).</p>
+		<p>Keep list nesting neat by using the same principle that applies to headings: the first list item in a list must not be indented and following list items must never have a greater indentation than the preceding list item plus one(use tab to indent).</p>
+		<p class="alert">Note! Never use list nesting on
+paragraph styles with list formatting (identified by a paragraph icon
+next to the name in the Styles and Formatting Pane). Using tab to
+indent a paragraph style list will appear correct, but the result will
+be wrong.</p>
+		<h3>Images</h3>
+		<p>All images that are to be part of the result must be embedded in the original document. To ensure that images are embedded, do the following:</p>
+		<ol>
+			<li>On the Edit menu, click Links. If this item is not selectable, all images are embedded, and no further steps are needed.</li>
+			<li>Select all links. To select multiple linked objects, hold down CTRL and click each linked object.</li>
+			<li>Click Break Links.</li>
+		</ol>
+		<p>Images can be converted to JPEG by checking the "Convert images to JPEG" checkbox.</p>
+		<h3>Word templates</h3>
+		<p>Two document templates are available in the <a href="../../transformers/se_tpb_wordml2dtbook/templates/">transformer directory</a>. Both include macros to prepare a document for input into pipeline and should be run when the document is finished. To run the pipeline preparation macro:</p>
+		<ol>
+			<li>Hit ALT+F8</li>
+			<li>Select the "PrepareForPipeline" macro</li>
+			<li>Click Run</li>
+		</ol>
+		<p class="alert">In order to make use of this feature the macro security must be set to "medium" or lower in Word (click Macros/Security... in the Tools menu).</p>
+		<p>The behaviour is similar regardless of which template you are using:</p>
+		<ul>
+			<li>A properties dialog is displayed to ensure that the document has a correct title and author. Change the settings and click OK.</li>
+			<li>If the document has unsaved changes (e.g. if the properties were changed), you will be asked to confirm that you want your document saved before proceeding. If your document has not been saved before, you will also be asked where to save your document.</li>
+			<li>A "save as" dialog will now appear, asking where you want to save your <em>exported</em> document. Do not change file type, it should be XML.</li>
+			<li>A list of preparations is now run on your document.</li>
+			<li>The exported document is saved.</li>
+			<li>Your original document is re-opened if you want to make further edits. <em>Do not edit the exported document. It has been altered to fit the pipeline process.</em></li>
+		</ul>
+		<p class="alert">Note! This proceedure can contain one or two save as dialogs in sequence, pay attention to which dialog you are currently in.</p>
+
+		<h4>native.dot</h4>
+		<p>This template is designed to be used with the simple script and contains a few basic styles. Focus is on documents that were created in Word.</p>
+		<h5>Page numbers</h5>
+		<p>Documents that are created in Word have a page numbering that matches the layout on the screen. Therefore, the macro contained in this template will insert the current page number automatically at the top of each page.</p>
+		<h4>scanned.dot</h4>
+		<p>This template is designed to be used with the advanced script and contains a wider set of styles. Focus is on documents that were imported into Word from another source, e.g. OCR-software or print publishing software. A basic understanding of the DTBook format is highly recommended as manual corrections usually are needed.</p>
+		<h5>Page numbers</h5>
+		<p>Documents that have another source than Word never have a page numbering that matches the layout on the screen. Therefore, the page breaks in the source format have to be inserted manually using the page number style.</p>
+		<h2 id="output">Output</h2>
+		<p>The output of the script is a DTBook document including images.</p>
+		<h2 id="config">Configuration</h2>
+		<!-- description on params exposed in script -->
+		<!-- Although not recommended, possiblity to reference one or several transformer docs here instead of duplicating. Remember though that the transformer doc is developer centric and this doc is end user centric. Here, use the nicenames for parameters! Explain consequence of default values. -->
+		<dl>
+			<dt>Input file</dt>
+			<dd>Select input xml file</dd>
+			<dt>Output directory</dt>
+			<dd>Select output directory</dd>
+			<dt>Extract images</dt>
+			<dd>Check box to extract images</dd>
+			<dt>Convert images to JPEG</dt>
+			<dd>Check box to convert all images into JPEG format. Note that if the "Extract images" checkbox is unchecked, this box will have no effect. The conversion is done using an external software called ImageMagick which must be installed on your system. Refer to the <a href="#transformers">transformer</a> documentation for more information on how to set it up.</dd>
+			<dt>Overwrite existing files</dt>
+			<dd>Check box to overwrite existing files in the output directory</dd>
+			<dt>Append XHTML stylesheet</dt>
+			<dd>Check box to include XHTML stylesheet for display in a browser</dd>
+			<dt>Title</dt>
+			<dd>The title of the publication. If no value is supplied, the information is extracted from the file properties</dd>
+			<dt>Author</dt>
+			<dd>The author of the publication. If no value is supplied, the information is extracted from the file properties</dd>
+			<dt>dtb:uid</dt>
+			<dd>A unique identifier. If no value is supplied, an identifier will be generated.</dd>
+		</dl>
+		<h2 id="transformers">Appendix: List of Transformers used</h2>
+		<p>The documents linked below are parts of the <em>Transformer
+technical documentation</em>. These are developer and
+systems-administrator centric documents.</p>
+		<ol>
+			<li>
+				<a href="../transformers/se_tpb_wordml2dtbook.html">se_tpb_wordml2dtbook</a>
+			</li>
+			<li>
+				<a href="../transformers/int_daisy_validator.html">int_daisy_validator</a>
+			</li>
+		</ol>
+	</body>
+</html>

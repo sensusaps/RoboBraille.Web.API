@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="dtbookFixRunCategories" value="REPAIR_TIDY" required="true">
+		<nicename>DTBook Fix Active Categories</nicename>
+		<description>Select the type of manipulation to be performed (See documentation for more information)</description>
+		<datatype>
+			<enum>
+			  <item nicename="Tidy only" value="TIDY" />
+			  <item nicename="Repair only" value="REPAIR" />
+			  <item nicename="Repair, then Tidy" value="REPAIR_TIDY" />
+			  <!-- <item nicename="Narrator specific fixes" value="NARRATOR" /> -->
+			  <item nicename="Dont apply DTBook fix at all" value="NOTHING" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+</paramGroup>

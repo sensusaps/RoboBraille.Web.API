@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
+		<title>se_tpb_wordml2dtbook</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+	</head>
+	<body>
+		<h1 class="title">Transformer documentation: <em>se_tpb_wordml2dtbook</em>
+		</h1>
+		<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#purpose">Transformer Purpose</a>
+				</li>
+				<li>
+					<a href="#inputReqs">Input Requirements</a>
+				</li>
+				<li>
+					<a href="#output">Output</a>
+					<ul>
+						<li>
+							<a href="#success">On success</a>
+						</li>
+						<li>
+							<a href="#failure">On error</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#config">Configuration/Customization</a>
+					<ul>
+						<li>
+							<a href="#params">Parameters (tdf)</a>
+						</li>
+						<li>
+							<a href="#extConfig">Extended configurability</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="#future">Further development</a>
+				</li>
+				<li>
+					<a href="#dependencies">Dependencies</a>
+				</li>
+				<li>
+					<a href="#owner">Author</a>
+				</li>
+				<li>
+					<a href="#licensing">Licensing</a>
+				</li>
+			</ul>
+		</div>
+		<h2 id="purpose">Transformer Purpose</h2>
+		<!-- brief summary of purpose -->
+		<p>The purpose of this transformer is to provide an automatic conversion for structured Word files into DTBook.</p>
+		<h2 id="inputReqs">Input Requirements</h2>
+		<!-- contract definition: detailed requirements on input nature -->
+		<p>A Word 2003 xml file with embedded images. The document must comply to the conditions stated in the <a href="../scripts/WordMLtoDTBook.html">script documentation</a>.</p>
+		<h2 id="output">Output</h2>
+		<h3 id="success">On success</h3>
+		<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+		<p>A DTBook 2005-1 file or a DTBook 2005-1 fileset if the input contains embedded images and parameter <strong>images</strong> is set to true (extract images).</p>
+		<h3 id="failure">On error</h3>
+		<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+		<h2 id="config">Configuration/Customization</h2>
+		<h3 id="params">Parameters (tdf)</h3>
+		<!-- description on params as defined in tdf, please use the below definition list -->
+		<dl id="paramslist">
+			<dt>xml</dt>
+			<dd>The WordML XML file</dd>
+			<dt>out</dt>
+			<dd>Path to output</dd>
+			<dt>filename</dt>
+			<dd>Optional file name for the dtbook file. Default is dtbook.xml</dd>
+			<dt>images</dt>
+			<dd>Set to true to extract images or false to only extract the DTBook file</dd>
+			<dt>convertImages</dt>
+			<dd>Set to true to convert all images into JPEG format. ImageMagick must be installed and the path to the conversion program must be set in the paths dialog (under preferences) if run using the Daisy Pipeline GUI or included in a pipeline property named "pipeline.imageMagick.converter.path" if run from the command prompt. E.g. &lt;entry key="pipeline.imageMagick.converter.path"&gt;C:\\Program\\ImageMagick-6.3.4-Q16\\convert.exe&lt;/entry&gt;</dd>
+			<dt>overwrite</dt>
+			<dd>Set to true to overwrite existing files or false to abort processing</dd>
+			<dt>uid</dt>
+			<dd>Set dtb:uid. Leave blank to generate a random uid</dd>
+			<dt>stylesheet</dt>
+			<dd>Sets the name of the assigned stylesheet in the output, or none if '' is specified</dd>
+			<dt>title</dt>
+			<dd>The name of the publication. If no value is supplied, the information is extracted from the original file</dd>
+			<dt>author</dt>
+			<dd>The author of the publication. If no value is supplied, the information is extracted from the original file</dd>
+			<dt>customStyle</dt>
+			<dd>The custom style identifier. Should match the desired style-id in the custom tag set.</dd>
+			<dt>customTagset</dt>
+			<dd>Path to the custom tagset</dd>
+			<dt>defaultStyle</dt>
+			<dd>WordML version number. The default value is the only one supported.</dd>
+			<dt>defaultTagset</dt>
+			<dd>Path to the default tagset</dd>
+			<dt>forceJPEG</dt>
+			<dd>When set to 'true' the transform will use a ".jpg" file extension regardless of what the original extension was. Otherwise, the original file extension will be preserved.</dd>
+			<dt>uniquePageID</dt>
+			<dd>When set to 'true' the transform will use a unique string as id. Otherwise, the page number will be used as id.</dd>
+			<dt>dtbook-version</dt>
+			<dd>Sets the dtbook doctype and value of the version attribute. Selectable values are 2005-1 or 2005-2.</dd>
+		</dl>
+		<h3 id="extConfig">Extended configurability</h3>
+		<!-- details on additional config files, system variables etc -->
+		<h4>/custom/new-custom-tagset.xsl</h4>
+		<p>Modify a copy of this file to support other styles in Word or to change the behaviour of a supported style. Description of grammar is provided <a href="../../transformers/se_tpb_wordml2dtbook/docs/tagset/index.html">here</a>. To use the edited file, change the parameters <strong>customTagset</strong> and <strong>customStyle</strong></p>
+		<h2 id="future">Further development</h2>
+		<!-- notes on refactoring; TODOs and MAYDOs -->
+		<h2 id="dependencies">Dependencies</h2>
+		<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+		<p>Saxon.jar</p>
+		<p><a href="http://www.imagemagick.org">ImageMagick</a></p>
+		<h2 id="owner">Author</h2>
+		<p>Joel Håkansson, TPB</p>
+		<h2 id="licensing">Licensing</h2>
+		<p>LGPL</p>
+	</body>
+</html>

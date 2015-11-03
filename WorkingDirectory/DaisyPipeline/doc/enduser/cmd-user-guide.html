@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+		<title>DAISY Pipeline Command Line User Guide</title>
+		<link href="../pipeline.css" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+
+	<h1 class="title">DAISY Pipeline Command Line User Guide</h1>
+  
+	<div class="summary">
+		<p>This document is a User Guide to the command line version of the Daisy Pipeline. If you want to run Daisy Pipeline using a graphical user interface (GUI), read the <a href="01-gui-user-guide.html">GUI user guide</a> instead.</p>
+		<p>This guide refers to the "Daisy Pipeline installation directory" several times. If you installed the DAISY Pipeline command-line-only distribution, this directory is the place where you unzipped the Pipeline files.
+		If you installed the Pipeline GUI application, this directory refers to <code>$PIPELINE_GUI_INSTALLDIR/plugins/org.daisy.pipeline_1.X.X/</code></p>
+	</div>
+  
+	<div id="toc" class="toc">
+		<ul>
+			<li><a href="#pipeline">Daisy Pipeline Overview</a></li>
+			<li><a href="#config">Configuration</a></li>
+			<li><a href="#execute">Executing Daisy Pipeline</a></li>
+			<li><a href="#params">Command line parameters</a></li>
+			<li><a href="#request">Making a feature request</a></li>
+			<li><a href="#bugs">Reporting a bug</a></li>
+			<li><a href="#help">Getting further help</a></li>
+		</ul>
+	</div>
+	
+	<h2 id="pipeline">Daisy Pipeline Overview</h2>
+	<p>The DAISY Pipeline is a <em>framework for XML- and DTB-related transformations</em>. As such, it can be employed in various contexts, relating to both content creation and distribution.</p>
+	<p>The actual functionality within the DAISY Pipeline is provided by several collaborating organizations. Most contributions are open source, and reside at <a href="http://daisymfc.sf.net">the DAISY Pipeline Sourceforge project</a>.</p>	
+	<h3><em>You can contribute!</em></h3>
+	<p>The DAISY Pipeline fully depends on the spirit of sharing within the DAISY community. Remember: you can contribute to its future in many ways: by developing new functionality, by writing or reviewing documentation, by supplying feature requests, and by reporting bugs.</p>
+	<p>If you want to contribute, contact any of the project participants, or send an email to <a href="mailto:markus.gylling[at-sign]tpb.se">markus.gylling[at-sign]tpb.se</a>.</p>
+	<p>See also the <a href="#request">Making a feature request</a> and <a href="#bugs">Reporting a bug</a> sections below.</p>
+	
+	<h2 id="config">Configuration</h2>
+	<p>Before running the Pipeline, open <code>pipeline.user.properties</code> located in the pipeline installation directory and edit the following properties:</p>
+	<dl>
+		<dt>pipeline.tempDir</dt><dd>Directory to store temporary files in. This directory must be set, and write access to it must be enabled.</dd>
+		<dt>pipeline.lame.path</dt><dd>Path to the <a href="http://lame.sourceforge.net">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding). Further information is available in the <a href="installing-lame.html">LAME installation instructions</a>.</dd>
+		<dt>pipeline.imageMagick.converter.path</dt><dd>Path to the <a href="http://www.imagemagick.org/">ImageMagick</a> convert executable (Must be set if you intend to run the WordML to DTBook script). Further information is available in the <a href="installing-imagemagick.html">ImageMagick installation instructions</a>.</dd>
+	</dl>	
+	
+	<h2 id="execute">Executing Daisy Pipeline</h2>
+	<h3 id="executeWin">Windows</h3>
+	<p>To run Daisy Pipeline, open a command shell and run the <code>pipeline.bat</code> file in the Daisy Pipeline installation directory. Since a few command line paramaters need to be supplied, it is <strong>not</strong> possible to double click on the <code>.bat</code> file from Windows Explorer.</p>
+	<p>If your Java 5 (or later) isn't found on your system path, you need to edit the <code>pipeline.bat</code> file and supply a full path to the java.exe on the line that starts with <code>set JAVA=</code>.</p>
+	<h3 id="executeUnix">Linux/MacOSX/Unix</h3>
+	<p>To run Daisy Pipeline, execute the <code>pipeline.sh</code> shell script. The executable bit must be set on the file in order to be executable, run <code>chmod u+x pipeline.sh</code> to achieve that.</p>
+	<p>If you get complaints about missing or incorrect version of Java when you run <code>pipeline.sh</code>, edit the line in the beginning of the file that starts with <code>JAVA=</code> and supply a full path to a Java 5 (or later) executable.</p>
+	
+	<h2 id="params">Command line parameters</h2>
+	<p>The basic command line parameters pattern is:</p>
+	<pre>[-i] <em>scriptfile</em> --name=value...</pre>
+	
+	<dl>
+		<dt>-i</dt><dd>Print some information about <em>scriptfile</em> instead of running it.</dd>
+		<dt>scriptfile</dt><dd>The path to the scriptfile to run. The scripts are located in the <code>scripts</code> subdirectory of the Daisy Pipeline installation.</dd>
+		<dt>--name=value</dt><dd>Sets script parameter <em>name</em> to <em>value</em>. In order to be able to run a script, values for all required script parameters must be supplied. When running on Windows, the script parameters must be enclosed in double quotes like this: <code>"--name=value"</code>.</dd>
+	</dl>
+	
+	<h2 id="request">Making a Feature Request</h2>
+	<p>To make a feature request, please sign on to SourceForge, and use the <a href="http://sourceforge.net/tracker/?group_id=134191&amp;atid=729302">DAISY Pipeline Feature Request tracker</a>.</p>
+	<p>If you want to discuss a feature before making a request for it, you may subscribe to the DAISY Pipeline interest group emailing list. To do this, please contact <em>markus.gylling[at-sign]tpb.se</em>.</p>
+	<h2 id="bugs">Reporting a bug</h2>	
+	<p>To report a bug, please sign on to SourceForge, and use the <a href="http://sourceforge.net/tracker/?group_id=134191&amp;atid=729299">DAISY Pipeline Bug tracker</a>.</p>
+	
+	<h2 id="help">Getting further help</h2>
+	<p>If you need help or have some other type of question, you should primarily use the DAISY Consortium Training and Technical Support emailing list. Information on how to subscribe to this list is available on <a href="http://www.daisy.org/get_involved/join-lists.asp">http://www.daisy.org/get_involved/join-lists.asp</a>.</p>			
+    
+  </body>
+</html>  

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Unicode Normalizer</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Unicode Normalizer</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>Performs unicode normalization on all XML documents in a fileset using one 
+of the four standard normalization forms provided by the Unicode Consortium.</p>
+
+<p>For more information on the reasons for and practice of Unicode normalization, see:</p>
+<ul>
+	<li><a href="http://www.w3.org/TR/charmod-norm/">http://www.w3.org/TR/charmod-norm/</a></li>
+	<li><a href="http://www.unicode.org/reports/tr15/">http://www.unicode.org/reports/tr15/</a></li>
+	<li><a href="http://icu.sourceforge.net/apiref/icu4j/com/ibm/icu/text/Normalizer.html">http://icu.sourceforge.net/apiref/icu4j/com/ibm/icu/text/Normalizer.html</a></li>
+</ul>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+		<dt>Input file</dt>
+		<dd>The manifest member of the input fileset (NCC, OPF, DTBook file, etc)</dd>
+
+		<dt>Output directory</dt>
+		<dd>Directory to store the result in. Although not recommended, this can be same directory as the input directory.</dd>
+
+		<dt>Normalization form</dt>
+		<dd>
+		<p>Select the normalization form to use. The default is <code>NFC</code>. </p>
+		<p>See further <a href="http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC">Character Model for the World Wide Web</a>.</p>
+		</dd>
+
+		<dt>Textnodes only</dt>
+		<dd>
+			<p>Whether to normalize element textnodes only, and not attribute values etc</p>
+		</dd>		
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_unicodeNormalizer.html">Unicode Normalizer</a></li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<transformer version="1.1">
+	<name>Copyer</name>
+	<description>Copy resources on the filesystem</description>
+	<classname>pipeline_system_copyer.Copyer</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/pipeline_system_copyer.html"/>	
+	
+	<parameters>		
+	
+		<parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>path to input resource, may be a file or a directory</description>
+			<example>D:/path/to/somewhere</example>
+		</parameter>		
+
+		<parameter required="true" direction="in" type="application/anonymous">
+			<name>destination</name>
+			<description>path to copy destination resource, may be a file or a directory</description>
+			<example>D:/path/to/elsewhere</example>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>inputExcludeRegex</name>
+			<description>If input is a directory, this pattern describes children to exclude from copy. If null, no exclusion</description>
+			<example>.+\\[Ww][Aa][Vv]</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>inputDeep</name>
+			<description>If input is a directory, sets whether subdirs should be included in the search for resources to copy</description>
+			<example>false</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>				
+
+		<parameter required="false" type="enum">
+			<name>overwrite</name>
+			<description>whether to overwrite destination if it already exists</description>
+			<example>false</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+																		
+	</parameters>	
+
+</transformer>

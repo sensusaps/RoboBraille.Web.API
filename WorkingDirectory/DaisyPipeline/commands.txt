@@ -1,0 +1,11 @@
+java -classpath "pipeline.jar";"." org.daisy.pipeline.ui.CommandLineUI -f C:\pipeline\scripts\create_distribute\dtb\Narrator-DtbookToDaisy.taskScript --input=C:\pipeline\WordTestDaisy.xml  --outputPath=C:\Users\Paul\Desktop\test\Daisy\Book
+
+java -classpath "pipeline.jar";"." org.daisy.pipeline.ui.CommandLineUI -f D:\DaisyPipeline\scripts\create_distribute\dtb\Narrator-DtbookToDaisy.taskScript --input=D:\DaisyPipeline\WordTestDaisy.xml  --outputPath=C:\Users\Paul\Desktop\test\Daisy\Book
+
+
+org.daisy.pipeline.core.script.datatype.DatatypeException: Input file '' does not exist.
+        at org.daisy.pipeline.core.script.datatype.FileDatatype.validate(FileDatatype.java:44)
+        at org.daisy.pipeline.core.script.JobParameter.setValue(JobParameter.java:74)
+        at org.daisy.pipeline.core.script.Job.setParameterValue(Job.java:142)
+        at org.daisy.pipeline.ui.CommandLineUI.setDefaultValues(CommandLineUI.java:355)
+        at org.daisy.pipeline.ui.CommandLineUI.main(CommandLineUI.java:196)

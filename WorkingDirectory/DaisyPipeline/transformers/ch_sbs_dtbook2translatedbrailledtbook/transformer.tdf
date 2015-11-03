@@ -1,0 +1,48 @@
+<transformer version="1.1">
+	<name>DTBook to Braille</name>
+	<description>Simple DTBook to Braille transformer using liblouis</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<jar>lib/louisFat.jar</jar>
+	<license>LGPL 3.0</license>
+	<author>Bernhard Wagner</author>
+ 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/ch_sbs_dtbook2translatedbrailledtbook.html"/>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The input DAISY 3.0 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/dtbook2translatedBrailleDtbook.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>out</name>
+			<description>The output DAISY 3.0 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter type="enum" direction="in" required="false">
+		  <name>grade</name>			
+		  <description>Contraction grade for the Braille transcription</description>
+		  <example>0</example>
+		  <enum>
+		    <value>0</value>
+		    <value>1</value>
+		    <value>2</value>
+		  </enum>
+		  <default>0</default>
+		</parameter>
+		
+	</parameters>
+
+</transformer>

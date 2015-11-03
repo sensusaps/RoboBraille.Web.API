@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../../FilesetRenamerScriptParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../../FilesetRenamerTaskParamsStatic.paramGroup">
+<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../../AudioTaggerScriptParamsStatic.paramGroup">
+<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../../AudioTaggerTaskParamsStatic.paramGroup">
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="RenamerTaggerValidator">
+	<nicename>Renamer Tagger Validator</nicename>
+	<description>Rename files in a fileset, add ID3 Tags and/or Playlists, and validate the result</description>
+   	<documentation uri="../../../doc/scripts/RenamerTaggerValidator.html"/>
+    <comment>
+     	Commandline template (dont forget to modify paths):
+     	org.daisy.pipeline.ui.CommandLineUI
+		D:\data\workspace\dmfc\scripts\manipulation\advanced\RenamerTaggerValidator.taskScript
+               --userInput=E:\dmfctest\hauy.202.rev4\ncc.html 
+               --userOutput=E:\dmfctest\hauy.202.rev4\out
+    </comment>
+	
+	<parameter name="userInput" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>select input manifest file (NCC, OPF, etc)</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="userOutput" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+			
+	&FilesetRenamerScriptParamsStatic;
+	&AudioTaggerScriptParamsStatic;	
+	&ValidatorScriptParamsSimpleStatic;
+			
+	<task name="int_daisy_filesetRenamer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${userInput}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${userOutput}</value>
+		</parameter>
+		
+		&FilesetRenamerTaskParamsStatic;
+		
+	</task>
+
+	<task name="int_daisy_filesetAudioTagger" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${userOutput}/$filename{userInput}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${userOutput}</value>
+		</parameter>
+		
+		&AudioTaggerTaskParamsStatic;
+		
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${userOutput}/$filename{userInput}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		&ValidatorTaskParamsSimpleStatic;
+		
+	</task>
+
+</taskScript>

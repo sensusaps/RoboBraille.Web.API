@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="Z3986DTBValidator">
+	<nicename>Z3986 DTB Validator</nicename>
+	<description>Validate a DAISY/NISO DTB with ZedVal</description>
+   	<documentation uri="../../doc/scripts/Z3986DTBValidator.html"/>
+     <comment>
+	     Commandline template (dont forget to modify paths):
+	         D:\data\workspace\dmfc\scripts\validation\simple\Z3986DTBValidator.taskScript 
+	                --validatorInputFile=D:\dtbs\z2005\hauy\hauy_z2005\06-speechgen.opf
+     </comment>
+     	
+	<parameter name="validatorInputFile" value="" required="true">
+		<nicename>Input OPF</nicename>
+		<description>Select the input Package file (OPF) document</description>
+		<datatype>
+			<file mime="application/oebps-package+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	&ValidatorScriptParamsSimpleStatic;
+
+	<parameter name="validatorTimeTolerance" value="0" required="false">
+		<nicename>Time Tolerance</nicename>
+		<description>Set the time tolerance threshold in milliseconds</description>		
+		<datatype>
+				<integer min="0" max ="10000" />
+		</datatype>		
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+	
+		<parameter>
+			<name>input</name>
+			<value>${validatorInputFile}</value>
+		</parameter>
+	
+ 	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>Z3986 DTB</value>
+		</parameter>	
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
+		</parameter>
+		
+										
+	</task>
+
+</taskScript>

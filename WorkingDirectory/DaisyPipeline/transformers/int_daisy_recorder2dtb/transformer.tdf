@@ -1,0 +1,50 @@
+<transformer version="1.1">
+	<name>Playlist2dtb</name>
+	<description>Transform various playlist/audio editor marker sets to a NCX only Z3986 DTB.</description>
+	<classname>int_daisy_recorder2dtb.Recorder2dtb</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="./int_daisy_recorder2dtb.html"/>
+		
+	<parameters>
+	
+		<parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>Input playlist or marker file (*.aup, etc)</description>
+			<example>D:/path/to/inputFile.aup</example>
+		</parameter>
+
+		<!-- TODO bool applyPhraseDetection -->
+		
+
+		<parameter required="false" type="enum">
+			<name>pageAutoNumber</name>			
+			<description>Page auto numbering (start with page)</description>
+			<example>2</example>
+			<enum>
+				<value>off</value>
+				<value>1</value>
+				<value>2</value>
+				<value>3</value>
+				<value>4</value>
+				<value>5</value>
+				<value>6</value>
+				<value>7</value>
+				<value>8</value>
+				<value>9</value>
+				<value>10</value>				
+			</enum>
+			<default>off</default>
+		</parameter>
+
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+		
+	</parameters>	
+
+</transformer>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation: int_daisy_mathAltCreator</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_mathAltCreator</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Provides text and image fallbacks to MathML islands in DTBook to support the <a href="http://www.daisy.org/projects/mathml/">MathML in DAISY</a> extension.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input DTBook+MathML document.</p>
+
+<h2 id="output">Output</h2>
+<p>A DTBook+MathML document where MathML islands have text and image fallbacks.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>overwrite</dt>
+	<dd>Whether to overwrite existing MathML <code>alttext</code> and <code>altimg</code> attributes.</dd>
+	</dl>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>This transformer delegates its functionality to a <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">third-party add-in</a>, currently implemented by the Design Science MathDAISY product.</p>
+
+<h2 id="owner">Author</h2>
+<p>MathDAISY by Design Science, Transformer wrapper by Markus Gylling.</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>The transformer code in under LGPL, the Design Science MathDAISY code is commercial and closed source.</p>
+
+</body>
+</html>

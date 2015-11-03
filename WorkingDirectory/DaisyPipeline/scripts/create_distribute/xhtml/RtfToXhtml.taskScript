@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+<!ENTITY CharsetSwitcherScriptParamsStatic SYSTEM "../../CharsetSwitcherScriptParamsStatic.paramGroup">
+<!ENTITY DtbookToXhtmlScriptParamsStatic SYSTEM "../../DtbookToXhtmlScriptParamsStatic.paramGroup">
+<!ENTITY DtbookToXhtmlTaskParamsStatic SYSTEM "../../DtbookToXhtmlTaskParamsStatic.paramGroup">
+<!ENTITY DTBookFixCategoryScriptParam SYSTEM "../../DTBookFixCategoryScriptParam.paramGroup">
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../DTBookFixTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="RtfToXhtml">
+	<nicename>RTF to XHTML</nicename>
+	<description>Convert an RTF document to XHTML 1.0</description>
+   	<documentation uri="../../../doc/scripts/RtfToXhtml.html"/>
+    <comment/>
+						
+	<parameter name="input" value="" required="true">
+		<nicename>Input RTF file</nicename>
+		<description>Select the input RTF file</description>
+		<datatype>
+			<file mime="application/rtf" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output XHTML file</nicename>
+		<description>Select the output XHTML file</description>
+		<datatype>
+			<file mime="application/xhtml+xml" type="output"/>
+		</datatype>
+	</parameter>		
+
+	&DTBookFixCategoryScriptParam;
+	&DTBookFixScriptParamsStatic;
+    &DtbookToXhtmlScriptParamsStatic;
+	&CharsetSwitcherScriptParamsStatic;								
+	&ValidatorScriptParamsSimpleStatic;		
+			
+	<task name="ca_cnib_rtf2dtbook" interactive="false">
+		<parameter>
+			<name>rtf</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>dtbook</name>
+			<value>$parent{output}/pipeline__temp/1/$filename{output}</value>
+		</parameter>						
+	</task>		
+
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{output}/pipeline__temp/1/$filename{output}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+		</parameter>	
+		
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFixRunCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;	
+	</task>
+
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">	
+		<parameter>
+			<name>xml</name>
+			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+		</parameter>
+					
+		<parameter>
+			<name>out</name>
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>			
+		</parameter>				
+
+		<parameter>
+			<name>copyReferring</name>
+			<value>true</value>
+		</parameter>
+		
+		&DtbookToXhtmlTaskParamsStatic;											
+	</task>		
+	
+	<task name="se_tpb_charsetSwitcher" interactive="false">	
+		<parameter>
+			<name>input</name>
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>$parent{output}</value>
+		</parameter>				
+						
+		<parameter>
+			<name>encoding</name>
+			<value>${charsetSwitcherEncoding}</value>
+		</parameter>
+		
+		<parameter>
+			<name>breaks</name>
+			<value>${charsetSwitcherLineBreaks}</value>
+		</parameter>										
+	</task>		
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;												
+	</task>	
+			
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>$parent{output}/pipeline__temp/</value>
+		</parameter>					
+	</task>		
+			
+</taskScript>

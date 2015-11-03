@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>pipeline_system_deleter</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>pipeline_system_deleter</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Delete resources on the file system. Typically used to clean up temporary files created during Job execution.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>One pathspec of a file or a directory.</p>
+
+<h2 id="output">Output</h2>
+<p>Nothing.</p>
+
+<h3 id="success">On success</h3>
+<p>The file, or the directory and all its descendants, deleted.</p>
+
+<h3 id="failure">On error</h3>
+<p>On deletion failure, this transformer will send an error message, but still return true.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>path spec of resource to delete</dd>
+	<dt>active</dt>
+	<dd>Boolean on/off - used to allow users to activate/deactivate deletion.</dd>
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<p>None at time of writing</p>
+	
+<h2 id="future">Further development</h2>
+<p>None at time of writing</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<h2 id="owner">Author</h2>
+<p>Markus Gylling</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

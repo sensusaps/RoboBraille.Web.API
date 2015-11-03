@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTB Merger</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTB Merger</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script merges a <em>Multi Volume DTB</em> into a <em>Single Volume DTB</em>.</p>
+<p>The script supports Daisy 2.02, DAISY/NISO 2002 and 2005 DTBs.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input fileset <em>main</em> directory. Under this directory, each subvolume to be merged exist in a subdirectory of its own.</p>
+
+<h2 id="output">Output</h2>
+<p>A single volume DTB. It is recommended that you validate the output DTB before commencing with further processing.</p>
+
+<h2 id="config">Configuration</h2>
+
+	<dl id="paramslist">
+		<dt>Input directory</dt>
+		<dd><strong>Required.</strong> Select the input fileset main directory, under which the DTB subvolumes exist in subdirectories.</dd>
+		
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Select the directory where the output DTB will be saved.</dd>
+
+		<dt>Keep redundant files</dt>
+		<dd>Select whether redundant files such as prompt files or distInfo.dinf should be copied to output.</dd>	
+	</dl>
+		
+	<h2 id="transformers">Appendix: List of Transformers used</h2>
+	<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+	<ol>
+		<li><a href="../transformers/se_tpb_dtbMerger.html">DTB Splitter</a></li>
+	</ol>
+	
+</body>
+</html>

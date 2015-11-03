@@ -1,0 +1,41 @@
+<transformer version="1.1">
+	<name>RTF to DTBook</name>
+	<description>Converts a RTF file to DTBook</description>
+	<classname>ca_cnib_rtf2dtbook.RTF2DTBook</classname>
+	<license>GPL</license>
+	<author>Brandon Nelson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/ca_cnib_rtf2dtbook.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/rtf">
+			<name>rtf</name>
+			<description>Input RTF file</description>
+			<example>file:///path/to/file.rtf</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>dtbook</name>			
+			<description>Output DTBook 2005 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>		 
+        
+        <parameter type="string">
+            <name>rtf2xml</name>         
+            <value>${transformer_dir}/rtf2xml</value>
+        </parameter>
+		
+		<parameter type="string">
+			<name>stylesheet</name>			
+			<value>${transformer_dir}/xml2dtbook.xsl</value>
+		</parameter>
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+			
+	</parameters>	
+
+</transformer>

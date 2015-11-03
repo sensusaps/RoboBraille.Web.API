@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTBook Volume Splitter</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTBook Volume Splitter</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script inserts split points into a DTBook XML document. These
+  points can be used by other scripts such as the DTBookToLaTeX for
+  example, to generate output that is split into multiple volumes.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>A DTBook XML document. Both the input and the output are validated.</p>
+
+<h2 id="output">Output</h2>
+<p>A DTBook document. The output is automatically validated, so watch out for error reports.</p>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+	<dt>Input DTBook XML file</dt>
+	<dd><strong>Required.</strong> Path to input DTBook document</dd>		
+	<dt id="report">Output DTBook XML file</dt>
+	<dd><strong>Required.</strong> Path to a file to store the output DTBook file in</dd>				
+	<dt>Number of volumes</dt>
+	<dd><strong>Required.</strong> 
+	Specify in how many volumes the DTBooks should be split into.
+	</dd>
+	<dt>Allowed Stretch</dt>
+	<dd><strong>Optional.</strong> 
+	Specify how much a volume can be streched so that the volume splits occur at a nearby <tt>level1</tt>.
+	</dd>
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/ch_sbs_dtbookVolumeSplitter.html">DTBook Volume Splitter</a></li>
+</ol>
+
+</body>
+</html>

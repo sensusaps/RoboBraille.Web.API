@@ -1,0 +1,158 @@
+<transformer version="1.1">
+	<name>WordML to DTBook</name>
+	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
+	<classname>se_tpb_wordml2dtbook.WordML2DTBook</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_wordml2dtbook.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The WordML XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>out</name>
+			<description>The output DTBook 2005-1 XML file</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+		
+		<parameter required="false" type="application/xml">
+			<name>filename</name>
+			<description>Optional file name for the dtbook file</description>
+			<example>dtbook.xml</example>
+			<default>dtbook.xml</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>dtbook-version</name>
+			<description>Sets the dtbook version</description>
+			<example>2005-1</example>
+			<enum>
+				<value>2005-1</value> 
+				<value>2005-2</value>
+			</enum>
+			<default>2005-1</default>
+		</parameter>
+		
+		<!--
+		<parameter type="application/xslt+xml">
+			<name>xslt</name>
+			<value>${transformer_dir}/wordml2dtbook.xsl</value>
+		</parameter> -->
+
+		<parameter type="application/xslt+xml" required="false">
+			<name>xslt</name>
+			<description>Main XSLT</description>
+			<example>${transformer_dir}/wordml2dtbook.xsl</example>
+			<default>${transformer_dir}/wordml2dtbook.xsl</default>
+		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>factory</name>
+			<description>Factory</description>
+			<example>com.icl.saxon.TransformerFactoryImpl</example>
+			<default>com.icl.saxon.TransformerFactoryImpl</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>images</name>
+			<description>Extract images?</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>overwrite</name>
+			<description>Overwrite existing files in output directory?</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
+<!-- XSLT parameters -->
+		<parameter type="string" required="false">
+			<name>uid</name>
+			<description>Set dtb:uid. Leave blank to generate a random uid.</description>
+			<example>DTB00000</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>stylesheet</name>
+			<description>Sets the name of the assigned stylesheet in the output, or none if '' is specified</description>
+			<example>dtbook2xhtml.xsl</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>title</name>
+			<description>The name of the publication. If no value is supplied, the information is extracted from the original file</description>
+			<example>The Book</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>author</name>
+			<description>The author of the publication. If no value is supplied, the information is extracted from the original file</description>
+			<example>The Author</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>customStyle</name>
+			<description>The custom style identifier. Should match the desired style-id in the custom tag set.</description>
+			<example>tpb</example>
+			<default>rk</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>customTagset</name>
+			<description>Path to the custom tagset</description>
+			<example>tagsets/custom-tagset.xml</example>
+			<default>tagsets/custom-tagset.xml</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>defaultStyle</name>
+			<description>WordML version number. The default value is the only one supported.</description>
+			<example>4</example>
+			<default>4</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>defaultTagset</name>
+			<description>Path to the default tagset</description>
+			<example>tagsets/default-tagset.xml</example>
+			<default>tagsets/default-tagset.xml</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>forceJPEG</name>
+			<description>When set to 'true' the transform will use a ".jpg" file extension regardless of what the original extension was. Otherwise, the original file extension will be preserved.</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>uniquePageID</name>
+			<description>When set to 'true' the transform will use a unique string as id. Otherwise, the page number will be used as id.</description>
+			<example>true</example>
+			<default>true</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

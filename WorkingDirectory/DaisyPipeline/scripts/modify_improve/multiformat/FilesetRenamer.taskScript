@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../../FilesetRenamerScriptParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../../FilesetRenamerTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="FilesetRenamer">
+	<nicename>Fileset renamer</nicename>
+	<description>Perform renaming of select files in a fileset using customizable name patterns</description>
+   	<documentation uri="../../../doc/scripts/FilesetRenamer.html"/>
+     <comment>
+	     Commandline template (dont forget to modify paths):
+	     		org.daisy.pipeline.ui.CommandLineUI
+				D:\data\workspace\dmfc\scripts\manipulation\simple\FilesetRenamer.taskScript
+	                --filesetRenamerInputFile=E:\dmfctest\hauy.202.rev4\ncc.html 
+	                --filesetRenamerOutputPath=E:\dmfctest\hauy.202.rev4\out\
+   	                --filesetRenamerPattern=uid+seq+label
+     </comment>
+	
+	<parameter name="filesetRenamerInputFile" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input manifest file (NCC, OPF, etc)</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="filesetRenamerOutputPath" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	&FilesetRenamerScriptParamsStatic;
+		
+	<task name="int_daisy_filesetRenamer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${filesetRenamerInputFile}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${filesetRenamerOutputPath}</value>
+		</parameter>		
+						
+    	&FilesetRenamerTaskParamsStatic;						
+						
+	</task>
+
+
+</taskScript>

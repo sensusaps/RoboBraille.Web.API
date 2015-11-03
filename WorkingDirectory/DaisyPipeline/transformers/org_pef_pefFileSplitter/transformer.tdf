@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>PEF File Splitter</name>
+	<description>Split a PEF file into several files, one file per volume.</description>
+	<classname>org_pef_pefFileSplitter.PEFFileSplitter</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_pefFileSplitter.html"/>
+
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-pef+xml">
+			<name>input</name>
+			<description>The input PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>Output directory</description>
+			<example>file:///path/to/output/folder/</example>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>prefix</name>
+			<description>Optional filename prefix for the resulting files</description>
+			<example>volume</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>postfix</name>
+			<description>Optional filename postfix for the resulting files</description>
+			<example>.xml</example>
+			<default></default>
+		</parameter>
+
+	</parameters>	
+
+</transformer>

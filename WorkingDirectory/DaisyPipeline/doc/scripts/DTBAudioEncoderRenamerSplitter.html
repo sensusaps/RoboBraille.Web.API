@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTB Audio Encoder Renamer Splitter</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTB Audio Encoder Renamer Splitter</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script will convert wave files in a DTB to MP3, apply renaming to the DTB, and then split the DTB into multiple volumes if needed.</p>
+
+<h2 id="output">Output</h2>
+<p>A DTB in one or several volumes, depending on the set maximum volume size, and the sixe of the DTB.</p>
+
+<h2 id="config">Configuration</h2>
+
+<p>This script is a combination of other scrips. For configuration details, please refer to:</p>
+<ul>
+	<li><a href="DTBAudioEncoder.html">DTB Audio Encoder</a></li>
+	<li><a href="FilesetRenamer.html">Fileset Renamer</a></li>
+	<li><a href="DTBSplitter.html">DTB Splitter</a></li>	
+</ul>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/se_tpb_dtbAudioEncoder.html">DTB Audio Encoder</a></li>
+	<li><a href="../transformers/int_daisy_filesetRenamer.html">Fileset Renamer</a></li>
+	<li><a href="../transformers/se_tpb_dtbSplitter.html">DTB Splitter</a></li>	
+</ol>
+
+</body>
+</html>

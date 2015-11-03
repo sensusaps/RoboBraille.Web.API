@@ -1,0 +1,47 @@
+<transformer version="1.1">
+	<name>XHTML to DTBook</name>
+	<description>Transform an XHTML 1.x document to DTBook</description>
+	<classname>no_hks_xhtml2dtbook.Xhtml2DTBook</classname>
+	<license>LGPL</license>
+	<author>Per Sennels</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/no_hks_xhtml2dtbook.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xhtml+xml">
+			<name>input</name>
+			<description>Path to input XHTML file</description>
+			<example>C:/myDocuments/myXhtmlDocument.html</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>output</name>
+			<description>Path to output DTBook file</description>
+			<example>C:/myDocuments/myDTBookDocument.xml</example>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>title</name>
+			<description>The name of the publication. If no value is supplied, the information is extracted from the original file, if possible.</description>
+			<example>The Book</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>uid</name>
+			<description>The unique identifier of the publication. If no value is supplied, the information is extracted from the original file, if possible.</description>
+			<example>DTB00000</example>
+			<default></default>
+		</parameter>
+
+		<parameter required="false" type="text/css">
+			<name>outputCSS</name>
+			<description>A CSS to use for output textual content files.</description>
+			<example>D:/path/to/my.css</example>
+			<default/>
+		</parameter>
+				 
+	</parameters>
+
+</transformer>

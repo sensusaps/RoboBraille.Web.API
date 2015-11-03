@@ -1,0 +1,48 @@
+<transformer version="1.0">
+	<name>DTBook to Text</name>
+	<description>Transforms a DTBook 2005 document to plain text, wrapped at 70 characters</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<license>unknown</license>
+	<author>Dave Pawson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/dtbook2text.xsl</value>
+		</parameter>		
+		
+
+		<parameter type="string">
+			<name>factory</name>			
+			<value>com.icl.saxon.TransformerFactoryImpl</value>
+		</parameter>
+
+		<!--
+		<parameter type="string">
+			<name>factory</name>			
+			<value>com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</value>
+		</parameter>	
+		-->
+		<!--
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		-->
+		<parameter required="true" direction="out" type="text/plain">
+			<name>out</name>
+			<description>The output text document</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>

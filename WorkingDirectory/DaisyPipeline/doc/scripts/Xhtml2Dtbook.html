@@ -1,0 +1,369 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: XHTML to DTBook [BETA]</title>
+    <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+	<style type="text/css">
+/*	  body {margin: 2em; font-family: arial, verdana, sans-serif;} */
+      table {border-collapse:collapse;font-size:small;}
+        td,th {border:1pt solid rgb(220,220,220);padding:2pt;}
+        th {background-color:rgb(255,255,230);}
+      span.text {font-style:italic;color:rgb(170,120,120);}
+      pre, code {font-family:monospace; color:rgb(120,120,170);}
+      code {font-size:100%;}
+      pre {font-size:small;}
+      ul {margin-bottom:0.5ex;margin-top:0.5ex;}
+      tr.x {background-color:rgb(252,252,255);}
+      ul#input-reqs li {margin-bottom:1ex;}
+	</style>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>XHTML to DTBook</em> [BETA]</h1>
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#inputReqs">Input Requirements</a>
+        <ul>
+    		<li><a href="#twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</a></li>
+    		<li><a href="#canonicalForm">Requirements for the canonical form of the XHTML document</a></li>
+        </ul>
+    </li>
+	<li><a href="#output">Output</a></li>
+    <li><a href="#config">Configuration</a></li>
+    <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose -->
+<p>This script transforms a valid XHTML file in the canonical form into a valid DTBook file.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+<h3 id="twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</h3>
+<p>Transformation of a general HTML document to a DTBook document, is likely to be a two stage process.
+</p>
+<ol>
+    <li>The first stage will be to turn the HTML document into a <em>canonical form</em> of an XHTML document.
+    Depending on the state of the HTML document, this will be a process consisting of both automatic and manual processing.
+    Requirements for the canonical form are given below.</li>
+    <li>The second stage is to create the DTBook document from the canonical XHTML.
+    This will be done in a completely automatic XSLT&#160;2.0 transformation process, normally controlled by the DAISY&#160;Pipeline.</li>
+</ol>
+<p>
+    The DAISY&#160;Consortium does not supply any tools for performing the first stage, as the process required probably will differ among organizations.
+    For the second stage, the DAISY&#160;Consortium has developed the script described in this document.
+</p>
+<h3 id="canonicalForm">Requirements for the canonical form of the XHTML document</h3>
+<ul id="input-reqs">
+    <li>The XHTML document must be a valid XHTML Transitional or XHTML Strict document.</li>
+    <li>The document <em>must</em> contain at least one <code>h1</code> element.</li>
+    <li>The first child element (in the XML sense of the term) of the <code>body</code> element should be an <code>h1</code> element.
+        Any child element placed before the first <code>h1</code>, will be ignored during transformation, and will not be present in the generated DTBook document.</li>
+    <li>All heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
+        <code>body</code> element.<br />
+        This excludes markup such as:
+<pre>
+&lt;body&gt;
+    &lt;div class="start-of-book"&gt;
+        &lt;h1&gt;The title&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Content&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+    &lt;div class="main-stuff"&gt;
+        &lt;h1&gt;Chapter 1 How it all began&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Chapter 2 How it continued&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+&lt;/body&gt;
+    </pre>
+    </li>
+    <li>
+        Heading levels must not be skipped. That is, the next heading after a <code>h3</code> can <em>not</em> be a <code>h5</code> heading.
+        It must be a <code>h4</code> heading, or one of <code>h1</code>, <code>h2</code> or <code>h3</code>.
+    </li>
+    <li>A heading <em>should not</em> have another heading on the same, or higher, level, as a
+    first <em>following sibling</em> (in the XML sense of the term).<br />
+        Thus the following kind of markup should be avoided:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    Note that the following is perfectly okay (and makes sense):
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h4&gt;A subheading on level 4&lt;/h4&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    In the cases where a heading has no relevant following siblings before a heading on the same, or higher, level, a "dummy" paragraph is
+        inserted in the generated DTBook document.<br />
+So the following piece of XHTML code:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+would be transformed into:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;/level3&gt;
+&lt;level3&gt;
+    &lt;h3&gt;A heading on level 3&lt;/h3&gt;
+    &lt;p class="dummy" /&gt;
+&lt;/level3&gt;
+&lt;level3&gt;
+    &lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+    &lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    </li>
+<!--    <li>A heading can <em>not</em> have another heading of the same type as a first <em>following sibling</em> (in the XML sense of the term).<br />
+        This excludes markup such as:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    Note that the following is perfectly okay (and makes sense):
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h4&gt;A subheading on level 4&lt;/h4&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    </li> -->
+    <li>The <code>br</code>  element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element.</li>
+    <li>The <code>span</code> element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element,
+        unless the <code>class</code> attribute ...
+        <ul>
+            <li>... starts with the string <span class="text">page-</span>,</li>
+            <li>... is equal to <span class="text">noteref</span>,</li>
+            <li>... ends with the string <span class="text">-prodnote</span>, or</li>
+            <li>... is equal to <span class="text">caption</span>, and the <code>span</code> element is evaluated to be a part of an image group
+            (<a href="../transformers/no_hks_xhtml2dtbook.html#imggrp">more details</a>).</li>
+        </ul>
+This excludes markup such as:
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;span class="sentence"&gt;This is a sentence, 
+            and also a child of the body element.&lt;/span&gt;
+    &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
+    Rather, you should use:
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;p&gt;
+        &lt;span class="sentence"&gt;This is a sentence, 
+            and also a child of the body element.&lt;/span&gt;
+        &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    &lt;/p&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
+    </li>
+    <li>A <code>span</code> element, with a value for the <code>class</code> attribute starting with the string <span class="text">page-</span>,
+        must have a text content that, when normalized, is suitable to form part of an <code>id</code> attribute value in the DTBook file.<br />
+        The following four examples:
+        <pre>
+&lt;span class="page-normal"&gt;4&lt;/span&gt;
+
+&lt;span class="page-normal"&gt;
+    89
+&lt;/span&gt;
+
+&lt;span class="page-front"&gt;xiv&lt;/span&gt;
+
+&lt;span class="page-special"&gt;B-34&lt;/span&gt;</pre>
+        are perfectly okay, and will result in the <code>id</code> values <span class="text">page-4</span>, <span class="text">page-89</span>,
+        <span class="text">page-xiv</span>
+        and <span class="text">page-B-34</span>, respectively, in the DTBook file.<br />
+        The  markup:
+        <pre>
+&lt;span class="page-normal"&gt;page 4&lt;/span&gt;</pre>
+        does not comply with this requirement.
+
+    </li>
+    <li>The <code>div</code> and <code>blockquote</code> elements <em>may not</em> have <code>br</code>
+        or <code>span</code> as child elements (in the XML sense of the term).</li>
+    <li>The <code>div</code> and <code>blockquote</code> elements <em>may not</em> have text content.
+        This excludes markup such as:
+<pre>
+&lt;div&gt;
+    This is some text before the picture.
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
+    This is some text after the picture.
+&lt;/div&gt;
+</pre>
+    Instead you should use:
+<pre>
+&lt;div&gt;
+    &lt;p&gt;This is some text before the picture.&lt;/p&gt;
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
+    &lt;p&gt;This is some text after the picture.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+    or, perhaps better, skip the <code>div</code> element:
+<pre>
+&lt;p&gt;This is some text before the picture.&lt;/p&gt;
+&lt;img src="fig01.png" alt="Map: Norway" /&gt;
+&lt;p&gt;This is some text after the picture.&lt;/p&gt;
+</pre>
+    </li>
+</ul>
+
+<p>It is generally recommended to have a markup with a very "flat"
+structure. One should especially avoid having block elements inside
+block elements, as in the following example:
+</p>
+<pre>
+&lt;p&gt;This is some text before the list.
+    &lt;ul&gt;
+        &lt;li&gt;The first list item.&lt;/li&gt;
+        &lt;li&gt;This is the second and last item.&lt;/li&gt;
+    &lt;/ul&gt;
+And this is the text after the list.&lt;/p&gt;
+</pre>
+Proper markup should rather be as follows:
+<pre>
+&lt;p&gt;This is some text before the list.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;The first list item.&lt;/li&gt;
+    &lt;li&gt;This is the second and last item.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And this is the text after the list.&lt;/p&gt;
+</pre>
+
+<h2 id="config">Configuration</h2>
+<dl id="paramslist">
+	<dt>Input XHTML</dt>
+	<dd><strong>Required.</strong> The input XHTML file to be converted.</dd>
+    <dt>Output DTBook</dt>
+    <dd><strong>Required.</strong> The output DTBook file to be created.</dd>
+    <dt>Title</dt>
+    <dd><strong>Optional.</strong> The title of the publication. If no value is supplied, the information is extracted from the source file, if possible.</dd>
+    <dt>dtb:uid</dt>
+    <dd><strong>Optional.</strong> The publications unique identifier. If no value is supplied, the information is extracted from the source file, if possible.</dd>
+    <dt>CSS</dt>
+    <dd><strong>Optional.</strong> The Cascading Style Sheet (CSS) to be referenced from the generated DTBook document.</dd>
+</dl>
+
+<!-- <table>
+	<tr valign="top">
+		<th>Parameter</th>
+		<th>Value</th>
+		<th>Comments</th>
+	</tr>
+	<tr valign="top">
+		<td>Input NCC</td>
+		<td>URI</td>
+		<td>The URI to the NCC file for the DAISY 2.02 to be migrated. This parameter is required.</td>
+	</tr>
+	<tr valign="top">
+		<td>Output directory</td>
+		<td>Path</td>
+		<td>Path to the folder for the resulting Zed talking book. This parameter is required.</td>
+	</tr>
+	<tr valign="top">
+		<td>Input DTB Type</td>
+		<td>
+			<span class="text">Auto detect</span>,
+			<span class="text">NCC ONly</span> or
+			<span class="text">Full/Partial text</span>
+		</td>
+		<td>Used to specify the type of DTB to be migrated. This parameter is optional, with
+			<span class="text">Auto detect</span> as the default value.
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>Identifier</td>
+		<td>String</td>
+		<td>A string that uniquely identifies the Zed talking book to be generated. This parameter is optional.</td>
+	</tr>
+	<tr valign="top">
+		<td>Add NCX navLabel audio</td>
+		<td>Checked or unchecked</td>
+		<td>Check this box to have audio added to the NCX <code>navMap</code>,
+			<code>pageList</code> and <code>navList</code> elements.
+			The process of adding such audio elements will increase the transformation time notably,
+			especially for DAISY 2.02 books with a rich navigational structure.
+			This parameter is optional, and the default is not to add audio elements.</td>
+	</tr>
+	<tr valign="top">
+		<td>Audio clip length</td>
+		<td>Integer</td>
+		<td>Use this parameter to specify the shortest allowed clip length for audio used for <code>navLabel</code>
+			elements in the NCX. Minimum value is 1 millisecond and maximum is 5000 milliseconds (equals 5 seconds).
+			If the first audio event in the DAISY 2.02 DTB, that is associated with the relevant navigation point, is shorter than
+			the specified value, the transformer will try to add another audio event to the  <code>navLabel</code>.
+			This parameter is optional, and the default is 1000 milliseconds (equals 1 second).
+			<br />
+			Note; it only makes sense to specify a value for this parameter, if the "Add NCX navLabel audio" check box is checked.
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>Transfer NCC metadata</td>
+		<td>Checked or unchecked</td>
+		<td>Check this box to have appropriate metadata transfered from the DAISY 2.02 NCC file to the
+			DTBook file(s) generated in the process.
+			This parameter is optional, and the default is not to transfer metadata.</td>
+	</tr>
+	<tr valign="top">
+		<td>Optional CSS</td>
+		<td>URI</td>
+		<td>The URI to a CSS (Cascading Style Sheet) file that will be copied to the output directory, and that will be referenced from the the DTBook file(s) generated in the process.
+			This parameter is optional. If no CSS is specified, a default CSS (dtbook.2005.basic.css) will be referenced from the DTBook file(s),
+			and will be copied to the output directory.
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>Optional Resource File</td>
+		<td>URI</td>
+		<td>The URI to a Z39.86 Resource File that will be copied to the output directory, and for a part of the
+			talking book.
+			This parameter is optional. If no resource file is specified, no such file will be available in the resulting talking book.
+		</td>
+	</tr>
+</table> -->
+
+<h2 id="output">Output</h2>
+<p>A DTBook document that is hopefully valid. The output is automatically validated, so watch out for error reports.</p>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/no_hks_xhtml2dtbook.html">XHTML to DTBook</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

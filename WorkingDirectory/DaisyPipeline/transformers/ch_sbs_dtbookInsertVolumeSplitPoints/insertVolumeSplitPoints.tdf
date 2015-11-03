@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>DTBook Insert Volume Split Points</name>
+	<description>Insert split points in a DTBook 2005 document so it can be split into multiple volumes</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<license>LGPL</license>
+	<author>Christian Egli</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/ch_sbs_dtbookVolumeSplitter.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/insertVolumeSplitPoints.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="true">
+		  <name>number_of_volumes</name>			
+		  <description>Number of split points that should be inserted in the xml</description>
+		  <example>1</example>
+		  <enum>
+		    <value>1</value>
+		    <value>2</value>
+		    <value>3</value>
+		    <value>4</value>
+		    <value>5</value>
+		    <value>6</value>
+		    <value>7</value>
+		    <value>8</value>
+		    <value>9</value>
+		    <value>10</value>
+		    <value>11</value>
+		    <value>12</value>
+		    <value>13</value>
+		    <value>14</value>
+		    <value>15</value>
+		    <value>16</value>
+		    <value>17</value>
+		    <value>18</value>
+		    <value>19</value>
+		    <value>20</value>
+		    <value>21</value>
+		    <value>22</value>
+		    <value>23</value>
+		    <value>24</value>
+		    <value>25</value>
+		    <value>26</value>
+		    <value>27</value>
+		  </enum>
+		  <default>1</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>allowed_stretch</name>			
+		  <description>How much can a volume be streched so that the volume splits occur at nearby level1</description>
+		  <example>0.1</example>
+		  <enum>
+		    <value>0</value>
+		    <value>0.05</value>
+		    <value>0.1</value>
+		    <value>0.2</value>
+		    <value>0.3</value>
+		  </enum>
+		  <default>0.1</default>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>out</name>
+			<description>The output DTBook document with split points</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>

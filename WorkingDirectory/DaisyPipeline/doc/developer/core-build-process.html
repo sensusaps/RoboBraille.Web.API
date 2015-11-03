@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Core Build Process</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Core Build Process</h1>
+
+  <p class="author">Linus Ericson, Markus Gylling, Romain Deltour</p>
+  <p class="updated">Latest update: 2007-12-21</p>
+  <p class="summary">A step-by-step guide on building the Pipeline core.</p>
+
+
+<p>Note: In the following guide {DATE} is the date of the date of the release in YYYYMMDD format.</p>
+
+<ol>
+
+<li>
+	<p>Make sure the project is updated to the latest svn version.</p>
+</li>
+
+<li>If you are making an official release (i.e. not just local for your own needs) Make sure to have run the entire suite in <code>org.daisy.pipeline.test.TestDriver</code> (using the main method of TestDriver) in the IDE.</li>
+	
+<li>
+	<p>If you are making an official release, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p>
+</li>
+
+<li>
+	<p>Make sure the build-core.xml is updated, i.e. the JARs defined in the &lt;fileset&gt; with id="fileset.utilJars" are correct.</p>
+</li>
+
+<li>
+  <p>Excluding a certain transformer:</p>
+  <ul>
+  <li>make sure the transformer is not used by any scripts...</li>
+  <li>In build-core.xml, edit the &lt;patternset&gt; with id="patternset.transformers". Add an exclude line: &lt;exclude name="int_daisy_validator/**/*.*"/&gt;</li>
+  </ul>
+</li>
+
+<li>
+	<p>If you are making an official build, make sure the UserAgreement.txt file lists the corrent libraries.</p>
+</li>
+
+<li>
+	<p>If you are making an official build, create a tag:</p>
+	<ul>
+	   <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
+	   <li>set the "To URL" to "https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE}"</li>
+	</ul>   
+	<p>Or from the command line: <code>svn copy https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/trunk/dmfc https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE} -m "Tagging the v{DATE} release."</code></p>
+</li>
+
+
+<li>
+<p>Make sure the following is run on a clean pipeline checkout:</p>
+<p>Run the "all" target in the build script. The generated files are:</p>
+<ul>
+  <li>dist/pipeline-${DATE}.zip</li>
+  <li>dist/pipeline-${DATE}-src.zip</li>
+  <li>dist/org.daisy.util-docs-${DATE}.zip</li>
+  <li>dist/org.daisy.pipeline-framework-docs-${DATE}.zip</li>
+  <li>dist/org.daisy.pipeline-transformers-docs-${DATE}.zip</li>
+</ul>
+</li>
+
+<li>
+<p>Test the generated build!</p>
+<ul>
+  <li>Minimally, run a couple of scripts, preferably using both pipeline.bat and pipeline.sh.</li>
+  <li>If creating an official release, make sure to have run the entire suite in <code>org.daisy.pipeline.test.TestDriver</code> (using the main method of TestDriver).</li>
+  <li>make sure the javadoc looks OK</li>
+ </ul> 
+</li>
+
+<li><p>Upload to sf.net</p>
+  <p>Create a release named "pipeline-{ISO-DATE}" (where {ISO-DATE} is the release date in YYYY-MM-DD format) in the "pipeline" package and upload the generated zip files.</p>
+  <p>Make sure to update edit the download page (using the "Create/Edit Download Page" link) to point to pipeline-${DATE}.zip.</p>
+</li>
+
+<li><p>Change the download link on the Pipeline sourceforge website download section to <code>http://downloads.sourceforge.net/daisymfc/pipeline-{DATE}.zip</code></p></li>
+
+<li><p>Rebuild the documentation suite using <code>org.daisy.pipeline.util.DocIndexGenerator</code> to regenerate indices, and then upload the whole /doc directory on the Pipeline sourceforge website.</p>
+	<p>Note: make sure write acces is given to both user and group, if not run from the sf shell:<br/>
+	<code>$ cd /home/groups/d/da/daisymfc</code><br/>
+	<code>$ chgrp daisymfc . -R</code><br/>
+	<code>$ find . -type f -exec chmod 664 {} \;</code><br/>
+	<code>$ find . -type d -exec chmod 775 {} \;</code>
+		</p>
+</li>
+
+</ol>
+
+</body>
+</html>

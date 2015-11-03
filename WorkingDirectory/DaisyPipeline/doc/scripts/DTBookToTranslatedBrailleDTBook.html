@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+  <head>
+    <meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+    <title>Pipeline Script: DTBook to translated Braille DTBook [BETA]</title>
+    <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+  </head>
+  <body>
+    <h1 class="title">Pipeline Script: <em>DTBook to translated Braille DTBook</em> [BETA]</h1>
+    
+    <div id="toc" class="toc">
+      <ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a></li>
+	<li><a href="#config">Configuration</a></li>
+	<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+      </ul>
+    </div>
+    
+    <h2 id="overview">Overview</h2>
+    <p>This script converts a DTBook 2005 document to another DTBook
+    document where all the text nodes are translated Braille.</p>
+    <p>The script can be used to translate DTBook to Braille for later
+    formatting.</p>
+
+    <p>You need to
+    install <a href="http://code.google.com/p/liblouis/">Liblouis</a>
+    for this transformer to work.</p>
+  	
+  	 <p class="alert">This script has mostly been tested on Linux. When 
+  	 the LibLouis library is not installed in a standard location and 
+  	 cannot found (resulting in a <code>UnsatisfiedLinkError</code>),
+  	 the Java VM has to be started with the option <code>-Djna.library.path=/path/to/liblouis/</code>
+  	 </p>
+
+    <p>This script maps
+    an <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO language
+    code</a> taken from the <tt>xml:lang</tt> attribute and a
+    contraction grade to a specific Liblouis table. If this mapping is
+    not according to your specification check the mapping in the xsl
+    in the transformer.</p>
+
+    <h2 id="inputReqs">Input Requirements</h2>
+    <p> No specific requirements beyond that the input needs to be a
+    valid DTBook 2005 document.</p>
+
+    
+    <h2 id="output">Output</h2>
+    <p>The script generates DTBook XML. All text nodes will be
+    translated to Braille according to the <tt>xml:lang</tt> tag in
+    the root node of the DTBook XML and the given contraction
+    grade.</p>
+
+    <h2 id="config">Configuration</h2>
+    
+    <dl id="paramslist">	
+      <dt>Input DTBook</dt>
+      <dd><strong>Required.</strong> The input DTBook document; the grammar version needs to be in the 2005 series.</dd>
+      
+      <dt>Output DTBook</dt>
+      <dd><strong>Required.</strong> Resulting DTBook document.</dd>
+      
+      <dt>Contraction Grade</dt>
+      <dd><strong>Required.</strong> The contraction grade of the
+      Braille translation. The three possible values are:
+	<dl>
+	  <dt>Grade 0</dt><dd>Translate with grade 0 contraction. For
+	  many locales this results in uncontracted Braille.</dd>
+	  <dt>Grade 1</dt><dd>Translate with grade 1 contraction. For
+	  some locales this also results in uncontracted Braille.</dd>
+	  <dt>Grade 2</dt><dd>Translate with grade 2 contraction. For
+	  most locales this results in contracted Braille</dd>
+	  </dl>
+      </dd>
+
+    </dl>
+    
+    <h2 id="transformers">Appendix: List of Transformers used</h2>
+    <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+    <ol>
+      <li><a href="../transformers/ch_sbs_dtbook2translatedbrailledtbook.html">DTBook 2 translated Braille DTBook</a></li>
+    </ol>
+    
+  </body>
+</html>

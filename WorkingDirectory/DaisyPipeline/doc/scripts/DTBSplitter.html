@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTB Splitter</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTB Splitter</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script creates a <em>Multi Volume DTB</em> from a <em>Single Volume DTB</em>.</p>
+<p>The script supports Daisy 2.02, DAISY/NISO 2002 and 2005 DTBs.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input fileset manifest file (NCC or OPF)</p>
+
+<h2 id="output">Output</h2>
+<p>A DTB that may or may not have been split into several volumes. If you select a maximum volume size
+that is larger than the total size of the DTB, the DTB will copied unaltered to the output directory.</p>
+<p>If the DTB is indeed split, the DTB volumes will be put in subdirectories of the selected output directory.</p>
+
+<h2 id="config">Configuration</h2>
+
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> Select the input manifest file (NCC or OPF)</dd>
+		
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Select the directory where the output subvolumes will be saved.</dd>
+
+		<dt>Volume size</dt>
+		<dd><strong>Optional.</strong> Select the maximum size of output volumes, in megabytes. If the destination media is a CD-R, values would typically be in the range between <code>650</code> and <code>700</code>. Default is <code>680</code>.</dd>
+	
+		<dt>Split heading depth</dt>
+		<dd><strong>Optional.</strong> Select the maximal header level in the navigation control document (ncc/ncx) at which splitting shall be allowed. Default is <code>2</code>.</dd>	
+	</dl>
+		
+	<h2 id="transformers">Appendix: List of Transformers used</h2>
+	<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+	<ol>
+		<li><a href="../transformers/se_tpb_dtbSplitter.html">DTB Splitter</a></li>
+	</ol>
+	
+</body>
+</html>

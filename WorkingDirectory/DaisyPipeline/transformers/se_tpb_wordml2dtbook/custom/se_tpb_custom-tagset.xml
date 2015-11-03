@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook ../tagsets/tagset.xsd">
+	<custom style="tpb-default">
+		<paragraphs>
+			<!-- DTBookmallen -->
+			<tag name="annotation text"><comment/></tag>
+			<!--
+			<tag name="Annotationstext">
+				<wrap value="annotation" addId="true" merge="false">
+					<using value="p"/>
+				</wrap> 
+			</tag>-->
+			
+			<!-- addID? -->
+			<tag name="Annotationstext">
+				<map value="p">
+					<attribute name="group" value="se-tpb-annotation"/>
+				</map>
+			</tag>
+			
+			<!-- Image? -->
+			<tag name="Bild">
+				<map value="imggroup"/>
+			</tag>
+			
+			<!--
+			<tag name="Bildbeskrivning">
+				<wrap value="prodnote" merge="true" addId="false">
+					<using value="p"/>
+					<attribute name="render" value="optional"/>
+				</wrap>
+			</tag> -->
+			
+			<tag name="Bildbeskrivning">
+				<map value="p">
+					<attribute name="group" value="se-tpb-prodnote"/>
+				</map>
+			</tag>
+			
+			<!--
+			<tag name="Bildtext">
+				<wrap value="caption" addId="false" merge="true">
+					<using value="p"/>
+				</wrap>
+			</tag>-->
+			<tag name="Bildtext">
+				<map value="p">
+					<attribute name="group" value="se-tpb-caption"/>
+				</map>
+			</tag>
+			
+			<!--
+			<tag name="Citat">
+				<wrap value="blockquote" addId="false" merge="true">
+					<using value="p"/>
+				</wrap>
+			</tag> -->
+			
+			<tag name="Citat">
+				<map value="p">
+					<attribute name="group" value="blockquote"/>
+				</map>
+			</tag>
+
+			<!--
+			<tag name="Dikt">
+				<wrap value="poem" addId="false" merge="true">
+					<using value="line"/>
+				</wrap>
+			</tag> -->
+			
+			<tag name="Dikt">
+				<map value="line">
+					<attribute name="group" value="se-tpb-poem"/>
+				</map>
+			</tag>			
+			
+			<tag name="Författare"><map value="docauthor"/></tag>
+			
+			<!--
+			<tag name="Sidebar">
+				<wrap value="sidebar" addId="false" merge="true">
+					<using value="p"/>
+					<attribute name="render" value="optional"/>
+				</wrap>
+			</tag>-->
+			
+			<tag name="Sidebar">
+				<map value="p">
+					<attribute name="group" value="se-tpb-sidebar"/>
+				</map>
+			</tag>
+
+			<!--
+			<tag name="Tabelltext">
+				<wrap value="caption" addId="false" merge="true">
+					<using value="p"/>
+				</wrap>
+			</tag>-->			
+			<tag name="Tabelltext">
+				<map value="p">
+					<attribute name="group" value="se-tpb-caption"/>
+				</map>
+			</tag>
+
+	
+			<tag name="Titel"><map value="doctitle"/></tag>
+			<!-- / DTBookmallen -->
+			
+			<tag name="TPB-Titel"><map value="doctitle"/></tag>
+			<tag name="TPB-Författare"><map value="docauthor"/></tag>
+			<tag name="TPB-Metadata"><comment/></tag>
+			<!--
+			<tag name="TPB-Bildtext">
+				<wrap value="imggroup" addId="false" merge="true">
+					<using value="caption"/>
+				</wrap>
+			</tag>-->
+			<tag name="TPB-Bildtext">
+				<map value="p">
+					<attribute name="group" value="se-tpb-caption"/>
+				</map>
+			</tag>
+			<!--
+			<tag name="TPB-Poem">
+				<wrap value="poem" addId="false" merge="true">
+					<using value="line"/>
+				</wrap>
+			</tag>-->
+			<tag name="TPB-Poem">
+				<map value="line">
+					<attribute name="group" value="se-tpb-poem"/>
+				</map>
+			</tag>
+			<!--
+			<tag name="TPB-Parallelltext">
+				<wrap value="sidebar" addId="false" merge="true">
+					<using value="p"/>
+					<attribute name="render" value="optional"/>
+				</wrap>
+			</tag>-->
+			<tag name="TPB-Parallelltext">
+				<map value="p">
+					<attribute name="group" value="se-tpb-sidebar"/>
+				</map>
+			</tag>
+			<!--  -->
+			<!--
+			<tag name="Body Text Indent">
+				<wrap value="blockquote" addId="false" merge="true">
+					<using value="p"/>
+				</wrap>
+			</tag>-->
+			<tag name="Body Text Indent">
+				<map value="p">
+					<attribute name="group" value="blockquote"/>
+				</map>
+			</tag>
+			
+			<tag name="footnote text">
+				<!--
+				<wrap value="note" addId="true" merge="false">
+					<using value="p"/>
+				</wrap>-->
+				<map value="p">
+					<attribute name="group" value="note"/>
+				</map>
+			</tag>
+			
+			<!--
+			<tag name="List" listOverride="false">
+				<wrap value="list" addId="false" merge="true">
+					<using value="li"/>
+					<attribute name="type" value="ol"/>
+				</wrap>
+			</tag>-->
+			<!-- ? -->
+			<!--
+			<tag name="Definitionslista">
+				<wrap value="dl" addId="false" merge="true">
+					<using value="dd"/>
+				</wrap>
+			</tag>-->
+			<tag name="Definitionslista">
+				<map value="dd">
+					<attribute name="group" value="se-tpb-dl"/>
+				</map>
+			</tag>
+			
+		</paragraphs>
+		<character useInlineFormatting="true">
+			<tag name="footnote reference"><noteref/></tag>
+			<!-- DTBookmallen -->
+			<tag name="Annotationsreferens">
+				<map value="annoref">
+					<attribute name="idref" value=""/>
+				</map>
+			</tag>
+			<tag name="Sub">
+				<map value="sub"/>
+			</tag>
+			<tag name="Sup">
+				<map value="sup"/>
+			</tag>
+			<tag name="Sidnummer-TPB"><pagenum/></tag>
+			<!-- / DTBookmallen -->
+			<tag name="TPB-Sidnummer"><pagenum/></tag>
+		</character>
+	</custom>
+	<custom style="tpb-sit">
+		<paragraphs>
+			<tag name="Body Text Indent"><map value="p"/></tag>
+		</paragraphs>
+		<character useInlineFormatting="true"/>
+	</custom>
+</mappings>

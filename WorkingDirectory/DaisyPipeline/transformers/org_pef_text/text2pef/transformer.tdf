@@ -1,0 +1,84 @@
+<transformer version="1.1">
+	<name>Text to PEF</name>
+	<description>Converts a text file into a basic PEF 2008-1 file.</description>
+	<classname>org_pef_text.text2pef.Text2PEF</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../../doc/transformers/org_pef_text2pef.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="text/plain">
+			<name>input</name>
+			<description>The input text file</description>
+			<example>file:///path/to/file.txt</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-pef+xml">
+			<name>output</name>			
+			<description>Output PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>mode</name>
+			<description>Read mode</description>
+			<example>en_US</example>
+			<enum>
+				<value>detect</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.EN_GB</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.DA_DK</value>
+				<value>org_daisy.BrailleEditorsTableProvider.TableType.BRF</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.DE_DE</value>
+				<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO</value>
+				<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO256</value>
+				<value>com_indexbraille.IndexTableProvider.TableType.BLUE_BAR</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.IT_IT_FIRENZE</value>
+				<value>org_daisy.BrailleEditorsTableProvider.TableType.MICROBRAILLE</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.ES_ES</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.ES_ES_TABLE_2</value>
+				<value>com_yourdolphin.SupernovaTableProvider.TableType.SV_SE_6DOT</value>
+				<value>se_tpb.CXTableProvider.TableType.SV_SE_CX</value>
+				<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.UNICODE_BRAILLE</value>
+			</enum>
+			<default>detect</default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>author</name>
+			<description>Document author</description>
+			<example>Author</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>title</name>
+			<description>Document title</description>
+			<example>A title</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>identifier</name>
+			<description>Document identifier</description>
+			<example>UID-00001</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>language</name>
+			<description>Document language</description>
+			<example>en</example>
+			<default></default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

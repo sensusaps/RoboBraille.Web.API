@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+	<title>uk_rnib_dtbook2xhtml</title>
+	<style type="text/css">
+	  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+	</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: uk_rnib_dtbook2xhtml</h1>
+<p class="alert">This document remains to be written</p>
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Convert a DTBook document to XHTML, optionally making the XHTML suitable for Daisy 2.02 DTB production.</p>
+<p>Note: this transformer uses the XSLT <em>dtbook2xhtml.xsl</em> placed in org/daisy/util/xml/xslt/stylesheets.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A DTBook document, valid to 2005-1 dtd or later. The document may contain MathML islands as defined by the MathML-in-DAISY specification.</p>
+
+<h2 id="output">Output</h2>
+<p>An XHTML 1.0 document. If the input DTBook document contains MathML, the output will be using the W3C <strong>DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1</strong> profile.</p> 
+
+<h3 id="success">On success</h3>
+<p>A valid XHTML 1.0 or XHTML 1.1 document.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<p>See <a href="../scripts/DTBookToXhtml.html">Script Documentation</a>.</p>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+<p>None.</p>
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+	<li>none</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

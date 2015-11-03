@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript>
+<taskScript version="2.0" name="DtbookToBrl">
+	<nicename>DTBook to translated Braille DTBook [BETA]</nicename>
+	<description>Convert designated portions of a DAISY 3.0 XML to Braille</description>
+   	<documentation uri="../../doc/scripts/DTBook2TranslatedBrailleDTBook.html"/>
+    <comment/>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook</nicename>
+		<description>Select the input DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output DTBook</nicename>
+		<description>Select the translated Braille output DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>	
+
+  <parameter name="grade" value="0" required="false">
+    <nicename>Contraction grade</nicename>
+    <description>Contraction grade for the Braille transcription</description>
+      
+    <datatype>
+     <enum>
+       <item nicename="Grade 0" value="0"/>
+       <item nicename="Grade 1" value="1"/>
+       <item nicename="Grade 2" value="2"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+	<task name="ch_sbs_dtbook2translatedbrailledtbook" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>						
+
+		<parameter>
+			<name>grade</name>
+			<value>${grade}</value>
+		</parameter>						
+	</task>		
+
+</taskScript>

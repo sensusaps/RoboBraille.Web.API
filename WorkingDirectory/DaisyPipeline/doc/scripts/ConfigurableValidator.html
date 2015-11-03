@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Configurable Validator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Configurable Validator</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This advanced script validates input of varying types, and allows you to customize what validation
+is actually performed by allowing you to attach additional validation resources to the process.</p>
+
+<p>Note that the script may or may not be able to perform a validation - if the script is not able
+to identify the type of the input file, or if it cannot locate any (built-in or added) validation resources, it will
+issue an error message and fail.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>The input file of the document or fileset to be validated.</p>
+
+<h2 id="output">Output</h2>
+<p>By default, this script does not render any physical output; instead, messages are displayed 
+in the user interface. However, by configuring the <a href="#report">XML Report setting</a>, 
+you can have the validation result stored in an XML document.</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+
+<dl id="paramslist">	
+	<dt>Input file</dt>
+	<dd><strong>Required.</strong> Path to input file</dd>		
+
+	<dt>XML Report</dt>
+	<dd><strong>Optional.</strong> Select a file to store an XML report in. Default is to not store a report at all.</dd>
+					
+	<dt>Report stylesheet</dt>
+	<dd><strong>Optional.</strong> Add a reference to a specific XSLT stylesheet to include in the XSL processing instruction in the generated XML output. This will override (not complement) the stylesheet that is used as default. This setting only has meaning if the XML Report setting has been activated.</dd>
+	
+	<dt>Abort on Exception</dt>
+	<dd><strong>Optional.</strong> Whether to perform a Job abort when a caught exception occurs. Default is true.</dd>
+	
+	<dt>Generate Context Info</dt>
+	<dd><strong>Optional.</strong> 
+	Show additional hints on the location of the error; if available, nearest heading, nearest page, surrounding text and XML path. This feature does not work identically across grammars, and for some grammars not at all. Default is false.</dd>
+		
+	<dt>Additional schemas</dt>
+	<dd><strong>Optional.</strong> Comma separated list of additional schemas to apply while validating. The schemas can be of Schematron, RelaxNG or WXS types.</dd>
+		
+	<dt>Java delegates</dt>
+	<dd><strong>Optional.</strong> Comma separated list of fully qualified names of Java delegates to execute on the input. The delegates must implement the <code>org.daisy.util.fileset.validation.delegate.ValidatorDelegate</code> interface.</dd>
+		
+	<dt>Force implementation</dt>
+	<dd><strong>Optional.</strong> A fully qualified Java name of a Fileset validator to use to validate an input fileset. The validator must implement the <code>org.daisy.util.fileset.validation.Validator</code> interface.</dd>
+			
+	<dt>Require Input Type</dt>
+	<dd><strong>Optional.</strong> Require the input content to be of a specific type, if the content is not of this type, abort. The default value is "Off", meaning that content type requirement checks are not made.</dd>					
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

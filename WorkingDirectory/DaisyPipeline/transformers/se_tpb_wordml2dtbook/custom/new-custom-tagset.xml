@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook ../tagsets/tagset.xsd">
+	<custom style="default">
+		<paragraphs>
+			<tag name="example">
+				<map value="p"/>
+			</tag>
+		</paragraphs>
+		<character useInlineFormatting="true"/>
+	</custom>
+</mappings>

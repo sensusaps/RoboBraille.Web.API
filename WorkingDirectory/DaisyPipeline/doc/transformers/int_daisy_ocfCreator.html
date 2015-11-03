@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_ocfCreator</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_ocfCreator</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Create a <a href="http://www.idpf.org/ocf/ocf1.0/index.htm">Open eBook Publication Structure Container Format (OCF) 1.0
+</a> archive from one or several input documents.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A list (1-n) of documents to add.</p>
+<p>If documents to add constitute filesets (such as an OPS publication), only point to the fileset manifest (in the case of OPS, package file).</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>An OCF 1.0 container</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>File.pathSeparator separated list of path specs</dd>
+	<dt>output</dt>
+	<dd>Pathspec of output OCF .epub file</dd>
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<p>None at time of writing</p>
+	
+<h2 id="future">Further development</h2>
+<p>Implement IRI validity checking, and further file name constraints as per the OCF spec.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>None at time of writing</p>
+
+<h2 id="owner">Author</h2>
+<p>Markus Gylling</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

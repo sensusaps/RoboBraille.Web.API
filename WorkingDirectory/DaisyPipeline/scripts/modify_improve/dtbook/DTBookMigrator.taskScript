@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="dtbookMigrator">
+	<nicename>DTBook Migrator [BETA]</nicename>
+	<description>Migrate a DTBook document to a later version of itself</description>
+	<documentation uri="../../../doc/scripts/DTBookMigrator.html"/>
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook XML file</nicename>
+		<description>Select input DTBook XML file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output DTBook XML file</nicename>
+		<description>Select the output DTBook XML file</description>
+		<datatype>
+			<file mime="application/xhtml+xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="version" value="LATEST" required="false">
+		<nicename>Output version</nicename>
+		<description>Select the desired output version</description>
+		<datatype>
+			<enum>
+			  <item nicename="Latest available" value="LATEST" />
+			  <item nicename="2005-1" value="2005-1" />
+			  <item nicename="2005-2" value="2005-2" />
+			  <item nicename="2005-3" value="2005-3" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>false</value>
+		</parameter>
+	</task>
+
+	<task name="us_rfbd_dtbookMigrator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		<parameter>
+			<name>version</name>
+			<value>${version}</value>
+		</parameter>		
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>	
+	
+</taskScript>

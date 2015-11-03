@@ -1,0 +1,133 @@
+<transformer version="1.0">
+	<name>NIMAS fileset creator</name>
+	<description>
+		Create a full NIMAS fileset (OPF, dtbook w/images, PDF)
+		from the dtbook file, PDF, and metadata
+	</description>
+	<classname>us_rfbd_nimasCreator.NimasCreator</classname>
+	<license>LGPL</license>
+	<author>James Pritchett</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/us_rfbd_nimasCreator.html"/>
+
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The input DTBook XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="in" type="application/pdf">
+			<name>pdf</name>
+			<description>The input PDF file</description>
+			<example>file:///path/to/file.pdf</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+
+<!-- Required metadata -->
+    <!-- DTD-required -->
+		<parameter required="true" type="string">
+			<name>title</name>
+			<description>Dublin Core Title</description>
+			<example>In Cold Blood: A True Account of a Multiple Murder and Its Consequences</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>ISBN</name>
+			<description>Primary ISBN for the book</description>
+			<example>0679745580</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>language</name>
+			<description>Dublin Core Language</description>
+			<example>en</example>
+			<default/>
+		</parameter>
+
+    <!-- NIMAS-required -->
+		<parameter required="true" type="string">
+			<name>publisher</name>
+			<description>Name of publisher of print book</description>
+			<example>Pearson Scott Foresman</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>edition</name>
+			<description>Numerical edition of a revised textbook</description>
+			<example>3rd ed.</example>
+			<default/>
+		</parameter>
+
+    <!-- NIMAC required -->
+        <parameter required="true" type="enum">
+            <name>contentType</name>
+            <description>Category of material</description>
+            <example>textbook</example>
+            <enum>
+                <value>textbook</value>
+                <value>consumable</value>
+                <value>supplementary reading</value>
+                <value>other</value>
+            </enum>
+            <default>textbook</default>
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>copyrightDate</name>
+            <description>Most recent copyright year of print book (YYYY)</description>
+            <example>2008</example>
+            <default />
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>gradeLevel</name>
+            <description>The grade level or grade range for the instructional material</description>
+            <example></example>
+            <default />
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>publisherPlace</name>
+            <description>The geographic location of the publisher</description>
+            <example>New York</example>
+            <default />
+        </parameter>
+
+        <parameter required="false" type="string">
+            <name>series</name>
+            <description>an additional, collective title for texts that belong to a publisher series</description>
+            <example>Exploring Science Series ; v. 2</example>
+            <default />
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>stateEdition</name>
+            <description>whether the book is a state edition or national edition</description>
+            <example>NY ed.</example>
+            <default />
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>subject</name>
+            <description>subject content of the text</description>
+            <example>Physical Fitness</example>
+            <default />
+        </parameter>
+
+        <parameter required="true" type="string">
+            <name>publicationDate</name>
+            <description>Year of publication of print book (YYYY)</description>
+            <example>2008</example>
+            <default />
+        </parameter>
+	</parameters>
+</transformer>

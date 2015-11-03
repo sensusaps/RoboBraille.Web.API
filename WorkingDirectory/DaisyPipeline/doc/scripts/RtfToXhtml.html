@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: RTF to XHTML</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>RTF to XHTML</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#inputReqs">Input Requirements</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script will transform an RTF file to XHTML 1.0.</p>
+<p>This script is different from other available RTF to XHTML transforms in that it <em>performs the conversion via a roundtrip to DTBook</em>. This means that following a successful transformation, the result will be clean and strict, and suitable for for example DTB production.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input RTF file needs to conform to the constraints and authoring style as defined in the <a href="RtfToDtbook.html#rtf-formatting">RTF authoring guidelines</a>.</p>
+
+<h2 id="output">Output</h2>
+<p>An XHTML 1.0 document.</p>
+
+<h2 id="config">Configuration</h2>
+
+<p>This script is a combination of other scrips. For configuration details, please refer to:</p>
+<ul>
+	<li><a href="RtfToDtbook.html">RTF to DTBook</a></li>
+	<li><a href="DtbookToXhtml.html">DTBook to XHTML</a></li>	
+</ul>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/ca_cnib_rtf2dtbook.html">RTF to DTBook</a></li>
+	<li><a href="../transformers/uk_rnib_dtbook2xhtml.html">DTBook to XHTML</a></li>	
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

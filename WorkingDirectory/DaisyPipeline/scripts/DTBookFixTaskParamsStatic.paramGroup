@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+		<parameter>
+			<name>forceRun</name>
+			<value>${forceRun}</value>
+		</parameter>
+
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>${simplifyHeadingLayout}</value>
+		</parameter>
+
+		<parameter>
+			<name>externalizeWhitespace</name>
+			<value>${externalizeWhitespace}</value>
+		</parameter>
+
+		<parameter>
+			<name>fixCharset</name>
+			<value>${fixCharset}</value>
+		</parameter>
+		
+		<parameter>
+			<name>documentLanguage</name>
+			<value>${documentLanguage}</value>
+		</parameter>
+</paramGroup>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	&ValidatorScriptParamsSimpleStatic;	 
+	
+	<parameter name="validatorAbortOnException" value="true" required="false">
+		<nicename>Abort on Exception</nicename>
+		<description>Perform a Transformer abort when a caught exception occurs?</description>
+		<datatype>
+			<boolean />
+		</datatype>
+	</parameter>
+
+	<parameter name="validatorXmlStylesheet" value="" required="false">
+		<nicename>Report stylesheet</nicename>
+		<description>The value of the xml-stylesheet processing instruction in the generated xml output.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="validatorInputSchemas" value="" required="false">
+		<nicename>Additional schemas</nicename>
+		<description>Comma separated list of additional schemas</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="validatorInputDelegates" value="" required="false">
+		<nicename>Java delegates</nicename>
+		<description>Comma separated list of Java delegates</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="validatorForceImplementation" value="" required="false">
+		<nicename>Force implementation</nicename>
+		<description>A fully qualified Java name of a Fileset validator to use</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="validatorRequireInputType" value="off" required="false">
+			<nicename>Require Input Type</nicename>
+			<description>Require the content to be of this type</description>
+			<datatype>
+				<enum>
+					<item nicename="Off" value="off"/>
+					<item nicename="Dtbook document" value="Dtbook document"/>
+					<item nicename="XHTML document" value="XHTML document"/>
+					<item nicename="DAISY 2.02 DTB" value="DAISY 2.02 DTB"/>
+					<item nicename="Z3986 DTB" value="Z3986 DTB"/>
+					<item nicename="NIMAS fileset" value="NIMAS fileset"/>
+				</enum>
+			</datatype>
+	</parameter>
+
+</paramGroup>	

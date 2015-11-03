@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_charsetSwitcher</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: se_tpb_charsetSwitcher</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Switches character set on all XML files in a fileset to the,
+desired encoding. The transcoding is performed using XSLT, so
+any encoding supported by the XSLT processor (currently saxon8)
+should be supported. Characters that can't be represented by the
+output encoding will be converted to a numeric entity. For example,
+'&#8730;' will be converted to &amp;#8730; if not supported by the
+output character set.</p>
+<p>It is also possible to specify if the XML documents
+shall use unix, dos or mac line breaks.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer is written to work on any file/fileset that can
+be represented by the <code>org.daisy.util.fileset</code> package.</p>
+<p>Character set transcoding will only be done on XML members of the
+input fileset; all other types of members pass through untouched.</p>
+<p>If no file in the fileset is of type XML, then the whole fileset
+will pass through untouched. It is therefore safe to place this
+transformer in contexts whose dataflow varies considerably.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose XML members has been transcoded, and
+optionally has had certain characters substituted by replacement
+strings. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>No specific recovery scheme. On error, this transformer will send
+a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>input</dt>
+	<dd>The input XML file (standalone or manifest)</dd>
+
+	<dt>output</dt>	
+	<dd>The output directory</dd>
+	
+	<dt>encoding</dt>
+	<dd>Character set encoding of the output file(s). If not set, <code>utf-8</code> is used as default.</dd>
+	
+	<dt>breaks</dt>
+	<dd>The type of line breaks to use in the output files. Possible values are <code>unix</code>,
+	 <code>dos</code>, <code>mac</code> and <code>default</code>. The default value is (unsurprisingly)
+	 <code>default</code>.</dd>	
+	
+</dl>
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>Most of the functionality of this transformer could also be performed using the int_daisy_unicodeTranscoder.
+This transformer can probably be deprecated when some third party packages used by the int_daisy_unicodeTranscoder
+become more stable.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>Currently the Saxon8 XSLT processor is used to perform the actual transcoding.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

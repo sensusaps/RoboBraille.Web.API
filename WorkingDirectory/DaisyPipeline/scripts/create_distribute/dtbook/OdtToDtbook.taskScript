@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+<!ENTITY DTBookFixCategoryScriptParam SYSTEM "../../DTBookFixCategoryScriptParam.paramGroup">
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../DTBookFixTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="OdtToDtbook">
+	<nicename>OpenDocument Text to DAISY XML (DTBook)</nicename>
+	<description>Convert an OpenDocument Text to DAISY 3.0 XML</description>
+   	<documentation uri="../../../doc/scripts/OdtToDtbook.html"/>
+    <comment/>
+			
+	<parameter name="odt" value="" required="true">
+		<nicename>Input ODT</nicename>
+		<description>Select the input OpenDocument Text file</description>
+		<datatype>
+			<file mime="application/vnd.oasis.opendocument.text" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="dtbook" value="" required="true">
+		<nicename>Output DTBook</nicename>
+		<description>Select the output DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="uid" value="" required="false">
+		<nicename>UUID</nicename>
+		<description>Unique IDentifier of DAISY 3.0 XML file</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>Title of DAISY 3.0 XML file</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="creator" value="" required="false">
+		<nicename>Creator</nicename>
+		<description>Creator of DAISY 3.0 XML file</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="publisher" value="" required="false">
+		<nicename>Publisher</nicename>
+		<description>Publisher of DAISY 3.0 XML file</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="producer" value="" required="false">
+		<nicename>Producer</nicename>
+		<description>Producer of DAISY 3.0 XML file</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>	
+	
+	<parameter name="alt" value="false" required="false">
+		<nicename>Alternative Level markup</nicename>
+		<description>Use depth attribute</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="css" value="false" required="false">
+		<nicename>Enable CSS</nicename>
+		<description>Include CSS linked to DAISY 3.0 XML file</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="page" value="false" required="false">
+		<nicename>Enable pagination</nicename>
+		<description>Include pagenum tag into DAISY 3.0 XML file</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>	
+	
+	&DTBookFixCategoryScriptParam;
+	&DTBookFixScriptParamsStatic;		
+	&ValidatorScriptParamsSimpleStatic;		
+			
+	<task name="int_vspiewak_odt2daisy" interactive="false">
+		<parameter>
+			<name>odt</name>
+			<value>${odt}</value>
+		</parameter>
+					
+		<parameter>
+			<name>dtbook</name>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
+		</parameter>						
+		
+		<parameter>
+			<name>uid</name>
+			<value>${uid}</value>
+		</parameter>
+		
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>		
+		
+		<parameter>
+			<name>creator</name>
+			<value>${creator}</value>
+		</parameter>
+		
+		<parameter>
+			<name>publisher</name>
+			<value>${publisher}</value>
+		</parameter>
+		
+		<parameter>
+			<name>producer</name>
+			<value>${producer}</value>
+		</parameter>
+
+		<parameter>
+			<name>alt</name>
+			<value>${alt}</value>
+		</parameter>
+		
+		<parameter>
+			<name>css</name>
+			<value>${css}</value>
+		</parameter>
+		
+		<parameter>
+			<name>page</name>
+			<value>${page}</value>
+		</parameter>
+		
+	</task>		
+
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${dtbook}</value>
+		</parameter>		
+		
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFixRunCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;	
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${dtbook}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;
+												
+	</task>	
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>$parent{dtbook}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+</taskScript>

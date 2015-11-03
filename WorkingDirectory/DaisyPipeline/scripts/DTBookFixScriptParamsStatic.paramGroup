@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+	<parameter name="forceRun" value="false" required="false">
+		<nicename>Force Execution</nicename>
+		<description>Check box to run all selected categories even if the input document is not in the expected state (valid, invalid, etc)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="simplifyHeadingLayout" value="false" required="false">
+		<nicename>Simplify heading layout</nicename>
+		<description>Optional routine in the Tidy category. Check box to simplify heading layout by moving headings upward where possible</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="externalizeWhitespace" value="false" required="false">
+		<nicename>Tidy inline whitespace</nicename>
+		<description>Optional routine in the Tidy category. Check box to move leading and trailing whitespace outside of em, strong, sub, sup, noteref and pagenum elements</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="fixCharset" value="false" required="false">
+		<nicename>Fix Character set</nicename>
+		<description>Optional routine in the Repair category. Check box to attempt to fix an invalid stated character set</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="documentLanguage" value="" required="false">
+		<nicename>Document language</nicename>
+		<description>Set the document language (as defined by IETF RFC 3066). Leave blank to use default value</description>
+		<datatype>
+			<string regex="([a-zA-Z]{1,8}(\-[0-9a-zA-Z]{1,8})*)?"/>
+		</datatype>
+	</parameter>
+	
+</paramGroup>

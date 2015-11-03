@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DAISY 3 to DAISY 2.02 [BETA]</title>
+    <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+	<style type="text/css">
+/*	  body {margin: 2em; font-family: arial, verdana, sans-serif;} */
+      table {border-collapse:collapse;font-size:small;}
+        td,th {border:1pt solid rgb(220,220,220);padding:2pt;}
+        th {background-color:rgb(255,255,230);}
+      span.text {font-style:italic;color:rgb(170,120,120);}
+      pre, code {font-family:monospace; color:rgb(120,120,170);}
+      code {font-size:100%;}
+      pre {font-size:small;}
+      ul {margin-bottom:0.5ex;margin-top:0.5ex;}
+      tr.x {background-color:rgb(252,252,255);}
+      ul#input-reqs li {margin-bottom:1ex;}
+	</style>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DAISY 3 to DAISY 2.02</em> [BETA]</h1>
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a></li>
+    <li><a href="#config">Configuration</a></li>
+    <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose -->
+<p>This script converts a full-text full-audio DAISY/NISO 2005 DTB to a Daisy 2.02 DTB.</p>
+
+<p class="alert">The script has only been tested with DAISY 3 DTBs created by the Pipeline TTS Narrator.
+Please check the <a href="#inputReqs">input requirements</a> for a list of known limitations.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A valid full-text full-audio DAISY/NISO Z39.86 talking book. Please note that no validation of this book is performed before
+transformation takes place,
+so any problems during transformation or with the result of the process, might be due to
+invalid input.
+</p>
+<p>The transformer has only been tested with z3986 DTBs created by the Pipeline TTS Narrator.
+The current known limitations are:</p>
+<ul>
+  <li>The first par of each zed smil file must be a heading (daisy 2.02 style)</li>
+  <li>The smil clip of a note must immediately follow the smil clip of the noteref</li>
+  <li>No parts of the book may reside in subfolders</li>
+  <li>Only one DTBook document (per book) may be used</li>
+  <li>The docTitle element in the NCX must have an audio clip</li>
+  <li>Only type 4 (full text, full audio) DTBs are supported</li>
+</ul>
+
+<h2 id="config">Configuration</h2>
+<dl id="paramslist">
+    <!-- Required -->
+	<dt>Input OPF</dt>
+	<dd><strong>Required.</strong> The Package (opf) file of the DTB to be converted.</dd>
+	<dt>Output Directory</dt>
+	<dd><strong>Required.</strong> The directory for the resulting DAISY 2.02 DTB.</dd>
+    <!-- Optional -->
+	<dt>2.02 href target</dt>
+	<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC of the DAISY 2.02 book.</dd>
+</dl>
+
+<h2 id="output">Output</h2>
+<p>A DAISY 2.02 full-text full-audio book that is hopefully valid. The output is automatically validated, so watch out for error reports.</p>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/se_tpb_zed2daisy202.html">Z3986-2005 to Daisy 2.02 Converter</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

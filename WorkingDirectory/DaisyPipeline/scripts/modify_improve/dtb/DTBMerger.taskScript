@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="DTBMerger">
+	<nicename>DTB Merger</nicename>
+	<description>Merges a Multi Volume DTB into a Single Volume DTB</description>
+   	<documentation uri="../../../doc/scripts/DTBMerger.html"/>
+    <comment/>     	
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input directory</nicename>
+		<description>Select the Daisy multivolume DTB fileset main directory. The directory should contain subdirectories with the book's subvolumes</description>
+		<datatype>
+			<directory type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="redundant" value="false" required="false">
+		<nicename>Keep redundant files</nicename>
+		<description>Select whether redundant files such as prompt files or distInfo.dinf should be copied to output.</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+						
+	<task name="se_tpb_dtbSplitterMerger.merge" interactive="false">
+		<parameter>
+			<name>multiVolumeDTBPath</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>outDirPath</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>keepRedundant</name>
+			<value>${redundant}</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>Pipeline Script: Emboss PEF</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Pipeline Script: Emboss PEF</h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#inputReqs">Input Requirements</a></li>
+  <li><a href="#output">Output</a></li>
+  <li><a href="#config">Configuration</a></li>
+  <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>This script embosses PEF 2008-1 documents.</p>
+
+<p>To achieve correct result using Braillo embossers, the embosser must be
+configured for "USA 6 DOT 001.00" or "ENGLAND 6 DOT 044.00".</p>
+
+<p>To achieve correct result using other embossers with the script "Emboss PEF
+(generic embosser)", the embosser must be configured for North American ASCII
+Braille and dual-sided embossing.</p>
+
+<p>Note that, when using "Emboss PEF (generic embosser)" some features will not
+be available. These are marked with * below.</p>
+
+<h4>What is PEF?</h4>
+
+<p>The Portable Embosser Format (PEF) is a data format for representing braille
+books, accurately and unambiguously. PEF can be used for braille embossing and
+archiving anywhere in the world, no matter where nor how it was produced. PEF
+is a digital braille hardcopy - the PDF of braille books, if you will.</p>
+
+<p>For more information, see <a href="PEFIntroduction.html">Introduction to
+PEF</a>.</p>
+
+<h4>Limitations</h4>
+
+<p>The scripts assumes that the <a
+href="http://www.blista.de/download/druckerei/braille-dimensions.pdf">Marburg
+Medium spacing</a> measurments can be used when calculating space reqirements
+etc. In other words, to achieve correct result, braille cells must be 6 mm wide
+and lines must be 10 mm high once embossed.</p>
+
+<p>This script does not support files containing braille patterns specific for
+8 dot braille.</p>
+
+<h4>FAQ</h4>
+
+<p><em>I get an error message saying "Cannot fit page on paper"...</em></p>
+<ul>
+  <li><em>What does it mean?<br />
+    </em>It means that the page is too wide for the selected paper/embosser
+    combination.<br />
+    Note that the maximum width for a particular paper depends on the physical
+    properties of the selected embosser. For example, the maximum width on an
+    A4 paper range from 30 to 35 cells, depending on embosser model.</li>
+  <li><em>What should I do?<br />
+    </em>Use a wider paper.</li>
+</ul>
+
+<p><em>I get an error message saying "Cannot fit page on paper with offset
+[x]"...</em></p>
+<ul>
+  <li><em>What does it mean?<br />
+    </em>It means that the current offset setting is pushing the page off the
+    paper.</li>
+  <li><em>What should I do?<br />
+    </em>Reduce the offset setting and adjust the embosser's paper guide
+    instead.</li>
+</ul>
+
+<p><em>I get an error message saying "Could not find embosser". What should I
+do?</em></p>
+
+<p>Check the device name parameter for typos. Note that the device name is case
+sensitive.</p>
+
+<p><em>I don't know what "device name" is. How do I find it?</em></p>
+
+<p>On windows, do the following:</p>
+<ul>
+  <li>Go to Start/Printers and Faxes (or Start/Control panel/Printers and
+  Faxes)</li>
+  <li>The value in the "Name" column is the device name</li>
+</ul>
+
+<p><em>I have a Braillo embosser and everything comes out wrong...</em></p>
+<ul>
+  <li><em>Why is that?<br />
+    </em>The braille table used by the embosser is not the same as the one used
+    in the script.</li>
+  <li><em>Why doesn't the script take care of this?</em><em></em><br />
+    The script cannot tell the embosser which table to use because Braillo
+    embossers do not support this feature.</li>
+  <li><em>What should I do?</em><br />
+    Manually set the embosser's braille table to match the value used in the
+    script.</li>
+</ul>
+
+<p><em>My document contains more than 100 pages but my Braillo 440 embosser
+cannot handle that amount of pages in one go. What should I do?</em></p>
+
+<p>If the document has been organized into volumes, there is nothing to worry
+about since each volume will be sent separately to the embosser. If a single
+volume happens to contain more than 99 pages, the script will report an error
+and abort.</p>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>This script accepts PEF 2008-1 documents (containing 6 dot braille patterns
+only).</p>
+<!-- detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<p>The output is an embossed document.</p>
+
+<p>Each volume in the input document will result in a separate physical unit if
+embossed using an embosser that supports volume assembly (e.g. Braillo 440SW
+and Braillo 440SWSF).</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+<dl id="paramslist">
+  <dt>Input file</dt>
+    <dd>Select input PEF document.</dd>
+  <dt>Embosser *</dt>
+    <dd>Select the make and model of the target embosser.</dd>
+  <dt>Paper size</dt>
+    <dd>Set the size of the paper in the embosser.</dd>
+  <dt>Device name</dt>
+    <dd>Type in the name of the embosser as labelled by the computer OS. The
+      device name is case sensitive, but Emboss PEF will try to find the
+      embosser even if only a part of the device name is entered.</dd>
+  <dt>Copies</dt>
+    <dd>Set the number of document copies.</dd>
+  <dt>Page range</dt>
+    <dd>Select a range of pages to emboss.</dd>
+    <dd>Note for Braillo 440 SW (using four page mode) and Braillo 440 SWSF
+      embossers: Embossing the whole file at once will not equal the combined
+      result of embossing the same set of pages in arbitrary page range chunks
+      (unless each range spans a number of complete volumes). This is due to
+      the physical properties of these prints. For example, if a book whose
+      first volume spans pages 1-96 is embossed in two chunks, first pages 1-4
+      and then pages 5-96, the result will not equal embossing once using page
+      range 1-96.</dd>
+  <dt>Paper width error handling *</dt>
+    <dd>Select a fallback action to use when the selected paper is wider than
+      specified in the file.</dd>
+  <dt>Offset *</dt>
+    <dd><p>If the paper is wider than specified in the file, it is possible to
+      adjust the margin offset (in characters). Offset depends on paper width
+      error handling and is directed away from the alignment edge.</p>
+      <p><em>Note that this setting only has effect if the selected paper is
+      wider than specified in the file.</em></p>
+    </dd>
+  <dt>Mirror recto-verso alignment *</dt>
+    <dd><p>Applies to double sided material when the paper is wider than
+      specified in the file. If true, left-hand pages will have the opposite
+      alignment compared to right-hand pages. If false, left-hand pages will
+      have the same alignment as right-hand pages.</p>
+      <p><em>Note that this setting only has effect if the selected paper is
+      wider than specified in the file.</em></p>
+    </dd>
+  <dt>Keep output file</dt>
+    <dd>Select a destination for the file that is sent to the embosser.</dd>
+    <dd><em>Note that this feature is not compatible with some embosser
+      models.</em></dd>
+</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+
+<p>The documents linked below are parts of the <em>Transformer technical
+documentation</em>. These are developer and systems-administrator centric
+documents.</p>
+<ol>
+  <li><a
+  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
+  <li><a
+  href="../transformers/org_pef_pef2text.html">org_pef_text/pef2text</a></li>
+</ol>
+</body>
+</html>

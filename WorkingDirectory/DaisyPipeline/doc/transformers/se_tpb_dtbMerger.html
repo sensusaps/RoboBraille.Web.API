@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type'
+	content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_dtbSplitterMerger.merge</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: se_tpb_dtbSplitterMerger.merge</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>The purpose of this transformer is to merge Daisy multivolume DTB file sets.</p>
+<p>In its current version the transformer supports merging Daisy 2.02, Z39.86-2002 and Z39.86-2005 multivolume DTB file sets.</p>
+
+<p>The programmatic flow of this transformer in summary:</p>
+<ol>
+<li>Try to retrieve a collection with NCC or OPF files using the input directory path.</li>
+<li>Try to retrieve Daisy version using one of the NCC or OPF files.</li>
+<li>Depending on the Daisy version instantiate an appropriate extension of the abstarct class <code>se_tpb_dtbSplitterMerger.merge.DtbMerger</code>:
+		<ul>
+			<li><code>se_tpb_dtbSplitterMerger.merge.DtbMerger202</code> for Daisy 2.02</li>
+			<li><code>se_tpb_dtbSplitterMerger.merge.DtbMerger3</code> for Z39.86</li>
+		</ul>
+		and initialize merging.	
+</li>
+<li>When merging a Daisy 2.02 multivolume DTB file set, merged navigation files (NCC and full text) are being built using the respective subvolume navigation files.</li>
+<li>All files from the subvolumes except for prompt and distribution information files are copied to the target directory.</li>
+</ol>		
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>
+	This transformer is meant for merging Daisy 2.02, Z39.86-2002 or Z39.86-2005 multivolume DTB file sets. 
+	If a collection with NCC or OPF files or Daisy version cannot be retrieved, an exception will be thrown.
+</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>In the output directory there will be a merged version of the Daisy multivolume DTB file set.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>multiVolumeDTBPath</dt>
+	<dd>A path to a Daisy multivolume DTB file set's main directory. The directory should contain subdirectories with the book's subvolumes.</dd>
+	<dt>outDirPath</dt>
+	<dd>An output directory where the book's merged version will be saved.</dd>
+	<dt>userPrompt</dt>
+	<dd>Standard output prompts, e.g. file overwriting approval.</dd>
+	<dt>keepInput</dt>
+	<dd>Specifies whether the input files should be kept.</dd>
+	<dt>keepRedundant</dt>
+	<dd>Specifies whether files such as prompt files or distInfo.dinf should be kept.</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+<p>None.</p>
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>The abstract class <code>se_tpb_dtbSplitterMerger.merge.DtbMerger</code> implements base functionality needed for merging multivolume DTB Daisy file sets, that can be used or overridden by its subclasses. Current extensions are:</p>
+<ul>
+<li><code>se_tpb_dtbSplitterMerger.merge.DtbMerger202</code></li>
+<li><code>se_tpb_dtbSplitterMerger.merge.DtbMerger3</code></li>
+</ul>
+
+<p>The abstract class <code>se_tpb_dtbSplitterMerger.merge.DtbMerger</code> may be extended to support new types of Daisy DTB file sets when they come up.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li>none</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Piotr Kiernicki, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+</body>
+</html>

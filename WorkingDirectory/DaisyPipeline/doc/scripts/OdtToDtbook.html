@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+	<title>Pipeline Script: ODT to DAISY 3.0 XML</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head><body>
+<h1 class="title">Pipeline Script: <em>ODT to DAISY 3.0 XML</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#inputReqs">Input Requirements</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script converts an ODT file to a DAISY 3.0 XML, and then validates the result. It is based on the odt2daisy <a href="http://odt2daisy.sourceforge.net/">conversion tool</a>.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>An OpenDocument Text file. The document must be well structured. For more informations, see "Authoring Guidelines" in the
+   <a href="http://odt2daisy.sf.net/doc/">online documentation</a> available in many formats.
+</p>
+
+<h2 id="output">Output</h2>
+<p>A DAISY 3.0 XML file. This script includes a step to fix potential
+issues in the DTBook that can be caused by ODT no following the
+authoring guideline, but be sure to check the result of the validation
+pass!</p>
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+	<dt><strong>Required.</strong> Input ODT file</dt>
+        <dd></dd>
+	<dt><strong>Required.</strong> Output DAISY 3.0 XML file</dt>
+	<dd></dd>
+	<dt><strong>Optional.</strong> Unique IDentifier of the DAISY 3.0 XML file</dt>
+	<dd>An UUID will be generated if omitted</dd>
+	<dt><strong>Optional.</strong> Title of the DAISY 3.0 XML file</dt>
+	<dd>The title of the DAISY book</dd>
+	<dt><strong>Optional.</strong> Creator of the DAISY 3.0 XML file</dt>
+	<dd>The author of the DAISY book</dd>
+	<dt><strong>Optional.</strong> Publisher of the DAISY 3.0 XML file</dt>
+	<dd>The agency responsible for making the DAISY book available.</dd>
+	<dt><strong>Optional.</strong> Producer of the DAISY 3.0 XML file</dt>
+	<dd>The organization that created the DAISY book.</dd>
+	<dt><strong>Optional.</strong> Use Alternate Level Markup</dt>
+	<dd>Use &lt;level depth="x"&gt; notation.</dd>
+	<dt><strong>Optional.</strong> Include CSS linked to DAISY 3.0 XML file</dt>
+	<dd>Produce a CSS file.</dd>
+	<dt><strong>Optional.</strong> Include pagenum tag into DAISY 3.0 XML file</dt>
+	<dd>Page numbering is included if you inserted an Header/Footer with a Page Number Field.<br />
+            Page numbering styles 1,i,I,a,A are supported.<br /> 
+            Advanced Numbering is also allowed.</dd>
+	<dt><strong>Optional.</strong> XML Validation Report</dt>
+	<dd>Select a file to store the DTBook validation XML report in. Note that information on the validation result is always shown in the user interface; regardless of whether you activate this option or not.</dd>	
+	</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/doc/transformers/int_vspiewak_odt2daisy.html">ODT to DAISY 3.0 XML</a></li>
+	<li><a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/doc/transformers/se_tpb_dtbookFix.html">DTBook fix</a></li>
+	<li><a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/doc/transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body></html>

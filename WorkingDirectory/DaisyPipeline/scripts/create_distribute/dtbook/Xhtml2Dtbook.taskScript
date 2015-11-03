@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="xhtml2dtbook">
+	<nicename>XHTML 1.x to DTBook 2005 [BETA]</nicename>
+	<description>Converts a XHTML 1.x document to DTBook 2005</description>
+	<documentation uri="../../../doc/scripts/Xhtml2DTBook.html"/>
+	
+	<parameter name="inputFile" value="" required="true">
+		<nicename>Input XHTML</nicename>
+		<description>Select the input XHTML file</description>
+		<datatype>
+			<file mime="application/xhtml+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter  name="outputFile" value="" required="true">
+		<nicename>Output DTBook</nicename>
+		<description>Select the output DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>The title of the publication. If no value is supplied, the information is extracted from the source file if possible.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="uid" value="" required="false">
+		<nicename>dtb:uid</nicename>
+		<description>The publications unique identifier. If no value is supplied, the information is extracted from the source file if possible.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="userCss" value="" required="false">
+		<nicename>CSS</nicename>
+		<description>Select a CSS to append to output DTBook document</description>
+		<datatype>
+			<file mime="text/css" type="input"/>
+		</datatype>
+	</parameter>
+
+	<!-- Input XHTML validation -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${inputFile}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	
+	<task name="no_hks_xhtml2dtbook" interactive="false">
+
+		<parameter>
+   			<name>input</name>
+			<value>${inputFile}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${outputFile}</value>
+		</parameter>					
+
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>
+
+		<parameter>
+			<name>uid</name>
+			<value>${uid}</value>
+		</parameter>
+
+		<parameter>
+			<name>outputCSS</name>
+			<value>${userCss}</value>
+		</parameter>	
+	</task>
+
+	<!-- Output DTBook validation -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputFile}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>
+
+</taskScript>

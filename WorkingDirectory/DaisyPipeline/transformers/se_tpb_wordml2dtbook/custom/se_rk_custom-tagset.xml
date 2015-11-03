@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook ../tagsets/tagset.xsd">
+	<custom style="rk-default">
+		<paragraphs>
+			<tag name="Body Text Indent"><map value="p"/></tag>
+			<tag name="Rubrik innehåll" listOverride="true"><map value="h1"/></tag>
+			<tag name="Rubrik 1 utan numrering" listOverride="true"><map value="h1"/></tag>
+			<tag name="Rubrik 2 utan numrering" listOverride="true"><map value="h2"/></tag>
+			<tag name="Rubrik 3 utan numrering" listOverride="true"><map value="h3"/></tag>
+			<tag name="Rubrik 4 utan numrering" listOverride="true"><map value="h4"/></tag>
+			<tag name="Rubrik 5 utan numrering" listOverride="true"><map value="h5"/></tag>
+			<tag name="Rubrik 6 utan numrering" listOverride="true"><map value="h6"/></tag>
+		</paragraphs>
+		<character useInlineFormatting="true"></character>
+	</custom>
+</mappings>

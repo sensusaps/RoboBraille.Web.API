@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="mode" value="detect" required="true">
+		<nicename>Source format</nicename>
+		<description>Source format. "Detect" will attempt to automatically detect the source format. Note that this process is not fail safe.</description>
+		<datatype>
+			<enum>
+			  <item nicename="Detect" value="detect"/>
+<item nicename="Braillo ENGLAND 6 DOT 044.00" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00"/>
+<item nicename="Braillo NORWAY 6 DOT 047.01" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01"/>
+<item nicename="Braillo SWEDEN 6 DOT 046.01" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01"/>
+<item nicename="Braillo USA 6 DOT 001.00" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00"/>
+<item nicename="British computer braille" value="org_daisy.EmbosserTableProvider.TableType.EN_GB"/>
+<item nicename="Danish computer braille" value="org_daisy.EmbosserTableProvider.TableType.DA_DK"/>
+<item nicename="Duxbury BRF-file" value="org_daisy.BrailleEditorsTableProvider.TableType.BRF"/>
+<item nicename="German computer braille" value="org_daisy.EmbosserTableProvider.TableType.DE_DE"/>
+<item nicename="Impacto 6-dot" value="de_brailletec.ImpactoTableProvider.TableType.IMPACTO"/>
+<item nicename="Impacto 8-dot" value="de_brailletec.ImpactoTableProvider.TableType.IMPACTO256"/>
+<item nicename="Index Basic &quot;blue bar&quot;" value="com_indexbraille.IndexTableProvider.TableType.BLUE_BAR"/>
+<item nicename="Italian computer braille" value="org_daisy.EmbosserTableProvider.TableType.IT_IT_FIRENZE"/>
+<item nicename="MicroBraille BRL-file" value="org_daisy.BrailleEditorsTableProvider.TableType.MICROBRAILLE"/>
+<item nicename="Spanish computer braille (classic)" value="org_daisy.EmbosserTableProvider.TableType.ES_ES"/>
+<item nicename="Spanish computer braille (modern)" value="org_daisy.EmbosserTableProvider.TableType.ES_ES_TABLE_2"/>
+<item nicename="Swedish - Supernova 6 dot" value="com_yourdolphin.SupernovaTableProvider.TableType.SV_SE_6DOT"/>
+<item nicename="Swedish CX" value="se_tpb.CXTableProvider.TableType.SV_SE_CX"/>
+<item nicename="US computer braille" value="org.daisy.braille.table.DefaultTableProvider.TableType.EN_US"/>
+<item nicename="Unicode braille" value="org_daisy.EmbosserTableProvider.TableType.UNICODE_BRAILLE"/>
+			</enum>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

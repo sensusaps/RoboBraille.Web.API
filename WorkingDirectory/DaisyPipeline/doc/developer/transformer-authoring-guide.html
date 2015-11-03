@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta content="application/xhtml+xml; charset=utf-8" http-equiv="Content-Type" />
+  <title>Transformer authoring guide</title>
+  <link href="../pipeline.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <h1>Daisy Pipeline Transformer authoring guide</h1>
+  <div class="summary">
+		<p>This document summarizes the process of authoring and deploying a Pipeline Transformer.</p>
+		<p>Target audience: developers</p>
+		<p>Most developers who have created their own Transformers and/or Scripts report
+		that they have been able to do so autodidactically by looking at previously existing Transformer 
+		and Script code. <em>You are still recommended to read this guide</em>, as it reveals some details that
+		may not be immediately evident.</p> 				
+  </div>           
+
+  <p class="author">Markus Gylling</p>
+  <p class="updated">Latest update: 2007-11-23</p>
+  
+  <ul class="toc">
+  	<li><a href="#brief">Transformer development step-by-step guide</a></li>
+  	<li><a href="#codeOfConduct">Transformer Authors Code of Conduct</a></li>
+  </ul>
+  
+  <h2 id="brief">Transformer development step-by-step guide</h2>
+  <p>The typical steps taken (chronologically) during development of a Pipeline Transformer are:</p>
+     <ol>
+       <li><a href="#talk">Talk about your idea (make sure you are not duplicating effort)</a></li>
+       <li><a href="#model">Consider the distribution and availability model</a></li>
+       <li><a href="#dev">Start development</a>
+       		<ul>
+       			<li><a href="#contract">Understand and define the Transformer Contract</a></li>
+       			<li><a href="#language">Choose the most appropriate coding language</a></li>
+       			<li><a href="#transformer">Create a Transformer shell, and a Transformer Description File (TDF)</a></li>
+       			<li><a href="#script">Create a Script to run the Transformer</a></li>
+       			<li><a href="#testCase">Create a PipelineTest testcase to run the Script</a></li>       		
+       		</ul>       	
+       </li>
+       <li><a href="#finalize">Complete development, abiding to the code of conduct</a></li>       		
+       <li><a href="#testing">Perform Real-world testing</a></li>
+       <li><a href="#refineScript">Refine (if needed) and finalize the Script</a></li>
+       <li><a href="#doc">Document</a></li>
+       <li><a href="#deploy">Deploy</a></li>              
+     </ol>
+  
+  
+              
+  <h2 id="talk">Talk about your idea (make sure you are not duplicating effort)</h2>
+  	 <p>You need a Transformer to perform a particular task. Before getting into 
+  	 development of it, make sure to talk about your plans on the Pipeline lists
+  	 (dmfc-ig@daisy.org and daisymfc-developer@lists.sourceforge.net) first. 
+  	 It may be that someone else is thinking about or actually already 
+  	 developing something similar to what you want. 
+  	 </p>               
+  
+  <h2 id="model">Consider the distribution and availability model</h2>
+  	<p>The Transformer you are about to develop may be of interest to your own 
+  	organisation only, or it may be of interest to many. Similarly, there may be
+  	restrictions on availability and licensing, and there may be commercial incentives
+  	involved in the development. Remember that a Transformer can be:</p>
+  	<ul>
+  		<li>Freely available, open source</li>
+  		<li>Freely available, closed source</li>
+  		<li>Only available within a particular organisation</li>
+  		<li>Commercially available</li>
+  	</ul>
+  	
+  	
+  	<p>All these cases are perfectly fine, and will obviously have an impact on how your 
+  	Transformer code and binaries are hosted and distributed. Transformers that are intended to be freely 
+  	and globally available under an open source license are typically hosted at the Pipeline SourceForge SVN repository.</p> 
+  	
+  	<p>However, you can also choose to have the code somewhere else, and provide your 
+  	Transformer (and associated Script, see below) to users for example via the Pipeline GUI 
+  	import feature.</p>
+
+	<p>If you are developing a Transformer that is to be used within your own organisation
+	only, or if you are developing a commercial Transformer, you will not be using the 
+	Pipeline SourceForge SVN repository. The way you host the code is up to you, and in the
+	case where your distribution model is not based on the Pipeline GUI import feature, you
+	might want to build and maintain a separate version of the 
+	<a href="http://daisymfc.svn.sourceforge.net/viewvc/*checkout*/daisymfc/trunk/dmfc/build-core.xml">
+	Pipeline Ant Build Script</a> that combines the different source repositories.</p>  	 
+    	  
+  <h2 id="dev">Start development</h2>
+     <p>If your discussions with the developer community did not reveal any risk of duplication
+     of effort, the first step to get developing is to get a running version of the Pipeline Core. A separate 
+     document describes <a href="./pipeline-from-svn.html">the setup process</a>. You can get
+     a version of the <a href="http://daisymfcgui.sf.net">RCP GUI</a> running as well, although 
+     this is not needed for development: typically the CommandLineUI class or the test framework is used during 
+     development.</p>
+  
+  <h3 id="contract">Understand and define the Transformer Contract</h3>
+     <p>Look at a Pipeline Transformer as a physical manifestation of the principle of
+     singular-task encapsulation. The principle is that if a particular atomic 
+     task can be reused in different contexts, then that singular task should be the 
+     only thing the Transformer does. The result is that the same Transformer can potentially be 
+     reused by different scripts. Avoid compound tasks in Transformers. If you 
+     need several tasks performed to achieve a desired end result, consider writing 
+     several transformers instead.</p>
+     
+     <p>Have a look at the <a href="../scripts/Narrator-DtbookToDaisy.html">Narrator</a> and 
+     <a href="../scripts/OPSCreator.html">OPS Creator</a> scripts for examples of how a sequence of
+     singular-task Transformers interact to create an end result (look at the "list of Transformers used" at the end of these documents). 
+     </p> 
+     
+     <p>For reusability and maintenance purposes, the Transformer <em>contract</em> needs to be clearly defined, 
+     see <a href="#tdf">Transformer Description File</a> and  <a href="#doc">Documentation</a> below. 
+     Think of the Transformer contract as an interface: the underlying implementation can vary, but 
+     once published the interface (contract) is non-changing.</p>  
+  
+  <h3 id="language">Choose the most appropriate coding language</h3>
+     <p>To maximize portability of functionality beyond the Pipeline context, we have the following priority order when
+     it comes to the choice of language to use to execute the Transformer contract:</p>
+     <ol>
+     	<li>
+            <strong>XSLT</strong>. If you can achieve your task in plain XSLT (1.0 or 2.0), then that is optimal. But dont push the 
+     	boundaries of XSLT just to achieve this (an overly extended or complex XSLT is difficult to maintain and often processor-dependent).</li>
+     	<li>
+            <strong>XSLT+minimal Java</strong>. Distribute the execution between XSLT and Java. Keep the amount of Java minimal, as 
+     	to encourage people to reuse the XSLT and just swiftly port the Java parts to whatever language they want to use. 
+     	(<em>Why would someone not want to use Java? Afraid of <a href="http://en.wikipedia.org/wiki/Caffeine_addiction#Overuse">getting hooked</a>
+            </em>?</li>
+     	<li>
+            <strong>Java</strong> If XSLT doesnt cover your needs, use Java.</li>
+     	<li>
+            <strong>Any other language</strong> If Java doesnt cover your needs, or you simply <em>want</em> to use something else, you can do that.<br /> 
+     	Use either the <code>org.daisy.pipeline.transformers.ExeRunner</code> class or a simple Java wrapper in your transformer directory to execute an external process.<br />
+     	The backsides here are that:<br />
+     	<ul>
+     	<li>Many dependencies and additional executables or runtimes creates setup and deployment complexity</li>
+     	<li>You will not get access to the Pipeline EventBus, Localization framework and other handy features.</li>
+     	</ul>
+     	There are already Transformers available that use Python, Perl, and TCL in this way. <em>Remember to maintain cross-platform 
+     	support when doing this!</em> You <em>can</em> write a transformer that runs only on a particular operating system 
+     	(and you will also declare this in the TDF), but please avoid it.      	
+     	</li>
+     	
+     </ol>    
+  	 <p>In some cases (such as then the whole Transformer contract can be covered with plain vanilla XSLT implementation), 
+  	 the generic Transformer executors available in the <code>org.daisy.pipeline.transformers</code> package suffice to execute the Transformer. In these cases, no local Java subclass is needed. 
+  	 (At the time of writing, the Transformers <code>se_tpb_dtbook2latex</code> and <code>dk_dbb_dtbook2rtf</code> are examples of genericized XSLT execution.)</p>     
+     <p><em>A recommendation is to browse through the existing Transformer collection on the SVN to get a perspective on how different types of
+     problems have been solved before.</em></p>  
+  
+  
+	<h3 id="transformer">Create a Transformer shell, and a Transformer Description File (TDF)</h3>
+	    <p>On the SVN, the code and binaries of each Transformer live in a subdirectory of the <code>trunk/dmfc/transformers/</code> directory.</p>  
+    	<h4 id="naming">Transformer Naming</h4>
+	  		<p>Transformer identity is expressed as a <strong>three-part underscore separated</strong> string, where the first part is a country code, the second part is an organizational acronym, and the third part a local name.</p>
+	  		<p>The sole purpose of this scheme is to achieve uniqueness in a given set of Transformers.</p>
+	  		<p>Examples: <code>int_daisy_validator</code>, <code>uk_rnib_odf2dtbook</code>, <code>int_org_example</code></p>
+	  		<p>When the Transformer is distributed as a JAR, the identity is expressed in the JAR file name (<code>int_org_example.jar</code>). When the transformer is not JARred, the identity is expressed in the name of the filesystem directory in which the Transformers files reside (<code>/transformers/int_org_example/*</code>).</p>
+       
+  		<h4 id="tdf">Create a Transformer Description File</h4>
+  			<p>Each Daisy Pipeline Transformer has a <a href="tdf-grammar-v1.1.html">Transformer Description File</a> ('TDF') associated with it.</p> 
+  			<p>The TDF file can be seen as a manifest of the transformer; in this file, the contract of the Transformer is defined. The contract includes what type of content the Transformer accepts as input, and what type of content it will give as output. Further, the TDF defines additional input parameters that the Transformer can take to customize its behavior.</p>
+    		<p>The TDF is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="#note1"><sup>1</sup></a> exists to validate it. Each TDF file is parsed (and validated) by the Pipeline core at initialization time.</p>  
+    		<p>The filename of the TDF files is fixed to <code>transformer.tdf</code>. Previously, the filename restriction was <code>*.tdf</code>, but this has been deprecated in order to support locating TDF files inside JARs.</p>  
+  
+    
+	<h3 id="script">Create a Script to run the Transformer</h3>  
+		<p>Transformers are not executable in themselves; they need a Script to be run. A Script combines one or several Transformers into a sequence. A script can also take parameters.</p>
+		<p>See <a href="./script-grammar-v2.0.html">Daisy Pipeline Taskscript Grammar version 2.0</a> for details.</p>
+  		<p>On the SVN, the Scripts live in a subdirectory of the <code>trunk/dmfc/scripts/</code> directory. While under development, you should use the <code>/scripts/_dev/</code> directory for your script to clearly mark that this is not ready for primetime.</p>
+  
+  
+	<h3 id="testCase">Create a PipelineTest testcase to run the Script</h3>  
+		<p>An efficient way to develop in the Pipeline is to do so against one or several test cases.</p>
+		<ul>
+			<li>Locate sample input data (and, if your work is to be publicly available, put that in the <code>trunk/dmfc/samples/</code> directory).</li>
+			<li>Create an extension of the abstract <code>org.daisy.pipeline.test.PipelineTest</code> class and place it in the <code>org.daisy.pipeline.test.impl</code> package. The simplest way to do this is to clone one of the existing classes in the <code>org.daisy.pipeline.test.impl</code> package, give it a meaningful new name, and then modify the supportsScript method so that it matches your script name, and the getParameters() method so that it matches your script parameters.</li>
+			<li>Import and add a your new test class in <code>org.daisy.pipeline.test.PipelineTestDriver</code>. Disable all other tests by commenting them out.</li>
+			<li>If using Eclipse, add a Run Profile for <code>org.daisy.pipeline.test.PipelineTestDriver</code> using the parameters '${project_loc}/samples ${project_loc}/scripts'. (More info in the javadoc of PipelineTestDriver.)</li>
+		</ul>		
+		<p>This Run Profile can now be used throughout your development process, and the test case can be reused later on when doing automated stability tests of a Pipeline disiribution.</p> 
+		  
+  <h2 id="finalize">Complete development, abiding to the code of conduct</h2>
+	  <p>Now, the time has come to keep coding until the defined Transformer contract is fulfilled.</p>
+	  <p>Please refer to the <a href="#codeOfConduct">Transformer Authors Code of Conduct</a> for details on coding style and other rules and recommendations that apply.</p>      		
+       <h3 id="lib">Notes on the use of Libraries</h3>
+     		<p>Apart from the obvious JRE runtime classes, you will most probably be using several libraries in your code.</p>
+     		<p>In the <code>/lib/</code> directory, the third party libraries that are currently used by the Pipeline core or other Transformers are available. If you need to add another third party library to get the job done, consult with a project admin (or post to the daisymfc-developer list) first. We are trying to keep the distribution size down, and therefore need to be restrictive on new lib additions where possible.</p>                
+     		<p>Similarly, the <code>org.daisy.util</code> package has been created to contain a bunch of reusable services to Transformer developers. Actually, <code>org.daisy.util</code> does not contain Pipeline-specific code, but is a utility library that can be used in any Java-based project. <em>A recommendation is to go through the <code>org.daisy.util</code> package carefully before commencing with coding, to make sure you dont end up developing services that are already available in there</em>.</p>
+
+  <h2 id="testing">Perform Real-world testing</h2>
+	<p>If you are targeting desktop usage, you can create a separate test distribution of your Script and Transformer(s) and have testers import this into the Pipeline GUI for testing and evaluation.</p>
+	<p>Sometimes, you will also be able to distribute your work for testing to the public via an official Pipeline release. In this case, the Script is clearly marked as beta, and the release notes indicate the input and bugreports are welcome.</p>   
+  
+  <h2 id="refineScript">Refine (if needed) and finalize the Script</h2>
+  <p>The exposure to users may have revealed that more runtime behavior modification of the Script is needed. Now is the time to add any such Script parameters, and implement support for those locally in the Transformer.</p>
+  
+  <h2 id="doc">Document</h2>
+    <p>Each Transformer has an XHTML file providing development oriented documentation. These files live in the /doc/transformers/ directory. A template exists in the /doc/templates directory.</p> 
+  	<p>Each Script has an XHTML file providing usage oriented documentation. These files live in the /doc/scripts/ directory. A template exists in the /doc/templates directory. <em>Remember that Script documentation needs to be end-user oriented, as opposed to Transformer documentation.</em></p>
+  
+  
+  <h2 id="deploy">Deploy</h2>
+  <p>If your Transformer and Script are on the Pipeline SVN and should provided in an official Pipeline release, all you need to do is to make sure that the Ant Build Script is not excluding your packages, and to make sure that your Script is moved out of the <code>_dev</code> script directory to a more appropriate location (one of the sibling dirs to the dev dit).</p>
+  <p>An alternative channel for distributing binaries to desktop users is to use the <a href="../enduser/01-gui-user-guide.html#update">Pipeline GUI Import feature</a>.</p> 
+  
+          
+  <h2 id="codeOfConduct">Transformer Authors Code of Conduct</h2>  
+
+  	<h3 id="inter">Inter-transformer dependencies</h3>
+     	<p>To avoid a dependency nightmare, it is strictly forbidden to use classes, XSLTs, etcetera from other Transformer packages. A Transformer needs to be written completely unaware of what other Transformers exists around it. As a Transformer developer you can help enforce this by reducing class visibility to package level.</p>
+     	<p>If a certain function or service ends up being reimplemented by many transformers, the typical solution to avoid code duplication is to move it to the <code>org.daisy.util</code> package. Consult with a project admin (or post to the daisymfc-developer list) if you have candidate code for inclusion there.</p>
+
+ 	<h3 id="style">Coding style</h3>
+ 		<p>See separate document <a href="java-coding-conventions.html">Java coding conventions</a>.</p>
+
+  	<h3 id="test">Contributing to the test case collection</h3>     
+		<p>It is strongly recommended that your delivered transformer includes an implementation of the <code>org.daisy.pipeline.test.PipelineTest</code> class, coupled with appropriate input sample(s), placed in the svn: /samples/*/ directory.</p>
+ 		<p>Tests live in the <code>org.daisy.pipeline.test.impl</code> package.</p>
+  
+  	<h3 id="l12n">Localization</h3>
+		<p>Transformer authors are expected to <strong>externalize all strings that carry information intended for consumption by users</strong>.</p>
+		<p>For this reason, each transformer may include an external message bundle for localization. This bundle must comply with one of the the formats defined by <code>java.util.Properties</code>.</p>
+		<p>The message bundle must reside in the same directory/at the same package level as the local Transformer subclass and/or the Transformer Description File.</p>
+		<p>The base message bundle name must be in the form <code>
+            <em>identity</em>.messages</code>, where <code>
+            <em>identity</em>
+         </code> is the <a href="#identity">three-part package name</a> discussed above. Example: <code>int_org_example.messages</code>.</p>
+	  	<p>Localized bundles follow the country code append convention (<code>int_org_example_fr.messages</code>) as defined by Java ResourceBundle.</p>
+	  	<p>The abstract Transformer superclass already has a generic message bundle registered (<code>org.daisy.pipeline.core/pipeline.messages</code>). 
+	  	In some instances, it may be enough to utilize the messages in the generic bundle, in which case no local message bundle is needed.</p>
+	  	<p>Transformer authors are encouraged to use the XML form of Java properties (see <a href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a>).</p>
+   
+  	<h3 id="jarness">Jar packaging</h3>  
+   		<p>We want transformers to be deployable as JAR files. Here are the ground rules for creating jarifiable transformers:</p>
+  		<dl>
+  			<dt>TDF file name</dt>
+  			<dd>The name of the .tdf file must be <code>transformer.tdf</code> in order to be found inside the JAR file.</dd>
+  			
+  			<dt>Do not use <code>getTransformerDirectory()</code></dt>
+  			<dd>Calling (the deprecated method) <code>getTransformerDirectory()</code> when running a transformer from a JAR file will throw an IllegalStateException.</dd>
+  			
+  			<dt>Use URL instead of File to reference a local resource</dt>
+  			<dd>To reference any resource within the Transformer package, use <code>java.net.URL</code>, and not <code>java.io.File</code></dd>      	
+  		</dl>
+  
+    
+       
+ <h2 id="notes">Notes</h2>
+ <p id="note1">1. The TDF schema lives in the <code>org.daisy.pipeline.core.transformer</code> package. If you do not have local access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/pipeline/core/transformer/">browse the SVN online</a>.</p>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />
+    <title>Transformer documentation: us_rfbd_textOnlyDtbCreator [BETA]</title>
+    <style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+  </head>
+  <body>
+    <h1 class="title">Transformer documentation:
+      <em>us_rfbd_textOnlyDtbCreator</em> [BETA]</h1>
+    <div id="toc" class="toc">
+      <ul>
+        <li><a href="#purpose">Transformer Purpose</a></li>
+        <li><a href="#inputReqs">Input Requirements</a></li>
+        <li><a href="#output">Output</a>
+          <ul>
+            <li><a href="#success">On success</a></li>
+            <li><a href="#failure">On error</a></li>
+          </ul>
+        </li>
+        <li><a href="#config">Configuration/Customization</a>
+          <ul>
+            <li><a href="#params">Parameters (tdf)</a></li>
+            <li><a href="#extConfig">Extended configurability</a></li>
+          </ul>
+        </li>
+        <li><a href="#future">Further development</a></li>
+        <li><a href="#dependencies">Dependencies</a></li>
+        <li><a href="#owner">Author</a></li>
+        <li><a href="#licensing">Licensing</a></li>
+      </ul>
+    </div>
+    <h2 id="purpose">Transformer Purpose</h2>
+    <p>This transformer takes a valid Z39.86-2005 textual content file (dtbook file)
+      as input and creates a complete, conforming Z39.86-2005 text-only DTB fileset. 
+    The output DTB includes:
+    </p>
+    <ul>
+      <li>A conforming package file (OPF)</li>
+      <li>A conforming NCX file</li>
+      <li>One or more conforming SMIL files</li>
+      <li>The input text file, with added <code>smilRef</code> and <code>id</code> attributes as needed</li>
+      <li>A conforming resource file and associated media (one is supplied by
+        default, or you may provide your own)</li>
+    </ul>
+    <p>The output DTB includes the following features and functions:</p>
+    <ul>
+      <li>Skippability for all structures mandated by the specification.</li>
+      <li>Escapability for all structures mandated by the specification</li>
+      <li>SMIL links for all structures mandated by the specification</li>
+      <li>Resource file entries for all structures mandated by the specification</li>
+    </ul>
+    <h2 id="inputReqs">Input Requirements</h2>
+    <p>The transformer takes a Z39.86-2005 textual content file as input (dtbook
+      file).  The file must be valid.  It is recommended that any script using this
+      transformer pass the input through the Pipeline validator prior to executing
+      the transform.</p>
+    <h2 id="output">Output</h2>
+
+    <h3 id="success">On success</h3>
+    <p>The output is a Z39.86-2005 text-only fileset:  package file, NCX, SMIL
+      file(s), textual content file, resource file, and associated resource media
+      files.</p>  
+    <h3 id="failure">On error</h3>
+  <p>Messages indicating the source of the error.</p>
+    <h2 id="config">Configuration/Customization</h2>
+    <h3 id="params">Parameters (tdf)</h3>
+    <dl id="paramslist">
+      <dt>input</dt>
+      <dd>The full path and name of the input dtbook file (required).</dd>
+      <dt >output</dt>
+      <dd >The full path in which to put the output DTB (required).</dd>
+      <dt >configFile</dt>
+      <dd >The full path and name of a configuration file (see below; optional).  If
+        not given, the default configuration file (located in the transformer
+        directory) will be used.</dd>
+      <dt>resourceFile</dt>
+      <dd>The full path and name of a Z39.86-2005 resource file to include with the
+        DTB (optional).  If not given, the default resource file (located in the
+        transformer directory) will be used.</dd>
+    </dl>
+    <h3 id="extConfig">Extended configurability</h3>
+    <p>The transformer uses a configuration file for extended configuration options. 
+    A default file (toConfig.xml) is included in the transformer directory and will
+    be used if a custom configuration is not provided by the user.  The configuration
+    file allows for the following customizations:</p>
+    <ul>
+      <li>Identification of which dtbook element names create synchronization points
+        within the output SMIL (default:  <code>a</code>, <code>sent</code>, <code>pagenum</code>, <code>noteref</code>,
+        <code>annoref</code>, and <code>linenum</code>).</li>
+      <li>Identification of which dtbook element names are skippable structures
+        (default:  <code>pagenum</code>, <code>noteref</code>, <code>linenum</code>, <code>note</code>, <code>annotation</code>, <code>sidebar</code>, <code>prodnote</code>).</li>
+      <li>Identification of which dtbook element names are escapable structures
+        (default:  <code>table</code>, <code>list</code>, <code>note</code>, <code>annotation</code>, <code>prodnote</code>, <code>sidebar</code>).
+      </li>
+      <li>Control over the size of output SMIL files by indicating a threshold number
+      of events after which a new file will be started (default:  500).</li>
+    </ul>
+    <p>The file must be a well-formed XML document.  The following describes the
+    elements that are recognized:</p>
+    <dl>
+      <dt><code>&lt;synchElement name=&quot;foo&quot; ns=&quot;http://www.example.com/ns/&quot; /&gt;</code></dt>
+      <dd>Element name and (optional) namespace that generates a SMIL synchronization
+      point</dd>
+      <dt><code>&lt;skippableElement name=&quot;foo&quot; ns=&quot;http://www.example.com/ns/&quot; /&gt;</code></dt>
+      <dd>Element name and (optional) namespace that generates a skippable structure in SMIL</dd>
+      <dt><code>&lt;escapableElement name=&quot;foo&quot; ns=&quot;http://www.example.com/ns/&quot; /&gt;</code></dt>
+      <dd>Element name and (optional) namespace that generates a skippable structure in SMIL</dd>
+      <dt><code>&lt;smilEventThreshold value=&quot;500&quot; /&gt;</code></dt>
+      <dd>Number of events per SMIL file before looking for an exit (defaults to 500)</dd>
+    </dl>
+    <p>All other elements in the config file will be ignored.</p>
+    <h2 id="future">Further development</h2>
+    <p>This transformer is in beta release.  It has not been fully tested against a
+    wide variety of inputs to confirm robustness.</p>
+    <p>This transformer does not include support for MathML, but ought to.</p>
+    <h2 id="dependencies">Dependencies</h2>
+    <p>None.</p>
+    <h2 id="owner">Author</h2>
+    James Pritchett, Recording for the Blind &amp; Dyslexic (RFB&amp;D), USA
+    <h2 id="licensing">Licensing</h2>
+    <!-- Licensing information -->
+  </body>
+</html>

@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript[
+<!ENTITY FilesetScriptParamsStatic SYSTEM "../../FilesetScriptParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="dtbook2daisy202-textonly">
+	<nicename>Daisy 2.02 Text-Only Fileset Generator (from DTBook) [BETA]</nicename>
+	<description>Converts a DTBook 2005 file to a Text-Only Daisy 2.02 file set</description>
+	<documentation uri="../../../doc/scripts/FilesetGenerator-Daisy202TextOnly.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook</nicename>
+		<description>Select the input DTBook 2005 file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+    
+	
+	<parameter name="dtbookFix" value="REPAIR_TIDY_NARRATOR" required="false">
+		<nicename>DTBook Fix</nicename>
+		<description>Select whether to apply DTBook Fix routines</description>
+		<datatype>
+			<enum>
+				<item nicename="Do not apply DTBook Fix routines" value="NOTHING"/>
+				<item nicename="Apply DTBook Fix routines" value="REPAIR_TIDY_NARRATOR"/>
+			</enum>
+		</datatype>
+	</parameter>
+	
+	&FilesetScriptParamsStatic;
+
+		
+	<!-- *************************
+	      DTBook Fix - run Narrator category (which *includes* repair executors)
+	     ************************* -->
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFix}</value>
+		</parameter>
+		
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>false</value>
+		</parameter>
+
+		<parameter>
+			<name>forceRun</name>
+			<value>false</value>
+		</parameter>
+		
+		<parameter>
+			<name>renameIllegalFilenames</name>
+			<value>true</value>
+		</parameter>
+			
+	</task>
+	<!-- *************************
+	      DTBook input validation 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
+		</parameter>
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
+		</parameter>
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+	</task>
+	
+		<!-- ****************************
+	      Abbr and Acronym detection 
+	     **************************** -->
+	<task name="se_tpb_xmldetection" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/01/$filename{input}</value>
+		</parameter>		
+		<parameter>
+			<name>doAbbrAcronymDetection</name>
+			<value>${doAbbrAcronymDetection}</value>
+		</parameter>		
+		<parameter>
+			<name>doSentenceDetection</name>
+			<value>${doSentenceDetection}</value>
+		</parameter>		
+		<parameter>
+			<name>doWordDetection</name>
+			<value>${doWordDetection}</value>
+		</parameter>
+	</task>
+	
+	<!-- *****************************
+		DTBook to XHTML
+	 ***************************** -->
+
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">	
+		<parameter>
+			<name>xml</name>
+			<value>${outputPath}/pipeline__temp/01/$filename{input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>out</name>
+			<value>${outputPath}/pipeline__temp/02/$filename{input}</value>			
+		</parameter>				
+
+		<parameter>
+			<name>copyReferring</name>
+			<value>true</value>
+		</parameter>				
+
+		<parameter>
+			<name>daisy_noteref</name>
+			<value>false</value>
+		</parameter>										
+	</task>	
+
+		<!-- *****************************
+		Mixed Content Normalizer, adding syncpoints
+	 ***************************** -->
+	<task name="int_daisy_mixedContentNormalizer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/02/$filename{input}</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/03/$filename{input}</value>
+			<!-- TODO could use same in and out -->
+		</parameter>
+	</task>
+
+	<!-- ******************
+	      File Set Creator
+	     ****************** -->
+	<task name="int_daisy_filesetGenerator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/03/$filename{input}</value>
+		</parameter>
+		<parameter>
+			<name>outputDirectory</name>
+			<value>${outputPath}/pipeline__temp/04/</value>
+		</parameter>	
+		<parameter>
+			<name>outputType</name>
+			<value>D202_TEXTONLY</value>
+		</parameter>
+		<parameter>
+			<name>outputEncoding</name>
+			<value>${outputEncoding}</value>
+		</parameter>		
+		<parameter>
+			<name>uid</name>
+			<value>${identifier}</value>
+		</parameter>		
+		<parameter>
+			<name>hrefTarget</name>
+			<value>${hrefTarget}</value>
+		</parameter>		
+	</task>
+		
+	<!-- ************************************
+	      Pretty Printer (input and output same)
+		 ************************************ -->	
+	<task name="int_daisy_prettyPrinter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/04/ncc.html</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}</value>
+		</parameter>
+
+		<parameter>
+			<name>linebreak</name>
+			<value>DOS</value>
+		</parameter>
+	</task>
+		
+	<!-- *************************
+	      2.02 Validation 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/ncc.html</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+	</task>
+	
+	<!-- *************************
+	     Delete temporary
+	  ************************* --> 
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>					
+	</task>	
+
+
+
+</taskScript>

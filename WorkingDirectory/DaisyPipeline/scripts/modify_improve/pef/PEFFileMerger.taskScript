@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="PEFFileMerger">
+	<nicename>PEF File Merger</nicename>
+	<description>Merges several PEF files into one</description>
+	<documentation uri="../../../doc/scripts/PEFFileMerger.html"/>
+
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input folder</nicename>
+		<description>Input directory</description>
+		<datatype>
+			<directory type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="output" value="" required="true">
+		<nicename>Output PEF file</nicename>
+		<description>A PEF file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="identifier" value="" required="true">
+		<nicename>Identifier</nicename>
+		<description>Publication identifier.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="sortType" value="numeral_grouping" required="false">
+		<nicename>Sorting type</nicename>
+		<description>File sorting type, see documentation.</description>
+		<datatype>
+			<enum>
+			  <item nicename="Numeral grouping" value="numeral_grouping" />
+			  <item nicename="Standard" value="standard" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<task name="org_pef_pefFileMerger" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>identifier</name>
+			<value>${identifier}</value>
+		</parameter>
+		
+		<parameter>
+			<name>sortType</name>
+			<value>${sortType}</value>
+		</parameter>
+
+	</task>
+	
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+</taskScript>

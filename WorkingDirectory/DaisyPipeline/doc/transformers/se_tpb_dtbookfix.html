@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
+		<title>se_tpb_dtbookFix</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css"></link>
+	</head>
+	<body>
+		<h1 class="title">se_tpb_dtbookFix</h1>
+
+		<div id="toc" class="toc">
+			<ul>
+				<li><a href="#purpose">Transformer Purpose</a></li>
+				<li><a href="#inputReqs">Input Requirements</a></li>
+				<li><a href="#output">Output</a>
+					<ul>
+						<li><a href="#success">On success</a></li>
+						<li><a href="#failure">On error</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#config">Configuration/Customization</a>
+					<ul>
+						<li><a href="#params">Parameters (tdf)</a></li>
+					</ul>
+				</li>
+				<li><a href="#devguide">Development Guide</a></li>
+				<li><a href="#future">Further development</a></li>
+				<li><a href="#dependencies">Dependencies</a></li>
+				<li><a href="#owner">Author</a></li>
+				<li><a href="#licensing">Licensing</a></li>
+			</ul>
+		</div>
+		
+		<h2 id="purpose">Transformer Purpose</h2>
+		<p>This Transformer will manipulate a DTBook document, attempting to fix common invalidity errors ("repair") and/or
+		modify the document structure to improve the quality/appearance even if the input document is valid ("tidy").</p>  
+		
+		<p>The Transformer uses XSLT as the preferred <em>executor</em> type. Read further in <a href="#devguide">Development Guide</a> below.</p> 			
+						
+		<h2 id="inputReqs">Input Requirements</h2>
+		<p>A wellformed DTBook document. If the existing executors do not support the version of the input document, they are automatically disabled.</p>
+		
+		<h2 id="output">Output</h2>
+				
+		<h3 id="success">On success</h3>
+		<p>
+			A DTBook document of the same version as the input DTBook document, with
+			zero or several changes made to the document structure. <em>No guarantees are made that an invalid input
+			will be repaired to a valid state</em>.
+		</p> 
+
+		
+		<h3 id="failure">On error</h3>
+		<p>On execution error, the transformer will throw an exception and abort.</p>
+		<p>The transformer will not throw an exception on failure to repair an invalid input document to a valid state. (Validation is done inline to DEBUG, and by the script on final result, so messages will be conveyed regarding repair success.</p> 
+		
+		<h2 id="config">Configuration/Customization</h2>
+		
+		<h3 id="params">Parameters (tdf)</h3>
+		<p>See ../../transformers/se_tpb_dtbookFix/transformer.tdf</p>
+		
+		
+		
+		<h2 id="devguide">Development Guide</h2>
+		<p>The following section describes principles to take into account when adding a new Executor (XSLT or Java class) to this Transformer.</p>
+		
+		<dl>
+		<dt>Executor</dt>
+		<dd><p>Any document manipulation routine bundled in this Transformer must be an 
+		extension of the abstract class <code>Executor</code>.</p></dd>
+
+		<dt>Categories</dt>
+		<dd><p><code>Executor</code>s are grouped in categories. At the time of writing, 
+		three categories (REPAIR, TIDY and the internal NARRATOR) exist, but more can be added should the need arise.</p></dd>
+		
+		<dt>Executor Granularity</dt>
+		<dd><p>Fix/Tidy functionality authors are encouraged to add *one* fix/tidy feature
+		per executor to allow finely-grained sorting/filtering.</p></dd>
+
+		<dt>Extensibility</dt>
+		<dd>		
+		<p>The Transformer is written to allow swift addition of new repair/tidy functionality.</p> 
+		<p>To allow multiple context use, the preferred Executor technology is XSLT, 
+		but the Transformer allows associating other executors 
+		(such as javaclasses) with a category.</p>		
+		<p>Besides appending new Executors, additional categories can be added as well.</p>				
+		</dd>
+
+		<dt>Input version handling</dt>
+		<dd>
+		<p>An Executor implementation must never change the DTBook DOCTYPE/version between input and output.</p>
+		<p>Before calling any Executor, the Transformer main class will assure that the prerequisite is met that
+		there exists no ambiguity in the documents stated DOCTYPE/version. In other words, an Executor implementor
+		can use any token (DOCTYPE, dtbook@version or the DTBookVersion parameter) to determine input version.</p>
+		<p>By extending the abstract Executor class, you are by contract forced to implement the <code>supportsVersion</code>
+		method. Any Executor that returns false on the call to this method will be removed from the Executor list before launch. 
+		Every such disabling will yield a warning message to the Pipeline EventBus.</p> 		
+		</dd>
+		
+		<dt>Prerequisites</dt>
+		<dd>
+		<p>The main Transformer class will assure that the following prerequisites hold true before 
+		launching the Executor list(s).</p>
+		<ul>
+		  <li>Proper root namespace declaration, making the DTBook namespace the default namespace 
+		  (does not guarantee that the xmlns attribute is not DTD defaulted)</li>
+		  <li>No DOCTYPE/version ambiguity</li>
+		</ul>		
+		<p>If these  prerequisites are not met, a TransformerRunException is thrown.</p> 
+		</dd>
+		
+		<dt>Reporting when modifications are done</dt>
+		<dd>
+			<p>Executor implementors are recommended to <em>report</em> when actual modifications 
+			are made. The way to do this depends on the executor type:</p>
+			<ul>
+			<li>XSLT executors report through <code>xsl:message</code>.</li>
+			<li>Java executors report through any means available to reach the EventBus 
+			(either via direct call, or through the 
+			<code>TransformerDelegateListener</code> interface.</li>
+			</ul>
+		</dd>
+		<dt>XSLT integration</dt>
+		<dd><p>XSLT stylesheets are typically placed in the /xslt/subdirectory of the transformer
+		main directory, and then integrated into a Category by adding a one-liner to the 
+		<code>DTBookFix#createCategory</code> method, which
+		will create an instance of the <code>XSLTExecutor</code> convenience class.</p></dd>
+		</dl>
+		
+		<h2 id="future">Further development</h2>		
+		<p>New repair and tidy Executors are added as real-world error patterns reveal that they are needed.</p>
+		
+		<h2 id="dependencies">Dependencies</h2>
+		<p>An XSLT 1.0 and 2.0 processor</p>
+		
+		<h2 id="owner">Author</h2>
+		<p>Joel Håkansson, James Pritchett, Linus Ericson, Markus Gylling</p>
+		
+		<h2 id="licensing">Licensing</h2>
+		<p>LGPL</p>
+	</body>
+</html>

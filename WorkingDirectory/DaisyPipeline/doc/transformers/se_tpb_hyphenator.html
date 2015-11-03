@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>se_tpb_hyphenator</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_hyphenator</em> </h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#purpose">Transformer Purpose</a> </li>
+  <li><a href="#inputReqs">Input Requirements</a> </li>
+  <li><a href="#output">Output</a> 
+    <ul>
+      <li><a href="#success">On success</a> </li>
+      <li><a href="#failure">On error</a> </li>
+    </ul>
+  </li>
+  <li><a href="#config">Configuration/Customization</a> 
+    <ul>
+      <li><a href="#params">Parameters (tdf)</a> </li>
+      <li><a href="#extConfig">Extended configurability</a> </li>
+    </ul>
+  </li>
+  <li><a href="#future">Further development</a> </li>
+  <li><a href="#dependencies">Dependencies</a> </li>
+  <li><a href="#owner">Author</a> </li>
+  <li><a href="#licensing">Licensing</a> </li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+
+<p>This transformer injects the input document's text nodes with soft hyphen
+(U+00AD) at all possible breakpoints following the hyphenation rules of the
+current language.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>An xml document with @xml:lang on the element surrounding the text nodes to
+hyphenate.</p>
+
+<h2 id="output">Output</h2>
+
+<p>The input document, hyphenated.</p>
+
+<h3 id="success">On success</h3>
+
+<p>A hyphenated xml document.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf, please use the below definition list -->
+<dl id="paramslist">
+  <dt>input</dt>
+    <dd>The input xml file</dd>
+  <dt>output</dt>
+    <dd>The output xml file</dd>
+  <dt>breakLimitBegin</dt>
+    <dd>The number of characters from the beginning where a break is allowed to
+      first occur, default is two</dd>
+  <dt>breakLimitEnd</dt>
+    <dd>The number of characters from the end where a break is allowed to last
+      occur, default is two</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+
+<h2 id="future">Further development</h2>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>texhyphj.jar</p>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+
+<p>Joel Håkansson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+
+<p>LGPL</p>
+</body>
+</html>

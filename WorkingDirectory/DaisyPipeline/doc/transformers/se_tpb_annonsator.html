@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>se_tpb_annonsator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_annonsator</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+	<p>
+		The purpose of this transformer is to give a TTS the possibility to make spoken
+		announcements of xml structures, such as tables, notes and sidebars.
+	</p>
+	
+	<p>	
+		A human narrator often appends structural and/or semantic clarifications to book 
+		elements during narration; such as appending the word "sidebar" prior to a sidebar
+		element, or the words "end table" at the end of a table. Such appends are here 
+		referred to as structural announcements.
+	</p>
+	
+	<p>
+		The transformer has two approaches:</p>
+	<ol>
+		<li>
+			<p>
+				Add attributes to the elements to announce, one for the introduction 
+				and one for the termination of the structure.
+			</p>
+		</li>
+		<li>
+			<p>
+				Add the announcement texts to the first and last, respectively, 
+				text nodes of the structure.
+			</p>
+		</li>
+	</ol>  
+
+<!--
+Rationale
+This transformer is typically intended to be used on source text documents prior to TTS production.
+
+
+
+Different ways exist to make a speech synthesizer behave the same; ACSS and SSML are application-level examples. 
+The initial purpose of this transformer is to adress syntesis rendering systems which are 
+	not ACSS nor SSML aware, by appending structural announcements (= modifying text nodes) 
+	into the source document itself. Later (updated or sibling) versions may adress ACSS 
+	and/or SSML solutions as well, if requirements for this arise.
+
+
+High level requirements and constraints
+(R= requirement, C=constraint)
+
+R2 User control of selection of structures 
+The user has per-pass control of which structures to select for modification.
+
+R3 Structure selection via standard query language
+The structure selection process uses an appropriate and standardized XML query language. See also R4.
+
+R4 Structure selection not limited to element names
+Structure selection is not limited to element names but includes axis, text node content and attribute model specification, within the constraints given by R3.
+
+R5 Specificity hierarchy in structure selection 
+The process supports a specificity hierarchy in structure selection; where several given selectors adress the same structure, a non-random process determines which selector wins. This process will be further clarified after modelling.
+
+R6 User control of strings to be appended to selected structures 
+The user has per-pass control of the string to be append to the selected structure(s).
+
+R7 User control of prefixing/suffixing the appended string
+The user has per-pass control of whether the string should be prefixed or suffixed to the selected structure(s).
+
+R8 User control of announcement insert node type
+The default behavior of the process is to append the insert string to the relevant text node of the selected element.
+The user has per-pass possibility to override this behavior, and instead insert the string in user-defined attributes on the active element.
+
+C3 No modification of element content model
+R8 describes text node and attribute list modifications; the process does not support element model modification.
+
+R9 Contextual Language dependence
+The process supports language context: the deafult behavior is use insert strings of the same language as the document context. In the case where an insert string does not exist for the context language, the process should issue a warning and leave the element unmodified(?)
+
+R10 Language override
+The user has a per-pass possibility to override the context language dependence described in R9, and force all insert strings to use one language(?).
+-->
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+	<p>
+		The process is grammar agnostic and can be applied to any XML document.
+
+		The structure selection process supports qualified name addressing  only. 
+		
+		The selection process does not allow selection of text nodes nor text 
+		node substrings; the element node (singular or set) is the only allowed 
+		return type of a selection query.
+	</p>
+	
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+	<p>
+		The input document possibly enriched with the user-defined  announcement texts or attributes.
+		If the announcements come in the form of attributes, the document also has a 
+		namespace declaration for the namespace of the added attributes.
+	</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+	<p>
+		No specific recovery scheme. On error, this transformer will send a fatal message, 
+		then throw an exception and abort.
+	</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	
+	<dl id="paramslist">
+		<dt>input</dt>
+		<dd>Input XML document</dd>
+
+		<dt>output</dt>
+		<dd>Output XML document</dd>
+		
+		<dt>overrideLang</dt>
+		<dd>Override document language and use announcements from this provided 
+			lang parameter instead.</dd>
+
+		<dt>xslOutput</dt>
+		<dd>
+		File used to save the produced XSLT. (This transformer does its job
+		by generating an XSLT and applying the transformation on the input document.
+		Saving the generated XSLT file is good for debug purposes, mainly.)
+		</dd>	
+	</dl>
+	
+	
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<p>
+		The transformer behaviour is configured in a file according to the
+		input document doctype. See <a href="../../transformers/se_tpb_annonsator/type.xml">type.xml</a> for that mapping.
+		For example, an input document declaring the doctype 
+		<tt>"-//NISO//DTD dtbook 2005-1//EN"</tt> will make the tranformer use the
+		configuration file 
+		<a href="../../transformers/se_tpb_annonsator/type/dtbook-2005.xml">type/dtbook-2005.xml</a>.
+	</p>
+	
+	<p>
+		As just mentioned, the transformer has two approaches to adding structural
+		announcements. 
+		Which approach is used is configured in each doctype specific configuration
+		file. The configuration file mainly consists of <tt>rule</tt> elements, defining
+		which elements are being announced. Other elements are configuration of the 
+		"add attributes"-approach, and an optional element <tt>copy</tt> containing arbitrary 
+		xslt. The contents of <tt>copy</tt> is applied to the input document. In the dtbook-2005-1 
+		case, the <tt>copy</tt> element contains xslt creating readable numbers for
+		list items in ordered lists.  Basically, the transformer counts the
+		list items and adds a number to the beginning of the list item text node.
+		
+		In the case of a list numbered with roman numerals, text can be added to each number, 
+		such as "Roman numeral, 1". If you want the spoken announcements to appear
+		in lists with roman numerals, you have to edit the file adding a <tt>&lt;xsl:when 
+		test="lang('xx')"&gt;...</tt> where <tt>xx</tt> is your language code. You'll see
+		tests for <tt>lang('yy')</tt> and the easiest way is just to copy one of them,
+		and change the language code and the announcement text. 
+	</p>
+	
+	<p>Configuration of the "add attributes"-approach:</p>
+	
+	<dl>
+		<dt>prefix</dt>
+		<dd>The namespace prefix of the added announcement attributes.</dd>
+		
+		<dt>namespace</dt>
+		<dd>The namespace uri of the added announcement attributes.</dd>
+		
+		<dt>attributeBefore</dt>
+		<dd>
+			The local name of the attribute containing the introductionary 
+			announcement text.
+		</dd>
+		
+		<dt>attributeAfter</dt>
+		<dd>
+			The local name of the attribute containing the terminating 
+			announcement text.
+		</dd>
+		
+		<dt>addAttribute</dt>
+		<dd>
+			Whether or not to use attributes. The alternative is modifying 
+			text nodes. The value is a lower-case boolean: <tt>true</tt> or <tt>false</tt>.
+		</dd>
+	</dl>
+	
+	
+	<p>
+		The user can select which elements that are to be announced, and for 
+		each selection there is a rule, represented by the <tt>rule</tt>
+		element. Selections are made using the <tt>match</tt> 
+		attribute's XPath value. 
+		
+		Each rule has one or more <tt>lang</tt> child elements, each with a 
+		<tt>lang</tt> attribute. A <tt>lang</tt> element has two optional 
+		child elements: <tt>before</tt> and <tt>after</tt>. The text in those
+		two elements is used to announce the structure that matches the rule,
+		before or after it. Example:
+	</p>
+<pre>
+&lt;rule match="dtb:prodnote">
+    &lt;lang lang="sv">
+        &lt;before>Produktionsnot.&lt;/before>
+        &lt;after>Slut på produktionsnot.&lt;/after>
+    &lt;/lang>
+    &lt;lang lang="en">
+        &lt;before>Production note.&lt;/before>
+        &lt;after>End of production note.&lt;/after>
+    &lt;/lang>
+&lt;/rule>
+</pre>
+	
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+	<p>Saxon 8 XSLT processor.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+	<p>Martin Blomberg</p>
+	
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+	<p>LGPL</p>
+
+</body>
+</html>

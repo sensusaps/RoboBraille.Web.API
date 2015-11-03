@@ -1,0 +1,61 @@
+<transformer version="1.1">
+	<name>Fileset Generator</name>
+	<description>Generate Filesets using XML input</description>
+	<classname>int_daisy_filesetGenerator.FilesetGenerator</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_filesetGenerator.html"/>
+		
+	<parameters>
+	
+		<parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>Input XML file</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outputDirectory</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+		
+		<parameter required="true" type="enum">
+			<name>outputType</name>			
+			<description>The type of fileset to generate</description>
+			<example>D202_TEXTONLY</example>
+			<enum>
+				<value>D202_TEXTONLY</value>				
+			</enum>
+			<default>D202_TEXTONLY</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>uid</name>			
+			<description>The identifier of the publication. If set, this value will override any identifier found in the publication metadata.</description>
+			<example>uz-uzblb-0001</example>
+			<default/>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>outputEncoding</name>			
+			<description>The output encoding of the fileset XML (or otherwise textual) members (if any).</description>
+			<example>iso-8859-1</example>
+			<default>utf-8</default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>hrefTarget</name>
+			<description>Select The SMIL element targeted by href URIs in the content document and NCC</description>
+			<example>TEXT</example>
+			<enum>
+				<value>PAR</value>				
+				<value>TEXT</value>				
+			</enum>
+			<default>TEXT</default>
+		</parameter>
+
+	</parameters>	
+
+</transformer>

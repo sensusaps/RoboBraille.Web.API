@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>Skippability Tweaker</name>
+	<description>Add skippability to a Daisy 2.02 fileset</description>
+	<classname>se_tpb_skippabilityTweaker.SkippabilityTweaker</classname>
+	<license>LGPL</license>
+	<author>Linus Ericson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbd202ncc+xml">
+			<name>input</name>
+			<description>The NCC/NCX file</description>
+			<example>/path/to/file.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="in" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>The output dir</description>
+			<example>/path/to/dir/</example>
+		</parameter>
+	
+		<parameter required="false" direction="in" type="enum">
+			<name>pagenum</name>
+			<description>Add skippability for page numbers</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>sidebar</name>
+			<description>Add skippability for sidebar</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>prodnote</name>
+			<description>Add skippability for prodnote</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>note</name>
+			<description>Add skippability for notes</description>
+			<example>no</example>
+			<enum>
+				<value>no</value>
+				<value>copy</value>
+				<value>move</value>
+			</enum>
+			<default>copy</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="string">
+			<name>backupPrefix</name>
+			<description>Prefix of backup directory</description>
+			<example>backup_</example>			
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>copyNonFilesetFiles</name>
+			<description>Copy files and directories not in the fileset</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>			
+			<default>false</default>
+		</parameter>
+				
+	</parameters>	
+
+</transformer>

@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+	
+<!DOCTYPE promptFiles [
+<!ELEMENT promptFiles (set+)>
+
+<!ELEMENT set (volume+)>
+<!ATTLIST set
+	lang ID #REQUIRED
+>
+
+<!ELEMENT volume (smilFile,audioFile)>
+<!ATTLIST volume
+	nr CDATA #REQUIRED
+>
+
+<!ELEMENT smilFile EMPTY>
+<!ATTLIST smilFile
+	src CDATA #REQUIRED
+>
+
+<!ELEMENT audioFile EMPTY>
+<!ATTLIST audioFile
+	src CDATA #REQUIRED
+>
+
+]>
+
+<promptFiles> 
+	<set lang="en">
+		<volume nr="1">
+			<smilFile src="./en/cd_1.smil"/>
+			<audioFile src="./en/cd_1.mp3"/>
+		</volume>
+		<volume nr="2">
+			<smilFile src="./en/cd_2.smil"/>
+			<audioFile src="./en/cd_2.mp3"/>
+		</volume>
+		<volume nr="3">
+			<smilFile src="./en/cd_3.smil"/>
+			<audioFile src="./en/cd_3.mp3"/>
+		</volume>
+		<volume nr="4">
+			<smilFile src="./en/cd_4.smil"/>
+			<audioFile src="./en/cd_4.mp3"/>
+		</volume>
+		<volume nr="5">
+			<smilFile src="./en/cd_5.smil"/>
+			<audioFile src="./en/cd_5.mp3"/>
+		</volume>
+		<volume nr="6">
+			<smilFile src="./en/cd_6.smil"/>
+			<audioFile src="./en/cd_6.mp3"/>
+		</volume>
+		<volume nr="7">
+			<smilFile src="./en/cd_7.smil"/>
+			<audioFile src="./en/cd_7.mp3"/>
+		</volume>
+		<volume nr="8">
+			<smilFile src="./en/cd_8.smil"/>
+			<audioFile src="./en/cd_8.mp3"/>
+		</volume>
+		<volume nr="9">
+			<smilFile src="./en/cd_9.smil"/>
+			<audioFile src="./en/cd_9.mp3"/>
+		</volume>
+		<volume nr="10">
+			<smilFile src="./en/cd_10.smil"/>
+			<audioFile src="./en/cd_10.mp3"/>
+		</volume>	
+	</set>
+	<set lang="sv">
+		<volume nr="1">
+			<smilFile src="./sv/skiva_1.smil"/>
+			<audioFile src="./sv/skiva_1.mp3"/>
+		</volume>
+		<volume nr="2">
+			<smilFile src="./sv/skiva_2.smil"/>
+			<audioFile src="./sv/skiva_2.mp3"/>
+		</volume>
+		<volume nr="3">
+			<smilFile src="./sv/skiva_3.smil"/>
+			<audioFile src="./sv/skiva_3.mp3"/>
+		</volume>
+		<volume nr="4">
+			<smilFile src="./sv/skiva_4.smil"/>
+			<audioFile src="./sv/skiva_4.mp3"/>
+		</volume>
+		<volume nr="5">
+			<smilFile src="./sv/skiva_5.smil"/>
+			<audioFile src="./sv/skiva_5.mp3"/>
+		</volume>
+		<volume nr="6">
+			<smilFile src="./sv/skiva_6.smil"/>
+			<audioFile src="./sv/skiva_6.mp3"/>
+		</volume>
+		<volume nr="7">
+			<smilFile src="./sv/skiva_7.smil"/>
+			<audioFile src="./sv/skiva_7.mp3"/>
+		</volume>
+		<volume nr="8">
+			<smilFile src="./sv/skiva_8.smil"/>
+			<audioFile src="./sv/skiva_8.mp3"/>
+		</volume>
+		<volume nr="9">
+			<smilFile src="./sv/skiva_9.smil"/>
+			<audioFile src="./sv/skiva_9.mp3"/>
+		</volume>
+		<volume nr="10">
+			<smilFile src="./sv/skiva_10.smil"/>
+			<audioFile src="./sv/skiva_10.mp3"/>
+		</volume>
+	</set>
+
+</promptFiles>	
+	

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="DTBAudioEncoder">
+	<nicename>DTB Audio Encoder</nicename>
+	<description>Encode WAV files of a DTB</description>
+   	<documentation uri="../../../doc/scripts/DTBAudioEncoder.html"/>
+    <comment/>     	
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input manifest file (NCC, OPF)</description>
+		<datatype>
+			<file mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="bitrate" value="32" required="false">
+		<nicename>Bitrate</nicename>
+		<description>Select the bitrate of the encoded files</description>
+		<datatype>
+			<enum>
+			  <item nicename="32" value="32" />
+			  <item nicename="48" value="48" />
+			  <item nicename="64" value="64" />
+			  <item nicename="128" value="128" />
+			</enum>
+		</datatype>
+	</parameter>
+		
+	<task name="se_tpb_dtbAudioEncoder" interactive="false">
+		<parameter>
+			<name>manifest</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>outDir</name>
+			<value>${output}</value>
+		</parameter>		
+		<parameter>
+			<name>bitrate</name>
+			<value>${bitrate}</value>
+		</parameter>		
+	</task>
+	
+</taskScript>

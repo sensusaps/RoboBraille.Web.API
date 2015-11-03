@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_opsCreator</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_opsCreator</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Create an <a href="http://www.idpf.org">OPS 2.0</a> publication from DTBook and/or XHTML input.</p>
+<p class="alert">Note - this implementation does <strong>not</strong> support the XML islands feature of OPS 2.0</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>One or several (logically ordered) documents to add to the OPS publication.</p>
+<p>The selected DTBOOK and XHTML docs will be instantiated as Filesets, so auxilliary files need not be included as inparams.</p>
+
+<h2 id="output">Output</h2>
+<h3 id="success">On success</h3>
+<p>An OPS 2.0 publication containing an NCX. The NCX contents id defined by the <a href="#extConfig">NCX Configuration</a> file.</p>
+
+<h3 id="failure">On error</h3>
+<p>No specific recovery scheme. On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+	<h3 id="params">Parameters (tdf)</h3>
+		<dl id="paramslist">
+		
+		<dt>input</dt>
+		<dd>File.pathSeparator separated list of path specs</dd>
+		
+		<dt>output</dt>
+		<dd>Pathspec of output OCF</dd>
+		
+		<dt>ncxConfig</dt>			
+		<dd>Custom NCX configuration file (else will use embedded default</dd>
+			
+		<dt>forceXhtml</dt>
+		<dd>Whether to always create an XHTML-based EPUB, even if the input is DTBook 2005-2</dd>
+				
+		<dt>dc:title</dt>			
+		<dd>Dublin Core Title. If a value is set, it will override any corresponding value given in input document(s).</dd>
+	
+		<dt>dc:creator</dt>			
+		<dd>Dublin Core Creator If a value is set, it will override any corresponding value given in input document(s).</dd>
+
+		<dt>dc:publisher</dt>			
+		<dd>Dublin Core Publisher If a value is set, it will override any corresponding value given in input document(s).</dd>
+
+		<dt>dc:date</dt>			
+		<dd>Dublin Core Date (date of publication) If a value is set, it will override any corresponding value given in input document(s).</dd>
+
+		<dt>dc:identifier</dt>			
+		<dd>Dublin Core Identifier If a value is set, it will override any corresponding value given in input document(s).</dd>
+
+		<dt>dc:language</dt>			
+		<dd>Dublin Core Language If a value is set, it will override any corresponding value given in input document(s).</dd>
+		
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability: NCX configuration</h3>
+	<p>An external XML document guides the behavior of the NCX creation process. This is to 
+	allow producers to define <em>which elements should get referenced in the NCX</em> and
+	in <em>which way</em>.</p>
+	
+	<p>See <a href="#ncxConfigExample">Example of NCX Configuration File</a></p>
+	<p>See <a href="#ncxConfigRng">NCX Configuration RelaxNG Schema</a></p>
+	
+<h2 id="future">Further development</h2>
+<p>Support for XML islands</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<h2 id="owner">Author</h2>
+<p>Markus Gylling</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+
+<h2 id="ncxConfigExample">Example of NCX Configuration File</h2>
+<p>This is example is the default NCX confguration file, which is used if
+the user does not specify an explicit alternative.</p>
+<pre><code>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;ncx:ncx-include xmlns:ncx="http://www.daisy.org/pipeline/ncxconfig#"&gt;
+	&lt;!-- Default configuration for OPS NCX. Schema: see ncx-config.rng --&gt;
+	&lt;ncx:navMap&gt;			 
+		&lt;!-- Qualified names of elements to include in navMap, the definitions may include attributes --&gt;
+		&lt;!-- xhtml --&gt;
+		&lt;h1 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;h2 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;h3 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;h4 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;h5 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;h6 xmlns="http://www.w3.org/1999/xhtml" /&gt;
+		&lt;!-- dtbook --&gt;
+		&lt;h1 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;h2 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;h3 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;h4 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;h5 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;h6 xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+	&lt;/ncx:navMap&gt;
+	
+	&lt;ncx:navLists&gt;
+		&lt;!-- Qualified names of elements to include in navLists, the definitions may include attributes --&gt;
+		
+		&lt;pagenum xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt;
+		&lt;noteref xmlns="http://www.daisy.org/z3986/2005/dtbook/" /&gt; 
+		
+		&lt;!--
+		Optionally use an xpath statement to define an explicit label
+		&lt;note xmlns="http://www.daisy.org/z3986/2005/dtbook/" ncx:label="/*[1]|/text()" /&gt;		
+		--&gt;
+	&lt;/ncx:navLists&gt;
+	
+	&lt;ncx:navListLabels&gt;
+		&lt;!-- define labels for lists in varying languages --&gt;
+		&lt;pagenum xmlns="http://www.daisy.org/z3986/2005/dtbook/"&gt;
+		  &lt;ncx:label xml:lang="en" ncx:text="Pages" /&gt;
+		  &lt;ncx:label xml:lang="sv" ncx:text="Sidor" /&gt;
+		&lt;/pagenum&gt;		
+		&lt;noteref xmlns="http://www.daisy.org/z3986/2005/dtbook/"&gt;
+		  &lt;ncx:label xml:lang="en" ncx:text="Note References"/&gt;
+		  &lt;ncx:label xml:lang="sv" ncx:text="Notreferenser"/&gt;
+		&lt;/noteref&gt;
+	&lt;/ncx:navListLabels&gt;
+	
+&lt;/ncx:ncx-include&gt;
+</code></pre>
+
+
+<h2 id="ncxConfigRng">NCX Configuration RelaxNG Schema</h2>
+<p><code>File: transformers/int_daisy_opsCreator/ncx-config.rng</code></p>
+<pre><code>
+
+<!-- 
+
+RelaxNG grammar for an NCX builder configuration.
+
+The NCX configuration is used this to determine which elements in a content document
+should appear in the NCX, and in which way. This is achieved by defining template
+elements that are matched against element occurences in the instance.
+
+The navMap element contains definitions of elements to be included in the NCX navMap.
+
+The navLists element contains definitions of elements to be included in NCX navLists.
+
+Each template element within navMap and navLists is an empty element in any namespace. 
+The element may contain any number of attributes in any namespace. 
+
+The definition element may have a label attribute in the http://www.daisy.org/pipeline/ncxconfig# 
+namespace which contains an XPath statement (where the template element is the context node) 
+that defines a child of the context node that carries a label for the element.
+
+If the label attribute is not included on an element, the effect is the same
+as ncx:label='./text()', ie that label will be all the text appearing within the 
+element.
+
+The navListLabels element defines explicit language-dependent labels to use for lists.
+
+-->
+
+&lt;grammar 
+	xmlns="http://relaxng.org/ns/structure/1.0" 
+	ns="http://www.daisy.org/pipeline/ncxconfig#"
+	xmlns:ncx="http://www.daisy.org/pipeline/ncxconfig#"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"&gt;
+	
+	&lt;start&gt;
+		&lt;ref name="root"/&gt;
+	&lt;/start&gt;
+	
+	&lt;define name="root"&gt;
+		&lt;element name="ncx-include"&gt;
+			&lt;element name="navMap"&gt;
+				&lt;oneOrMore&gt;	
+					&lt;ref name="templateElement.empty" /&gt;
+				&lt;/oneOrMore&gt;	
+			&lt;/element&gt;
+			&lt;element name="navLists"&gt;
+				&lt;zeroOrMore&gt;	
+					&lt;ref name="templateElement.empty" /&gt;
+				&lt;/zeroOrMore&gt;			
+			&lt;/element&gt;
+			&lt;optional&gt;
+				&lt;element name="navListLabels"&gt;
+					&lt;zeroOrMore&gt;	
+						&lt;ref name="templateElement.label" /&gt;
+					&lt;/zeroOrMore&gt;			
+				&lt;/element&gt;
+			&lt;/optional&gt;	
+		&lt;/element&gt;
+	&lt;/define&gt;
+
+	&lt;define name="templateElement.empty"&gt;
+	  &lt;element&gt;
+	    &lt;anyName&gt;
+	      &lt;except&gt;
+	        &lt;nsName ns="http://www.daisy.org/pipeline/ncxconfig#" /&gt;
+	      &lt;/except&gt;	      
+	    &lt;/anyName&gt;
+	    &lt;interleave&gt;
+		    &lt;optional&gt;
+		    	&lt;ref name="label.attribute"/&gt;	    		  
+		    &lt;/optional&gt;
+		    &lt;zeroOrMore&gt;	
+			  &lt;attribute&gt;
+				&lt;nsName/&gt;
+			  &lt;/attribute&gt;
+	        &lt;/zeroOrMore&gt;
+	    &lt;/interleave&gt;
+		&lt;empty/&gt;
+	  &lt;/element&gt;
+	&lt;/define&gt;	
+
+	&lt;define name="templateElement.label"&gt;
+	  &lt;element&gt;
+	    &lt;anyName&gt;
+	      &lt;except&gt;
+	        &lt;nsName ns="http://www.daisy.org/pipeline/ncxconfig#" /&gt;
+	      &lt;/except&gt;	      
+	    &lt;/anyName&gt;	    
+	    &lt;zeroOrMore&gt;	
+		  &lt;attribute&gt;
+		    &lt;nsName/&gt;
+		  &lt;/attribute&gt;
+        &lt;/zeroOrMore&gt;
+        &lt;oneOrMore&gt;	    
+		  &lt;ref name="label.element"/&gt;
+		&lt;/oneOrMore&gt;	      
+	  &lt;/element&gt;
+	&lt;/define&gt;	
+
+
+	&lt;define name="label.attribute"&gt;
+      &lt;attribute name="label"&gt;
+        &lt;!-- an xpath statement --&gt;
+	    &lt;data type="normalizedString"/&gt;
+	  &lt;/attribute&gt;
+	&lt;/define&gt;
+
+	&lt;define name="label.element"&gt;
+      &lt;element name="label"&gt;
+        &lt;attribute name="xml:lang"/&gt;
+	    &lt;attribute name="ncx:text"/&gt;
+	  &lt;/element&gt;
+	&lt;/define&gt;
+	
+&lt;/grammar&gt;
+
+</code></pre>
+</body>
+</html>

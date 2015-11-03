@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Pretty Printer</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Pretty Printer</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+
+<p>This script will the Pretty Print the XML documents in a fileset. It can be used for DTBs and/or (most types of) standalone XML documents.</p>
+<p>Pretty printing means adding indentation and line breaks to the XML source code of the document.</p>
+<p>Pretty printing <em>seldom</em> has any effect on the experience of the end user. However, in the case of DTB filesets, there are certain players that are very sensitive to the
+XML source code layout. It is therefore a good idea to pretty print DTB filesets before distribution, using a pretty printer (like this one) that takes special care to make sure the output
+is compatibilized.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p></p>
+
+<h2 id="output">Output</h2>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> The input fileset manifest file (NCC, OPF, XHTML document, DTBook document, etc)</dd>
+	
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The directory to store the output in. This <em>can</em> be set as the same as the input directory, but it is <strong>recommended</strong> to use another directory than the input directory. Choosing the same directory for input and output is risky.</dd>
+	
+		<dt>Linebreak type</dt>
+		<dd><strong>Optional.</strong> Lets you choose between DOS and UNIX linebreaks. Normally, this should be left at the default value <code>DOS</code>. Some DAISY players depend on linebreaks being DOS.</dd>
+	
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_prettyPrinter.html">Pretty Printer</a></li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="EpubCheck">
+	<nicename>EpubCheck</nicename>
+	<description>Validate an OPS EPUB archive using the IDPF EpubCheck validator.</description>
+   	<documentation uri="../../doc/scripts/EpubCheck.html"/>
+     <comment>
+	     Commandline template:
+	         ${workspace_loc}/dmfc/scripts/validation/simple/EpubCheck.taskScript
+			--input=${workspace_loc}/pipeline_testsuite/testdata/input/epub/wasteland.epub
+     </comment>
+     	
+	<parameter name="input" value="" required="true">
+		<nicename>Input Epub</nicename>
+		<description>Select the input Epub archive</description>
+		<datatype>
+			<file mime="application/epub+zip" type="input"/>
+		</datatype>
+	</parameter>
+
+	&ValidatorScriptParamsSimpleStatic;
+	
+	<task name="int_daisy_validator" interactive="false">
+	
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+ 	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>OPS 2.0 EPUB File</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+										
+	</task>
+
+</taskScript>

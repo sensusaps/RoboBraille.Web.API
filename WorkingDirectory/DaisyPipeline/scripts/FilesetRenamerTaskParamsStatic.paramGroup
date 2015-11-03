@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+		<parameter>
+			<name>renamingPattern</name>
+			<value>${filesetRenamerPattern}</value>
+		</parameter>	
+
+		<parameter>
+			<name>exclude</name>
+			<value>${filesetRenamerExclude}</value>
+		</parameter>
+
+		<parameter>
+			<name>filesystemSafe</name>
+			<value>${filesetRenamerFilesystemSafe}</value>
+		</parameter>
+		
+		<parameter>
+			<name>maxFilenameLength</name>
+			<value>${filesetRenamerMaxFilenameLength}</value>
+		</parameter>
+		
+</paramGroup>

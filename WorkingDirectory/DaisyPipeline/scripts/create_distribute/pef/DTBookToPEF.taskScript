@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="DTBookToPEF">
+	<nicename>DTBook to PEF [BETA]</nicename>
+	<description>Convert a DTBook into PEF 2008-1</description>
+	<documentation uri="../../../doc/scripts/DTBookToPEF.html"/>
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="output" value="" required="true">
+		<nicename>Output PEF file</nicename>
+		<description>Output PEF file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="identifier" value="" required="false">
+		<nicename>Publication identifier</nicename>
+		<description>Publication identifier. Leave blank to generate.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="date" value="" required="false">
+		<nicename>Publication date</nicename>
+		<description>Publication date. Leave blank to use today's date.</description>
+		<datatype>
+			<string regex="([0-9]{4}-[0-9]{2}-[0-9]{2})?"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="setup" value="sv-SE" required="true">
+		<nicename>Conversion Setup</nicename>
+		<description>Conversion setup to apply - see documentation</description>
+		<datatype>
+			<enum>
+			  <item nicename="Swedish - A4" value="sv-SE" />
+			  <item nicename="Swedish - FA44" value="sv-SE-FA44" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="config" value="" required="false">
+		<nicename>Settings file</nicename>
+		<description>A file containing additional conversion settings.</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="duplex" value="true" required="false">
+	    <nicename>Duplex</nicename>
+	    <description>Emboss on both sides</description>
+	    <datatype>
+	        <boolean true="true" false="false"/>
+	    </datatype>
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+	</task>
+
+	<task name="se_tpb_hyphenator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>
+			
+	</task>
+
+	<task name="org_pef_dtbook2pef" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>identifier</name>
+			<value>${identifier}</value>
+		</parameter>		
+
+		<parameter>
+			<name>date</name>
+			<value>${date}</value>
+		</parameter>
+		
+		<parameter>
+			<name>setup</name>
+			<value>${setup}</value>
+		</parameter>
+		
+		<parameter>
+			<name>outputFormat</name>
+			<value>pef</value>
+		</parameter>
+		
+		<parameter>
+			<name>config</name>
+			<value>${config}</value>
+		</parameter>
+		
+		<parameter>
+			<name>duplex</name>
+			<value>${duplex}</value>
+		</parameter>
+
+	</task>
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>					
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+</taskScript>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsAdvancedStatic SYSTEM "../ValidatorScriptParamsAdvancedStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsAdvancedStatic SYSTEM "../ValidatorTaskParamsAdvancedStatic.paramGroup">
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="ConfigurableValidator">
+	<nicename>Configurable Validator</nicename>
+	<description>A content type agnostic validator with extended configuration options</description>
+   	<documentation uri="../../doc/scripts/ConfigurableValidator.html"/>
+     <comment>
+	     Commandline template (dont forget to modify paths):
+	         D:\data\workspace\dmfc\scripts\validation\advanced\ConfigurableValidator.taskScript 
+	                --inputFile=D:\dtbs\d202\hauy.202.rev4\ncc.html
+     </comment>
+          	
+	<parameter name="validatorInputFile" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input manifest file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	&ValidatorScriptParamsAdvancedStatic;
+	
+	<parameter name="validatorGenerateContextInfo" value="false" required="false">
+		<nicename>Generate Context Info</nicename>
+		<description>Show additional hints on the location of the error. Does not work on all document types!</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${validatorInputFile}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+
+		<parameter>		
+			<name>generateContextInfo</name>
+			<value>${validatorGenerateContextInfo}</value>		
+		</parameter>
+
+		&ValidatorTaskParamsAdvancedStatic;				
+										
+	</task>
+
+</taskScript>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta name="generator" content="HTML Tidy for Mac OS X (vers 1st December 2004), see www.w3.org" />
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=us-ascii" />
+
+	<title>DAISY Pipeline developer setup</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+	<h1>DAISY Pipeline developer setup</h1>
+
+	<p class="author">Markus Gylling, Romain Deltour</p>
+
+	<p class="updated">Latest update: 2007-12-17</p>
+
+	<div class="summary">
+		<p>This document summarizes the steps needed to get and run the Daisy Pipeline code.</p>
+
+		<p>As such, this document is primarily intended for developers who want to run (and develop on) the latest code from the Pipeline trunk, or another branch.</p>
+
+		<p>The guide uses <a href="http://www.eclipse.org" shape="rect">Eclipse</a> (3.3) as the IDE of choice.</p>
+	</div>
+
+	<div id="toc" class="toc"><h2 id="toctitle">Table of Contents</h2><ul><li><a href="#ide">Development environment setup</a><ul><li><a href="#getEclipse">Install Eclipse</a></li><li><a href="#getSubversion">Install and Configure Subversion</a><ul><li><a href="#getSubversive">Install the Subversive plug-in</a></li></ul></li></ul></li><li><a href="#coreSetup">Pipeline Core project setup</a><ul><li><a href="#checkoutCore">Checkout the project</a></li><li><a href="#checkSetup">Check the project setup</a></li><li><a href="#runTest">Running the Pipeline test suite</a></li><li><a href="#runCLI">Running the Pipeline command line interface</a></li><li><a href="#buildCore">Building the Pipeline Core from the Ant script</a></li></ul></li><li><a href="#guiSetup">Pipeline GUI project setup</a><ul><li><a href="#checkoutGUI">Checkout the project</a></li><li><a href="#setupRCP">Configure the RCP environment</a></li><li><a href="#runGUI">Run the Pipeline GUI</a></li><li><a href="#buildGUI">Build the Pipeline GUI</a></li></ul></li></ul></div>
+
+	
+<h2 id="ide">Development environment setup</h2>
+
+	<h3 id="getEclipse">Install Eclipse</h3>
+
+	<p>Get the Eclipse IDE from <a href="http://www.eclipse.org/downloads/" shape="rect">Eclipse Downloads section</a>.</p>
+
+	<p>Since version 3.3 (Europa) of Eclipse, there are several different versions to choose from. Pick one of these:</p>
+
+	<ul>
+		<li>Eclipse for RCP/Plug-in Developers (recommended for the Pipeline GUI setup). <em>This version is used in this guide.</em></li>
+
+		<li>Eclipse IDE for Java Developers (use this if you want the setup the Pipeline core only)</li>
+
+		<li>Eclipse Classic</li>
+	</ul>
+
+	<p>Install Eclipse by extracting it to a folder of your choice.</p>
+
+	<p><em>Note: If you are behind a proxy, you need to set the proxy values in the <code>Network Connections</code> page in the Eclipse Preferences (<code>Window &gt; Preferences</code> menu item, filter on "proxy").</em></p>
+
+	<h3 id="getSubversion">Install and Configure Subversion</h3>
+
+	<p>The Pipeline Sourceforge project uses Subversion (SVN) as the repository format.</p>
+
+	<p>Since Eclipse (at least at the time of writing) does not support SVN natively, a plug-in must be installed in order to communicate with the Pipeline repository. Several open source solutions are available:</p>
+
+	<ul>
+		<li><a href="http://www.eclipse.org/subversive/">Subversive (recommended - an Eclipse Technology Project since November 2007)</a></li>
+
+		<li><a href="http://subclipse.tigris.org/">Subclipse</a></li>
+	</ul>
+
+	<h4 id="getSubversive">Install the Subversive plug-in</h4>
+
+	<p><em>Detailed <a href="http://www.eclipse.org/subversive/documentation/gettingStarted/aboutSubversive/install.php">installation instructions</a> are available on the Subversive website. They are reproduced here for the sake of completeness.</em></p>
+
+	<ol>
+		<li><p>Start Eclipse and launch the update manager from the menu item <code>Help &gt; Software Updates &gt; Find and Install...</code></p>
+			<img src="img/subversive-0.png" alt="Software Update menu"/>
+		</li>
+
+		<li><p>In the <code>Install/Update</code> wizard select <code>Search for new features to install</code> option and press on the <code>Next</code> button.</p>
+			<img src="img/subversive-1.png" alt="Search for new feature to install"/></li>
+
+		<li><p>The <code>Install</code> dialog shows a list of available update sites. 
+		Subversive has its own update site, so you need to add it to the list. 
+		You are provided a probability to install either from remote or local update site. 
+		Installation from remote update site is preferred, because the user just have to refer the site URL. 
+		If the user has downloaded local update site distribution as ZIP archive, he should refer it as local update site location. 
+		Click on the <code>New Remote Site...</code> button to add Subversive update site.</p></li>
+
+		<li>On the <code>New Update Site</code> dialog enter the name of update site and the URL. Use following values:
+
+			<ul>
+				<li><em>Name:</em> Subversive</li>
+
+				<li><em>URL:</em> http://download.eclipse.org/technology/subversive/0.7/update-site/ (may be outdated, the proper URL can be found on <a href="http://www.eclipse.org/subversive/downloads.php">http://www.eclipse.org/subversive/downloads.php</a>)</li>
+			</ul>
+			<img src="img/subversive-2.png" alt="Subversive update site"/>
+			<br />
+			Click on the <code>OK</code> button to store update site information.<br />
+			<br />
+			Also you should install Subversive SVN Connectors to allow the plug-in work with Subversion. You can do the following in such a simple way:<br />
+			On the <code>New Update Site</code> dialog enter the name of clients' update site and the URL. Use following values:
+
+			<ul>
+				<li><em>Name:</em> Subversive SVN Connectors</li>
+
+				<li><em>URL:</em> http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site/ (may be outdated, the proper URL can be found on <a href="http://www.eclipse.org/subversive/downloads.php">http://www.eclipse.org/subversive/downloads.php</a>)</li>
+
+				<li style="list-style: none"><br /></li>
+			</ul>
+			<img src="img/subversive-3.png" alt="Subversive Connectors update site"/>
+			<br/>
+			Click on the <code>OK</code> button to store update site information.
+		</li>
+
+		<li><p>To start features search in the list of the update sites select the newly added update sites <code>Subversive</code> and <code>Subversive SVN Connectors</code> and then press on the <code>Finish</code> button.</p>
+			<img src="img/subversive-4.png" alt="Search for features"/></li>
+
+		<li>The update manager checks update site and shows the list of available features. You can expand the tree and select features to install. Select at least the minimum required set of features:
+
+			<ul>
+				<li><strong>SVN Team Provider</strong> - The Eclipse Team Provider for the Subversion version control system.</li>
+
+				<li><strong>Subversive SVN Connectors</strong> - Set of SVN connectors for the Eclipse Subversive.</li>
+
+				<li>One of the actual SVN Connectors, for instance <strong>SVNKit Implementation</strong></li>
+			</ul>
+			<img src="img/subversive-5.png" alt="Select features"/>
+			<p>Note: if you have some dependency errors due to some prerequisites not being available, try to uncheck the problematic optional features.</p>
+		</li>
+
+		<li>Accept terms of license agreement and press on the <code>Next</code> button.</li>
+
+		<li>Click on the <code>Finish</code> button in order to start the download of selected features.</li>
+
+		<li>Click on the <code>Install All</code> button in order to confirm installation of downloaded features.</li>
+
+		<li><p>To apply installation changes and restart Eclipse press on the <code>Yes</code> button.</p>
+		<img src="img/subversive-6.png" alt="Apply and restart"/></li>
+
+		<li>After Eclipse restart you are able to start using Subversive.</li>
+	</ol>
+
+	
+<h2 id="coreSetup">Pipeline Core project setup</h2>
+
+	<p>This section describes how to get and configure the DAISY Pipeline "Core", i.e. the Pipeline <em xml:lang="fr" lang="fr">sans</em> its <a href="#guiSetup" shape="rect">GUI</a>.</p>
+
+	<h3 id="checkoutCore">Checkout the project</h3>
+
+	<ol>
+		<li><p>Move to the SVN Perspective (<code>Window &gt; Open Perspective... &gt; SVN Repository Exploring</code>).</p><img src="img/co-core-0.png" alt="Open SVN perspective"/><br/><img src="img/co-core-1.png" alt="Open SVN perspective"/></li>
+
+		<li><p>Create a new repository location: either via the menu <code>File &gt; New &gt; Repository Location</code> or by using the <code>New Repository Location</code> button in the <code>SVN Repositories</code> view toolbar or via the contextual menu of the view.</p><img src="img/co-core-2.png" alt="New repository location"/><br/><img src="img/co-core-3.png" alt="New repository location"/><br/><img src="img/co-core-4.png" alt="New repository location"/></li>
+
+		<li><p>In the <code>General</code> tab of the <code>New Repository Location</code> wizard set the URL field to <code>https://daisymfc.svn.sourceforge.net/svnroot/daisymfc</code> and then press the <code>Finish button</code></p><img src="img/co-core-5.png" alt="New Repository Location wizard"/></li>
+
+		<li><p>Open the branch you want to check out (for instance choose <code>trunk</code> for the latest developments or <code>tags/<em>_version_</em></code> for a specific release) and then select the module to check out (this should be <code>dmfc</code>, which is by the way the former name of DAISY Pipeline).</p>
+
+			<p>Note: If you just want to run the Pipeline use the latest release in the <code>tags</code> branch. More active (i.e. possibly unstable) development occurs in the <code>trunk</code>. Decidedly unstable work happens in experimental branches, so normally the trunk should be ok. If in doubt, ask your nearest Pipeline Core Team Representative&trade;.</p>
+		</li>
+
+		<li><p>Check out the project using the <code>Check Out</code> item of the contextual menu of the selected svn module.</p><img src="img/co-core-6.png" alt="Checkout the project"/></li>
+
+		<li><p>Wait for the download to complete.</p></li>
+	</ol>
+
+	<h3 id="checkSetup">Check the project setup</h3>
+
+	<p>The SVN checkout includes the Eclipse <code>.project</code> file that Eclipse uses to set classpath and 3d party library dependencies. So the project should be pretty much ready to go once the SVN dump is complete.</p>
+
+	<p>If you move to the Java Perspective (via the menu <code>Window &gt; Open Perspective &gt; Java</code>), the Package Explorer view should have the <code>src</code> and <code>transformers</code> directories shown as source containers (a special icon is used for these folder items). There should be a bunch of 3d party libraries in the "Referenced libraries" item.</p>
+	<img src="img/co-core-7.png" alt="Project in the package explorer"/>
+
+	<h3 id="runTest">Running the Pipeline test suite</h3>
+
+	<p>You can confirm that your Pipeline environment works by creating a "Run Configuration" for the built-in Pipeline test suite.</p>
+
+	<ol>
+		<li><p>Open the <code>Run</code> configuration dialog via the menu <code>Run &gt; Open Run Dialog...</code></p></li>
+
+		<li><p>Create a new <code>Java Application</code> configuration.</p></li>
+
+		<li><p>Name it (for instance "Pipeline Test Suite").</p></li>
+
+		<li><p>Select <code>org.daisy.pipeline.test.PipelineTestDriver</code> as the main class.</p></li>
+
+		<li>
+			<p>In the <code>Arguments</code> tab, add the following string as program arguments: <code>"${project_loc}/samples ${project_loc}/scripts"</code></p><img src="./img/run-core-0.png" alt="Program Arguments: ${project_loc}/samples ${project_loc}/scripts" />
+		</li>
+
+		<li><p>Select <code>Apply</code> then <code>Close</code>, dont run yet.</p></li>
+
+		<li><p>Instead, open the <code>org.daisy.pipeline.test.PipelineTestDriver</code> class and make sure that one test is de-commented in the <code>getTests()</code> method. Select for example <code>OPSCreator1</code>. (It will take a bit too long to run all the tests at this time.)</p></li>
+
+		<li><p>Now run the Pipeline Test Suite (for instance via the menu <code>Run &gt; Run</code>).</p></li>
+
+		<li><p>If you are set up correctly, the Console View will report a succesful run.</p></li>
+	</ol>
+
+	<p><em>Note: When you are developing a Transformer, it is recommended to do so against tests in the test suite. You are all set up for this now.</em></p>
+
+	<h3 id="runCLI">Running the Pipeline command line interface</h3>
+
+	<p>Similarly to what you did in the test suite run above, create a "Run Configuration" for the Pipeline Command Line Interface.</p>
+
+	<ol>
+		<li><p>Open the <code>Run</code> configuration dialog via the menu <code>Run &gt; Open Run Dialog...</code></p></li>
+
+		<li><p>Create a new <code>Java Application</code> configuration.</p></li>
+
+		<li><p>Name it (for instance "Pipeline CLI").</p></li>
+
+		<li><p>Select <code>org.daisy.pipeline.ui.CommandLineUI</code> as the main class.</p></li>
+
+		<li><p>Set the command line arguments in the <code>Program Argument</code> area of the <code>Arguments</code> tab.</p>
+
+			<p>The following program arguments runs the DTBookValidator Script against an item in the /samples/ folder: <code>"${project_loc}/scripts/verify/DTBookValidator.taskScript" --input="${project_loc}/samples/input/dtbook/dontworrybehappy.xml"</code></p>
+
+			<p>Note: The <code>Arguments</code> tab needs to be changed every time you want to run a new script or run a script against new input.</p>
+		</li>
+
+		<li><p>Press on <code>Run</code>.</p></li>
+
+		<li>You should get the following message in the console:
+			<pre xml:space="preserve">
+<code>
+[DEBUG, Pipeline Core] Loading Transformer Validator (class int_daisy_validator.ValidatorDriver)
+[DEBUG, Pipeline Core] Transformer loaded from file:/D:/workspace/pipeline/transformers/
+[STATE] Task DTBook Validator just started
+[STATE] Transformer Validator just started
+[INFO, Validator] Validating a Dtbook document.
+[DEBUG, Validator] Completed full validation of input fileset.
+[INFO, Validator] Validation completed in 0.0 seconds.
+[INFO, Validator] 0 issues were reported by validators.
+[INFO, Validator] Congratulations!
+[STATE] Transformer Validator just stopped
+[STATE] Task DTBook Validator just stopped
+</code>
+																																																
+</pre>
+		</li>
+	</ol>
+
+	<h3 id="buildCore">Building the Pipeline Core from the Ant script</h3>
+
+	<p>The Pipeline Core build is based on Ant. For more information on this tool, please see the <a href="http://ant.apache.org/">Apache Ant Project</a>.</p>
+	<ol>
+		<li><p>Open the Ant view using the menu <code>Window &gt; Show View &gt; Ant</code>.</p><img src="img/build-core-0.png" alt="Show Ant view"/></li>
+		<li><p>Add <code>build-core.xml</code> build file to the view using the <code>Add Buildfiles...</code> command on the context menu.</p><img src="img/build-core-1.png" alt="Add build file"/></li>
+		<li><p>Select the <code>build-core.xml</code> in the <code>org.daisy.pipeine</code> project</p><img src="img/build-core-2.png" alt="Select build-core.xml"/></li>
+		<li><p>Select a the <code>all</code> target and press the <code>Run</code> button.</p><img src="img/build-core-3.png" alt="Run the all target"/></li>
+		<li><p>Check the build log in the Console view.</p><img src="img/build-core-4.png" alt="Check the build log"/></li>
+	</ol>
+
+	
+<h2 id="guiSetup">Pipeline GUI project setup</h2>
+
+	<p>This section describes how to get and configure the Pipeline GUI and run it as a front end for the Pipeline Core. The following assumed you have the Pipeline Core project correctly setup (for a step-by-step guide to this state, see the previous section <a href="#coreSetup" shape="rect">Pipeline Core project setup</a>).</p>
+
+	<h3 id="checkoutGUI">Checkout the project</h3>
+
+	<ol>
+		<li><p>Move to the SVN Perspective (<code>Window &gt; Open Perspective... &gt; SVN Repository Exploring</code>).</p></li>
+
+		<li><p>Create a new repository location: either via the menu <code>File &gt; New &gt; Repository Location</code> or by using the <code>New Repository Location</code> button in the <code>SVN Repositories</code> view toolbar or via the contextual menu of the view.</p></li>
+
+		<li><p>In the <code>General</code> tab of the <code>New Repository Location</code> wizard set the URL field to <code>https://daisymfcgui.svn.sourceforge.net/svnroot/daisymfcgui</code> and the press <code>Finish</code>.</p><img src="img/co-gui-0.png" alt="New Repository Location wizard"/></li>
+
+		<li><p>Open the branch you want to check out (for instance choose <code>trunk</code> for the latest developments or <code>tags/<em>_version_</em></code> for a specific release) and then select the <code>gui</code> module.</p></li>
+
+		<li><p>Check out the project using the <code>Check Out</code> item of the contextual menu of the selected svn module.</p><img src="img/co-gui-1.png" alt="Check out the GUI"/></li>
+
+		<li><p>Wait for the download to complete.</p></li>
+
+		<li><p>Check that the project has been correctly checked out by moving back to the Java Perspective (via the menu <code>Window &gt; Open Perspective &gt; Java</code>)</p><img src="img/co-gui-2.png" alt="GUI project in the Java perspective"/></li>
+	</ol>
+
+	<h3 id="setupRCP">Configure the RCP environment</h3>
+
+	<p>The Pipeline GUI project is based on the <em><a href="http://wiki.eclipse.org/index.php/Rich_Client_Platform">Eclipse Rich Clien Platform</a></em> (aka <em>Eclipse RCP</em>) which is basically an application framework based on a dynamic plug-in model. Both the Pipeline Core project and the Pipeline GUI project are actually plug-ins that integrate in this platform, identified respectively as <code>org.daisy.pipeline</code> and <code>org.daisy.pipeline.gui</code>.</p>
+
+	<p>Before running the Pipeline GUI, you must configure the <em>Target Platform</em> runtime, i.e. the set of (Eclipse) plug-ins against which your <code>org.daisy.pipeline</code> and <code>org.daisy.pipeline.gui</code> plug-ins will be compiled and tested.</p>
+
+	<p>Note: the following instructions assume you're using Eclipse 3.5 or higher. It is possible to use previous versions but the Target Platform configuration steps are slightly different, please refer to the built-in Eclipse Help guides for more details adapted to your version of Eclipse.</p>
+	
+	<ol>
+		<li>Fetch the zipped target platform from the subversion repository:<br />
+		<a href="http://daisymfcgui.svn.sourceforge.net/viewvc/*checkout*/daisymfcgui/trunk/target/pipeline-rcp-target.zip">http://daisymfcgui.svn.sourceforge.net/viewvc/*checkout*/daisymfcgui/trunk/target/pipeline-rcp-target.zip</a><br />
+		Unzip it to the place of your choice (we will later refer to this place as <code>$TARGET_HOME</code>).</li>
+
+		<li><p>Open the Preferences dialog via the <code>Preferences...</code> command (available in the <code>Window</code> menu on Windows and Linux and on the Eclipse application menu on Mac OS X).</p></li>
+
+		<li><p>Move to the <code>Plug-in Development &gt; Target Platform</code> preference page.</p></li>
+
+		<li><p>Select the <code>Add...</code> button to launch the New Target Definition wizard.</p></li>
+
+		<li><p>Select the option "Nothing: Start with an empty target definition" and press <code>Next</code>.</p></li>
+
+		<li><p>Enter the name of your target platform in the name field, for instance "Pipeline GUI".</p></li>
+
+		<li><p>In the locations tab, use the <code>Add...</code> button to launch the "Add Content" wizard. Select the <code>Directory</code> source type, and in the next step browse for the directory where you unzipped the target platform ZIP archive (this should be <code>$TARGET_HOME/pipeline-rcp-target</code>), and press <code>Finish</code>.</p></li>
+		
+		<li><p>Finally press <code>Finish</code> in the "New Target Definition" wizard.</p></li>
+
+		<li><p>Make sure the newly created target platform is selected (i.e. "Active")</p><img src="img/target-1.png" alt="Target Platform - preference pane"/></li>
+	</ol>
+
+	<p>Note: as Eclipse RCP is a very powerfull and dynamic component-based environment, its configuration is quite complex and can be confusing at first. For further help on the topic please see the <a href="http://help.eclipse.org/help33/index.jsp?topic=/org.eclipse.pde.doc.user/guide/pde_configuring.htm">Eclipse Plug-in Development Environment documentation</a>, or one of the many excellent resources on the <a href="http://wiki.eclipse.org/index.php/Rich_Client_Platform">Eclipse RCP wiki</a>.</p>
+
+	<h3 id="runGUI">Run the Pipeline GUI</h3>
+
+	<p>In order to run the Pipeline GUI from this development environment, you have to create a "Run Configuration" for the RCP product.</p>
+
+	<ol>
+		<li><p>Open the <code>Run</code> configuration dialog via the menu <code>Run &gt; Open Run Dialog...</code></p></li>
+
+		<li><p>Create a new <code>Eclipse Application</code> configuration.</p></li>
+
+		<li><p>Name it (for instance"Pipeline GUI").</p></li>
+
+		<li><p>In the <code>Program to Run</code> section of the <code>Main</code> tab, select the <code>Run a product</code> radio button and choose the product called <code>org.daisy.pipeline.gui.product</code></p><img src="img/run-gui-0.png" alt="Run configuration - main tab"/></li>
+
+		<li><p>Move the <code>Plug-ins</code> tab.</p></li>
+
+		<li><p>Choose to "Launch with plug-ins selected below only"</p></li>
+
+		<li><p>Deselect all the plug-ins, then select the <code>org.daisy.pipeline.gui</code> plug-in and press on <code>Add Required Plug-ins</code>.</p><img src="img/run-gui-1.png" alt="Run configuration - plugins tab"/></li>
+
+		<li><p>Finally press the <code>Run</code> button!</p></li>
+	</ol>
+
+	<h3 id="buildGUI">Build the Pipeline GUI</h3>
+
+	<p>The Pipeline GUI application is defined as a <em>product</em> including several <code>features</code>, each feature being composed of a set of <code>plug-ins</code>. In order to build the application, you first have to checkout the <code>org.daisy.pipeline.gui</code> feature definition from subversion, and then export the product using the plug-in development tools.</p>
+
+	<p>Note: The Eclipse Plug-in Development Environment build mechanism is made of a complex set of tools. For further documentation on the concepts at stake please check the <a href="http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/guide/product.htm">Eclipse Help pages</a>.</p>
+
+	<ol>
+		<li><p>Move to the SVN Repository Exploring perspective and checkout the <code>features/org.daisy.pipeline.gui-feature</code> project from the <code>https://daisymfcgui.svn.sourceforge.net/svnroot/daisymfcgui</code> repository location.</p><img src="img/build-gui-0.png" alt="Check out Pipeline feature"/></li>
+
+		<li><p>Go back to the <code>Java</code> perspective to check the feature project has been correctly downloaded.</p></li>
+
+		<li><p>Move to the SVN Repository Exploring perspective and checkout the <code>langpack/org.daisy.pipeline.gui.nl1</code> language fragment project from the <code>https://daisymfcgui.svn.sourceforge.net/svnroot/daisymfcgui</code> repository location.</p><img src="img/build-gui-3.png" alt="Check out Pipeline language fragment"/></li>
+
+		<li><p>Go back to the <code>Java</code> perspective to check the fragment project has been correctly downloaded.</p></li>
+			
+		<li><p>Launch the export wizard from the <code>File &gt; Export...</code> menu item.</p><img src="img/build-gui-1.png" alt="Launch the Export Wizard"/></li>
+
+		<li><p>Select the <code>Plug-in Development &gt; Eclipse Product</code> export type.</p></li>
+
+		<li><p>Set the product configuration to <code>/org.daisy.pipeline.gui/pipeline.product</code> and the root directory to <code>DAISY Pipeline</code>.</p></li>
+
+		<li><p>Select the directory where you want the application to be exported.</p></li>
+
+		<li><p>Optionally check <code>Export for multiple platforms</code> if you want to.</p></li>
+
+		<li><p>Finally press <code>Finish</code>.</p><img src="img/build-gui-2.png" alt="Product Export Wizard"/></li>
+
+		<li><p>The DAISY Pipeline GUI is now ready to be used!</p></li>
+	</ol>
+</body>
+</html>

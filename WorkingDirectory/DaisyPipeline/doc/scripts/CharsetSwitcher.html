@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Charset Switcher</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Charset Switcher</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script lets you change the character set encoding used in the XML members of a fileset.</p>
+<p class="alert">It is not guaranteed that the input encoding and/or the desired output encoding is 
+supported by the system. Therefore, be sure to check and verify the output result carefully before continuing with other processing.</p>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong>The manifest member of the input fileset (NCC, OPF, DTBook file, etc)</dd>
+
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> Directory to store the result in. This can not be same directory as the input directory.</dd>
+
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> Select the output characterset encoding. If not set, the output encoding will be the default <strong>utf-8</strong>.</dd>
+		
+		<dt>Linebreaks</dt>
+		<dd><strong>Optional.</strong>Select the type of linebreak to use; values are UNIX, Mac, Dos or System default. The default is the system default.</dd>
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/se_tpb_charsetSwitcher.html">Charset Switcher</a></li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="AudacityToDTB">
+	<nicename>Audacity Save-as-DAISY [BETA]</nicename>
+	<description>Convert an Audacity project into a NCX-only DTB</description>
+	<documentation uri="../../../doc/scripts/AudacityToDTB.html"/>
+		
+	<parameter name="inputAUP" value="" required="true">
+		<nicename>Input aup file</nicename>
+		<description>Select the input Audacity project file</description>
+		<datatype>
+			<file mime="application/x-audacity-aup" type="input"/>
+		</datatype>
+	</parameter>
+	
+		
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>Select or create an output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	 
+	 <parameter name="pageAutoNumbering" value="off" required="false">
+		<nicename>Page auto numbering</nicename>
+		<description>Select whether to renumber normal page numbers</description>
+		<datatype>
+			<enum>
+			  <item nicename="off" value="off" />
+			  <item nicename="start from 1" value="1" />
+			  <item nicename="start from 2" value="2" />
+			  <item nicename="start from 3" value="3" />
+			  <item nicename="start from 4" value="4" />
+			  <item nicename="start from 5" value="5" />
+			  <item nicename="start from 6" value="6" />
+			  <item nicename="start from 7" value="7" />
+			  <item nicename="start from 8" value="8" />
+			  <item nicename="start from 9" value="9" />
+			  <item nicename="start from 10" value="10" />
+			</enum>
+		</datatype>
+	</parameter>
+	 
+	&ValidatorScriptParamsSimpleStatic; 
+	 	 
+	<task name="int_daisy_recorder2dtb" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${inputAUP}</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}</value>
+		</parameter>
+		<parameter>
+			<name>pageAutoNumber</name>
+			<value>${pageAutoNumbering}</value>
+		</parameter>
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/package.opf</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;
+														
+	</task>
+	
+	
+	
+</taskScript>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Renamer Tagger Validator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Renamer Tagger Validator</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This is a multi-step script that performs fileset file renaming, ID3 tag and playlist creation, and lastly validation on a fileset (such as a DTB).</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>The input fileset manifest file (NCC, OPF, etc)</p>
+
+<h2 id="output">Output</h2>
+<p>A fileset...</p>
+<ul>
+<li>in which certain members have been renamed according to the renaming configuration</li>
+<li>for which ID3 tags and playlists have been added (if these features were enabled in the configuration)</li>
+<li>that lastly has been validated to make sure everything went fine.</li>
+</ul>
+
+<h2 id="config">Configuration</h2>
+  <dl>
+	  <dt>Fileset renaming</dt>
+	  <dd>See the <a href="FilesetRenamer.html#paramslist">Fileset Renamer</a> script.</dd>
+	  <dt>ID3 tag and playlist creation</dt>
+	  <dd>See the <a href="AudioTagger.html#paramslist">Audio tagger</a> script.</dd>
+	  <dt id="report">XML Report</dt>
+	  <dd><strong>Optional.</strong> Path to a file to store a validation XML report in</dd>
+  </dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+    <li><a href="../transformers/int_daisy_filesetRenamer.html">Fileset Renamer</a></li>
+	<li><a href="../transformers/int_daisy_filesetAudioTagger.html">Audio Tagger</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>	
+</ol>
+</body>
+</html>

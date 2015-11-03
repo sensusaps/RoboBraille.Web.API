@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />  
+	<title>Speechen2 multi-language support</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+<body>
+
+<h1>Speechgen2 multi-language TTS configuration</h1>
+
+<p>This documentation is about per-language configuration of TTS engines in the <a href="../transformers/se_tpb_speechgen2.html">se_tpb_speechgen2</a> transformer. It targets Pipeline users who want to refine the configuration via manual edition of the internal XML configuration files.</p>
+
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#ttsbuilder.xml">Structure of the ttsbuilder.xml</a></li>
+<li><a href="#selection">Voice selection mechanism</a></li>
+<li><a href="#windows">Configuration on Windows</a></li>
+<li><a href="#mac">Configuration on Mac OS X</a></li>
+<li><a href="#linux">Configuration on Linux</a></li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+
+<p>The Pipeline uses a set of declarative rules to associate TTS voices to language codes.
+The Narrator automatically selects TTS voices depending on the value of the xml:lang attributes found in the DTBook.
+If there is no specific rule for a given language, the Narrator will fall back to the default system voice.</p>
+<p>The TTS-related configuration is actually part of the <tt>se_tpb_speechgen2</tt> transformer.
+It uses a simple factory/builder to get hold of TTS implementations, configured in an XML file
+named <code>ttsbuilder.xml</code> in the <code>se_tpb_speechgen2/tts/</code> directory.</p>
+
+<h2 id="ttsbuilder.xml">Structure of the ttsbuilder.xml configuration file</h2>
+
+<p>The configuration consists of operating-system-specific sections ; whithin each of these OS sections are 
+language-specific sub-sections containing the declaration of a single TTS engine to use for this language:</p>
+
+<pre>
+&lt;ttsbuilder&gt;
+	
+	&lt;os&gt;
+		&lt;property name=&quot;os.name&quot; match=&quot;[Ww]indows.*&quot; /&gt;
+		&lt;lang lang=&quot;__&quot;&gt;
+			&lt;tts default=&quot;true&quot;&gt;...&lt;/tts&gt;
+		&lt;/lang&gt;
+		&lt;lang lang=&quot;en&quot;&gt;
+			&lt;tts&gt;...&lt;/tts&gt;
+		&lt;/lang&gt;
+		&lt;lang lang=&quot;fr&quot;&gt;
+			&lt;tts&gt;...&lt;/tts&gt;
+		&lt;/lang&gt;
+	&lt;/os&gt;
+	
+	&lt;os&gt;
+		&lt;property name=&quot;os.name&quot; match=&quot;[Ll]inux.*&quot; /&gt;		
+		&lt;lang lang=&quot;en&quot;&gt;
+			&lt;tts default=&quot;true&quot;&gt;...&lt;/tts&gt;
+		&lt;/lang&gt;
+		...
+	&lt;/os&gt;
+	
+	&lt;os&gt;
+		&lt;property name=&quot;os.name&quot; match=&quot;Mac OS X&quot; /&gt;
+		&lt;lang lang=&quot;en&quot;&gt;
+			&lt;tts default=&quot;true&quot;&gt;...&lt;/tts&gt;
+		&lt;/lang&gt;
+		...
+	&lt;/os&gt;
+	
+&lt;/ttsbuilder&gt;
+</pre>
+
+<p>For each OS, there can be one (and only one) descendant TTS with the attribute <code>default="true"</code> to be used as fallback.
+Note that this deault TTS can be configured in a "dummy" language section (with a fake language code), as it is done for the Windows
+section in the example above.</p>
+
+<h2 id="selection">Voice selection mechanism</h2>
+
+<p>When the Narrator must generate the audio for a DTBook element, it first looks at the value of the <code>xml:lang</code> attribute of the element or its closest ancestor.
+It then tries to instantiate a TTS engine based on the configuration in the <code>tts</code> element in the language section corresponding to the <code>xml:lang</code> value
+and in the OS section corresponding to the user's OS. For instance if the document locale is en-US it will pick the best match in that order:</p>
+
+<ol>
+	<li>the section with the lang attribute equals to 'en_US'</li>
+	<li>the section with the lang attribute equals to 'en'</li>
+	<li>the first section with the lang attribute starting with 'en_' </li>
+	<li>the section with the default attribute set to 'true'</li>
+</ol>
+
+<p>Note that the configuration uses underscores to separate the language and country codes as done in the java.util.Locale#toString() method</p>
+
+<p>Note that this multi-language support can be disabled with the script parameter named "Multi-language support". If this option is disabled, the TTS engine configured in
+ the default section will always be used.</p>
+
+<h2 id="windows">Configuration on Windows</h2>
+
+<p>On Windows, the actual voice selection is by default delegated to the Microsoft Speech API (SAPI5), which means that only SAPI-compliant TTS engines can be used.</p>
+
+<p>The text sent to the default SAPI TTS adapter is wrapped in a voice SAPI XML tag with the selection criteria declared in the <code>sapiVoiceSelection</code> parameter
+of the <code>tts</code> section in <code>ttsbuilder.xml</code>.</p>
+
+<p>For instance, if the TTS configuration contains the following section:</p>
+
+<pre>
+&lt;lang lang=&quot;en&quot;&gt;
+	&lt;tts&gt;
+		&lt;param name=&quot;class&quot; value=&quot;se_tpb_speechgen2.external.win.DefaultSapiTTS&quot;/&gt;
+		&lt;param name=&quot;sapiVoiceSelection&quot; value=&quot;Language=409&quot;/&gt;
+		...
+	&lt;/tts&gt;
+&lt;/lang&gt;
+</pre>
+
+The text "This is is a sentence." is transformed into the following SAPI XML tag before being sent to the TTS:
+
+<pre>
+&lt;voice optional=&quot;Language=409&quot;&gt;This is is a sentence.&lt;/voice&gt;
+</pre> 
+
+The default <code>ttsbuilder.xml</code> configuration uses Microsoft language codes to select voice matching a language section, but note that it is possible to
+refine the selection, with queries such as "<code>Gender=Female;Age!=Child;Language=409</code>". It is even possible to explicitly name the voice to use for a
+particular language section. For more information on the TTS selection attributes, refer to the <a href="http://msdn.microsoft.com/en-us/library/ms717077%28VS.85%29.aspx">Microsoft XML TTS tutorial</a> and to the <a href="http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx">list of language codes</a>. 
+
+<h2 id="mac">Configuration on Mac OS X</h2>
+
+<p>On Mac OS X, the TTS engine is selected directly by the name of the voice specified in the <code>voice</code> parameter of the TTS section of the language.
+The parameter accepts a comma-separated list of voice names, and the first name corresponding to a voice existing on the user's system is selected.</p>
+
+<p>For instance, if the TTS configuration contains the following section:</p>
+
+<pre>
+&lt;lang lang=&quot;en&quot;&gt;
+	&lt;tts&gt;
+		&lt;param name=&quot;class&quot; value=&quot;se_tpb_speechgen2.external.MacOS.MacSayTTS&quot;/&gt;
+		&lt;param name=&quot;voice&quot; value=&quot;Alex, Vicky&quot;/&gt;
+		...
+	&lt;/tts&gt;
+&lt;/lang&gt;
+</pre>
+
+<p>The voice selected to speech English content will be Apple's Alex voice on Mac OS X 10.5 Leopard and later, and Apple's Vicky voice on Mac OS X 10.4 Tiger (where Alex is not available).</p>
+
+
+<h2 id="linux">Configuration on Linux</h2>
+
+<p>On Linux, the default TTS adapter to the ESpeak engine selects the voice with a two-letter language code configured in the <code>eSpeakVoiceFile</code> parameter of the
+TTS section of the language.</p>
+
+<p>For instance, for English the TTS configuration would be:</p>
+
+<pre>
+&lt;lang lang=&quot;en&quot;&gt;
+	&lt;tts default=&quot;true&quot;&gt;
+		&lt;param name=&quot;class&quot; value=&quot;se_tpb_speechgen2.external.linux.ESpeakTTS&quot;/&gt;
+		&lt;param name=&quot;eSpeakVoiceFile&quot; value=&quot;en&quot;/&gt;
+		...
+	&lt;/tts&gt;
+&lt;/lang&gt;
+</pre>
+
+
+
+
+
+</body>
+</html>

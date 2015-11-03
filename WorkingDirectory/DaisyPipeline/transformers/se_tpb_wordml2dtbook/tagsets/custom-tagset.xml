@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook tagset.xsd">
+	<custom style="default">
+		<paragraphs>
+			<tag name="example">
+				<map value="p"/>
+			</tag>
+		</paragraphs>
+		<character useInlineFormatting="true"/>
+	</custom>
+	<custom style="native">
+		<paragraphs>
+			<!-- New template -->
+			<tag name="Address (DAISY)">
+				<map value="line">
+					<attribute name="group" value="address"/>
+				</map>
+			</tag>
+			<tag name="Author (DAISY)">
+				<map value="author"/>
+			</tag>
+			<tag name="Blockquote (DAISY)">
+				<map value="p">
+					<attribute name="group" value="blockquote"/>
+				</map>
+			</tag>
+			<tag name="Blockquote - Author (DAISY)">
+				<map value="author">
+					<attribute name="group" value="blockquote"/>
+				</map>
+			</tag>
+			<tag name="Bridgehead (DAISY)">
+				<map value="bridgehead"/>
+			</tag>
+			<tag name="Byline (DAISY)">
+				<map value="byline"/>
+			</tag>
+			<tag name="Covertitle (DAISY)">
+				<map value="covertitle"/>
+			</tag>
+			<tag name="Dateline (DAISY)">
+				<map value="dateline"/>
+			</tag>
+			<tag name="Epigraph (DAISY)">
+				<map value="p">
+					<attribute name="group" value="epigraph"/>
+				</map>
+			</tag>
+			<tag name="Epigraph - Author (DAISY)">
+				<map value="author">
+					<attribute name="group" value="epigraph"/>
+				</map>
+			</tag>
+			<tag name="Poem (DAISY)">
+				<map value="line">
+					<attribute name="group" value="poem"/>
+				</map>
+			</tag>
+			<tag name="Poem - Author (DAISY)">
+				<map value="author">
+					<attribute name="group" value="poem"/>
+				</map>
+			</tag>
+			<tag name="Poem - Byline (DAISY)">
+				<map value="byline">
+					<attribute name="group" value="poem"/>
+				</map>
+			</tag>
+			<tag name="Poem - Heading (DAISY)">
+				<map value="hd">
+					<attribute name="group" value="poem"/>
+				</map>
+			</tag>
+			<tag name="Poem - Title (DAISY)">
+				<map value="title">
+					<attribute name="group" value="poem"/>
+				</map>
+			</tag>
+			<tag name="Prodnote - Optional (DAISY)">
+				<map value="p">
+					<attribute name="group" value="prodnote-optional"/>
+				</map>
+			</tag>
+			<tag name="Prodnote - Required (DAISY)">
+				<map value="p">
+					<attribute name="group" value="prodnote-required"/>
+				</map>
+			</tag>
+			<!-- / New template -->
+		</paragraphs>
+		<character useInlineFormatting="true">
+			<!-- New template -->
+			<tag name="Citation (DAISY)">
+				<map value="cite"/>
+			</tag>
+			<tag name="Code (DAISY)">
+				<map value="code"/>
+			</tag>
+			<tag name="Definition (DAISY)">
+				<map value="dfn"/>
+			</tag>
+			<tag name="Keyboard Input (DAISY)">
+				<map value="kbd"/>
+			</tag>
+			<tag name="Page Number (DAISY)">
+				<pagenum/>
+			</tag>
+			<tag name="Quotation (DAISY)">
+				<map value="q"/>
+			</tag>
+			<tag name="Sample (DAISY)">
+				<map value="samp"/>
+			</tag>
+			<!-- / New template -->
+		</character>
+	</custom>
+	<custom style="scanned">
+		<paragraphs>
+			<tag name="example">
+				<map value="p"/>
+			</tag>
+			<tag name="footnote text">
+				<!--
+				<wrap value="note" addId="true" merge="false">
+					<using value="p"/>
+				</wrap>-->
+				<map value="p">
+					<attribute name="group" value="note"/>
+				</map>
+			</tag>
+		</paragraphs>
+		<character useInlineFormatting="true">
+			<tag name="footnote reference"><noteref/></tag>
+		</character>
+	</custom>
+</mappings>

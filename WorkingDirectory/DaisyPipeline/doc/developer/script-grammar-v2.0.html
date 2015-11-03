@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+  <title>Taskscript Grammar version 2.0</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+
+<body>
+
+  <h1>Daisy Pipeline Taskscript Grammar version 2.0</h1>
+
+  <p class="author">Linus Ericson</p>
+  <p class="updated">Latest update: 2007-03-22</p>
+
+  <p class="summary">This document describes the new (version 2.0) script grammar
+    for the Daisy Pipeline.</p>
+
+  <h2 class="toc">Contents</h2>
+  <ul>
+   	<li><a href="#introduction">Introduction</a></li>
+  	<li><a href="#identification">Identification</a></li>
+  	<li><a href="#name">Name, description and documentation</a></li>
+  	<li><a href="#properties">Properties</a>
+  	<ul>
+  		<li><a href="#using">Using properties</a></li>
+  	</ul>
+  	</li>
+  	<li><a href="#parameters">Script Parameters</a>
+  	<ul>
+  		<li><a href="#param_file">File</a></li>
+  		<li><a href="#param_directory">Directory</a></li>
+  		<li><a href="#param_string">String</a></li>
+  		<li><a href="#param_boolean">Boolean</a></li>
+  		<li><a href="#param_integer">Integer</a></li>
+  		<li><a href="#param_enum">Enum</a></li>
+  	</ul>
+  	</li>
+  	<li><a href="#functions">Functions</a>
+  	<ul>
+  		<li><a href="#func_filename">Filename</a></li>
+  		<li><a href="#func_parent">Parent</a></li>
+  	</ul>
+  	</li>
+  	<li><a href="#tasks">Tasks</a></li>
+  	<li><a href="#documentation">Full documentation</a></li>
+  	<li><a href="#example">Example</a></li>
+  	<li><a href="#notes">Notes</a></li>  	
+  </ul>
+
+  <!-- ************************************************** -->
+
+  <h2 id="introduction">Introduction</h2>
+  <p>The Daisy Pipeline executes <em>Jobs</em>. Each Job in its turn is defined in a taskScript (or Script, for short) file. The taskScript
+  defines what Transformers are executed in what order, and it defines what parameters are sent to the Transformers as
+  they execute.</p>
+  
+  <p>The taskscript is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="#note1"><sup>1</sup></a> exists to validate it. The Taskscript file is parsed (and validated) 
+  by the Pipeline core at initialization time.</p>
+  
+  <h2 id="identification">Identification</h2>
+  <p>The <code>version</code> attribute on the <code>taskScript</code> root element
+     has the value <code>2.0</code> indicating that this is a version 2.0 task script.</p>
+  <p>The <code>name</code> attribute contains a name of the script that is unique within
+     the Daisy Pipeline.</p>
+
+  <pre>&lt;taskScript version="2.0" name="scriptname"&gt;</pre>
+
+  <p class="fixme">TBD. Naming convention</p>
+
+  <hr/>
+
+  <!-- ************************************************** -->
+
+  <h2 id="name">Name, description and documentation</h2>
+  <p>The <code>nicename</code> element contains the human readable name of the script.
+     The name is normally up to five words long.</p>
+  <p>The <code>description</code> element contains a longer description of the script,
+     perhaps up to five sentences long.</p>
+     <p>The <code>documentation</code> element carries a uri attribute that contains a relative link to end user documentation of the task. 
+     	Normally, the destination of the URI is an XHTML document in the <code>/doc/scripts</code> subfolder.
+     	A template for this XHTML document exists in the <code>/doc/templates</code> folder.</p>
+
+  <pre>&lt;nicename&gt;Script Nicename&lt;/nicename&gt;
+&lt;description&gt;Script Description&lt;/description&gt;
+&lt;documentation uri="../../doc/scripts/doc.html" /&gt;</pre>
+
+
+
+
+  <hr/>
+
+  <!-- ************************************************** -->
+
+  <h2 id="properties">Properties</h2>
+  <p>Properties are variables internal to the script. A user running a script
+    is not able to set the value of a property.</p>
+  <pre>&lt;property name="propname" value="propvalue"/&gt;</pre>
+
+  <h3 id="using">Using properties</h3>
+  <p>Properties (as well as parameters) are referenced from other parts of the script
+    by using the <code>${name}</code> syntax, where <code>name</code> is the name of a
+    property (or parameter).</p>
+  <p>Property references are allowed in other property or parameter values and in the
+    <code>value</code> element when defining parameter values for tasks.</p>
+
+  <hr/>
+
+  <!-- ************************************************** -->
+
+  <h2 id="parameters">Script Parameters</h2>
+  <p>Script parameters can be set by the user before running the script.</p>
+  <p>The <code>name</code> attribute on the <code>parameter</code> element contains
+     the name of the parameter while the <code>nicename</code> element contains the
+     name suitable to be shown in a GUI. The <code>description</code> element contains
+     a slightly longer description of the parameter suitable to be shown in a tooltip
+     in a GUI.</p>
+  <p>Script parameters can either be required or optional, as indicated by the
+    <code>required</code> attribute on the <code>parameter</code> element. A required
+    parameter must be supplied by the user when the script is run. If the user does not
+    supply the value of an optional parameter, the <code>value</code> attribute is used
+    as a default value.</p>
+   <p>There are currently seven different datatypes available for script parameters.</p>
+
+  <h3 id="param_file">File</h3>
+  <p>The <code>mime</code> attribute contains the mime type of the file. The value of the
+    <code>type</code> attribute is either <code>input</code> or <code>output</code>.
+    Depending on this value, a GUI can display either an open or a save file dialog.</p>
+  <pre>&lt;parameter name="fileParam" value="" required="true"&gt;
+    &lt;nicename&gt;Input File&lt;/nicename&gt;
+    &lt;description&gt;A DTBook file in 2005-1 or 2005-2 format&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;file mime="application/xml" type="input"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_files">Files</h3>
+  <p>The <code>mime</code> attribute contains the mime type of the files. The value of the
+    <code>type</code> attribute is either <code>input</code> or <code>output</code>.
+    Depending on this value, a GUI can display either an open or a save file dialog.</p>
+  <pre>&lt;parameter name="fileParam" value="" required="true"&gt;
+    &lt;nicename&gt;Input Files&lt;/nicename&gt;
+    &lt;description&gt;One or several DTBook files in 2005-1 or 2005-2 format&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;files mime="application/xml" type="input"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_directory">Directory</h3>
+  <p>The value of the <code>type</code> attribute is either <code>input</code> or
+  	<code>output</code>. Depending on this value, a GUI can display either an open or
+  	a save directory dialog.</p>
+  <pre>&lt;parameter name="directoryParam" value="" required="true"&gt;
+    &lt;nicename&gt;Output Directory&lt;/nicename&gt;
+    &lt;description&gt;The directory the generated book will be placed in&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;directory type="output"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_string">String</h3>
+  <p>The optional <code>regex</code> attribute contains a regular expression used to
+     validate the values set by the user.</p>
+  <pre>&lt;parameter name="stringParam" value="" required="true"&gt;
+    &lt;nicename&gt;Identifier&lt;/nicename&gt;
+    &lt;description&gt;The identifier of the book&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;string regex="C[0-9]{5}"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_boolean">Boolean</h3>
+  <p>The optional <code>true</code> and <code>false</code> attributes are used to define the
+    values of the parameter when the parameter is set or unset. The default value for
+    the attributes are <code>true</code> and <code>false</code>, respectively.</p>
+  <pre>&lt;parameter name="booleanParam" value="1" required="false"&gt;
+    &lt;nicename&gt;Include CSS&lt;/nicename&gt;
+    &lt;description&gt;Include a CSS file reference in the generated document&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;boolean true="1" false="0"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_integer">Integer</h3>
+  <p>The optional <code>min</code> and <code>max</code> attributes set the allowed minimum
+    and maximum values for this integer. The default minimum value is -2<sup>31</sup> and
+    the default maximum value is 2<sup>31</sup>-1.</p>
+  <pre>&lt;parameter name="integerParam" value="680" required="false"&gt;
+    &lt;nicename&gt;Split size&lt;/nicename&gt;
+    &lt;description&gt;The maximum number of MB for each volume of the book&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;integer min="17" max="4711"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_enum">Enum</h3>
+  <p>Each allowed value of the enumeration is defined in its own <code>item</code> subelement.
+    Each <code>item</code> has a <code>value</code> attribute describing the value and a
+    <code>nicename</code> attribute suitable for displaying in a GUI.</p>
+  <pre>&lt;parameter name="enumParam" value="o" required="true"&gt;
+    &lt;nicename&gt;Favorite fruit&lt;/nicename&gt;
+    &lt;description&gt;What's your favorite fruit?&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;enum&gt;
+            &lt;item nicename="Apples" value="a"/&gt;
+            &lt;item nicename="Oranges" value="o"/&gt;
+            &lt;item nicename="Other" value="ot"/&gt;
+        &lt;/enum&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <hr/>
+
+  <!-- ************************************************** -->
+  
+  <h2 id="functions">Functions</h2>
+  <p>Script functions operate on all kinds of script properties, such as parameters. Functions
+  	use the same syntax as properties, but with the name of the function between the dollar
+  	sign and the open curly brace.</p>
+  	
+  <pre>...
+&lt;value&gt;$functionName{propertyName}&lt;/value&gt;
+...</pre>
+  	
+  <p>The currently defined functions are:</p>
+  <dl>
+  	<dt id="func_filename">filename</dt>
+  		<dd>Returns the filename portion of a file path</dd>
+  	<dt id="func_parent">parent</dt>
+  		<dd>Returns the parent directory of a path</dd>
+  </dl>
+  
+  <hr/>
+
+  <!-- ************************************************** -->
+
+  <h2 id="tasks">Tasks</h2>
+  <p>A task defines the name of a transformer and the parameter values for running it.</p>
+  <p>Each <code>task</code> element has two attributes: the <code>name</code> attribute
+    defines the name of the transformer to run while the optional <code>interactive</code>
+    attribute tells whether the transformer should be run in interactive mode or not, the
+    default value being false.</p>
+  <p>Each task also has a set of parameters, where each <code>parameter</code> element has
+    two subelements. The <code>name</code> element defines the name of a parameter while
+    the <code>value</code> element defines its value.</p>
+
+  <pre>&lt;task name="se_tpb_nccNcxOnly"&gt;
+    &lt;parameter&gt;
+        &lt;name&gt;manifest&lt;/name&gt;
+        &lt;value&gt;${input}&lt;/value&gt;
+    &lt;/parameter&gt;
+    &lt;parameter&gt;
+        &lt;name&gt;outDir&lt;/name&gt;
+        &lt;value&gt;${outputPath}&lt;/value&gt;
+    &lt;/parameter&gt;
+&lt;/task&gt;</pre>
+
+  <hr/>
+
+  <!-- ************************************************** 
+
+  <h2 id="documentation">Full documentation</h2>
+  <p class="fixme">TBD. Script documentation</p>
+
+  <hr/>
+
+  ************************************************** -->
+
+  <h2 id="example">Example</h2>
+
+  <pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;taskScript version="2.0" name="dtbook2xhtml"&gt;
+    &lt;nicename&gt;DTBook to XHTML&lt;/nicename&gt;
+    &lt;description&gt;Validates a DTBook file and converts it to XHTML&lt;/description&gt;
+
+    &lt;parameter name="input" value="" required="true"&gt;
+        &lt;nicename&gt;Input File&lt;/nicename&gt;
+        &lt;description&gt;The DTBook input file&lt;/description&gt;
+        &lt;datatype&gt;
+            &lt;file mime="application/x-dtbook+xml" type="input"/&gt;
+        &lt;/datatype&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter name="output" value="" required="true"&gt;
+        &lt;nicename&gt;Output File&lt;/nicename&gt;
+        &lt;description&gt;The XHTML output file&lt;/description&gt;
+        &lt;datatype&gt;
+            &lt;file mime="application/xhtml+xml" type="output"/&gt;
+        &lt;/datatype&gt;
+    &lt;/parameter&gt;
+
+    &lt;task name="int_daisy_validator"&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;input&lt;/name&gt;
+            &lt;value&gt;${input}&lt;/value&gt;
+        &lt;/parameter&gt;
+    &lt;/task&gt;
+
+    &lt;task name="uk_rnib_dtbook2xhtml"&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;xml&lt;/name&gt;
+            &lt;value&gt;${input}&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;out&lt;/name&gt;
+            &lt;value&gt;${output}&lt;/value&gt;
+        &lt;/parameter&gt;
+    &lt;/task&gt;
+
+&lt;/taskScript&gt;</pre>
+
+  <hr/>
+
+<h2 id="rng">Appendix. RelaxNG+Schematron grammar for taskScript</h2>
+
+<h2 id="notes">Notes</h2>
+<p id="note1">1. The schema lives in the <code>org.daisy.pipeline.core.script</code> package. If you do not have access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/pipeline/core/script/">browse the SVN online</a>.</p>
+
+
+
+</body>
+
+</html>

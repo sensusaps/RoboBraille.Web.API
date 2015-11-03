@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY CharsetSwitcherScriptParamsStatic SYSTEM "../../CharsetSwitcherScriptParamsStatic.paramGroup">
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="CharsetSwitcher">
+	<nicename>Character Set Switcher</nicename>
+	<description>Switch character set encooding on all XML files in a fileset. Optionally specify 
+	whether the XML documents shall use unix, dos or mac line breaks.</description>
+   	<documentation uri="../../../doc/scripts/CharsetSwitcher.html"/>
+    <comment/>
+			
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input manifest file (NCC, OPF, etc)</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>		
+
+
+	&CharsetSwitcherScriptParamsStatic;		
+	&ValidatorScriptParamsSimpleStatic;						
+				
+	<task name="se_tpb_charsetSwitcher" interactive="false">	
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>				
+						
+		<parameter>
+			<name>encoding</name>
+			<value>${charsetSwitcherEncoding}</value>
+		</parameter>
+		
+		<parameter>
+			<name>breaks</name>
+			<value>${charsetSwitcherLineBreaks}</value>
+		</parameter>										
+	</task>		
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/$filename{input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;												
+	</task>	
+
+			
+</taskScript>

@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="DTBookToText">
+	<nicename>DTBook to text [BETA]</nicename>
+	<description>Convert a DTBook into text</description>
+	<documentation uri="../../../doc/scripts/DTBookToText.html"/>
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="output" value="" required="true">
+		<nicename>Output text file</nicename>
+		<description>Output text file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="cols" value="50" required="false">
+		<nicename>Column width</nicename>
+		<description>Column width, in characters</description>
+		<datatype>
+			<string regex="[0-9]{1,3}"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="setup" value="en-US" required="true">
+		<nicename>Conversion Setup</nicename>
+		<description>Conversion setup to apply - see documentation</description>
+		<datatype>
+			<enum>
+			  <item nicename="English" value="en-US" />
+			  <item nicename="Swedish" value="sv-SE" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="config" value="" required="false">
+		<nicename>Settings file</nicename>
+		<description>A file containing additional conversion settings.</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+	</task>
+
+	<task name="se_tpb_hyphenator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>
+	</task>
+
+	<task name="org_pef_dtbook2pef" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>setup</name>
+			<value>${setup}</value>
+		</parameter>
+		
+		<parameter>
+			<name>outputFormat</name>
+			<value>text</value>
+		</parameter>
+		
+		<parameter>
+			<name>config</name>
+			<value>${config}</value>
+		</parameter>
+		
+		<parameter>
+			<name>cols</name>
+			<value>${cols}</value>
+		</parameter>
+
+	</task>
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+		</parameter>					
+	</task>
+
+</taskScript>

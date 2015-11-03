@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Coding Conventions - Java</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Coding Conventions - Java</h1>
+
+  <p class="author">Markus Gylling</p>
+  <p class="updated">Latest update: 2007-03-27</p>
+  
+  <p class="alert">See also <a href="./transformer-authoring-guide.html#codeOfConduct">Transformer Authors Code of Conduct</a>.</p>
+
+<div>
+  <h2 id="toc">Table of Contents</h2>
+  <ul>
+    <li><a href="#inheritedprinciples">Inherited principles</a></li>
+    <li><a href="#designconventions">Design conventions</a>
+      <ul>
+        <li><a href="#useofpatterns">Use of patterns</a></li>
+        <li><a href="#exceptions">Exceptions</a></li>
+      </ul>
+    </li> 
+    <li><a href="#namingspecifics">Naming and syntax specifics</a></li>
+    <li><a href="#jrecompatibility">JRE Compatibility</a></li>
+    <li><a href="#documentation">Documentation</a>
+      <ul>
+        <li><a href="#method-leveldocumentation">Method-level documentation</a></li>
+        <li><a href="#class-leveldocumentation">Class-level documentation</a></li>
+        <li><a href="#package-leveldocumentation">Package-level documentation</a></li>
+      </ul>   
+    </li>   
+    <li><a href="#debuggingswitches">Debugging switches</a></li>
+    <li><a href="#repositorybehavior">Repository behavior</a></li>
+  </ul>
+</div> 
+
+<div>
+  <h2 id="inheritedprinciples">Inherited principles</h2>
+  <p>This document inherits (builds upon) the general coding conventions as povided by Sun.</p>
+  <p>If not explicitly overriden, all conventions described in <a href="http://java.sun.com/docs/codeconv/">http://java.sun.com/docs/codeconv/</a> are to be considered a part of these Java coding conventions.</p>
+</div> 
+ 
+
+<div>
+  <h2 id="designconventions">Design conventions</h2> 
+  <h3 id="useofpatterns">Use of patterns</h3>
+  <p>Use of (GoF or other wellknown) patterns where justified and applicable, and adoption of wellknown names for the components of the patterns chosen, is considered good coding practice.</p>
+  <p><em>Not</em> using (GoF or other wellknown) patterns where justified and applicable, or using patterns in distorted/skewed ways, is considered bad coding practice.</p> 
+  <h3 id="exceptions">Exceptions</h3>
+  <p>Packages where all members adress a common contract generally throw only Exceptions with package identity.</p>
+  <p>For example, any member of a package <code>se.tpb.brailleformatter</code> throws only Exceptions of type <code>BrailleFormatterException</code> through publicly exposed methods.</p>
+  <p>This is a exception wrapping princple which allows package-external components to more efficiently adapt behavior when an exception occurs.</p>
+  <p>Ensure that a wrapping Exception always returns a valid rootCause.</p>
+  <p>Under certain circumstances (meaning: when it can be assumed that a package-external component may benefit from it), 
+  a wrapping Exception can be subclassed to provide severity or specificity information: for example, 
+  <code>se.tpb.brailleformatter.BrailleFormatterException</code> can be subclassed into 
+  <code>se.tpb.brailleformatter.BrailleFormatterFatalException</code> and <code>se.tpb.brailleformatter.BrailleFormatterNonFatalException</code>.</p>
+
+  <h3 id="Internationalizationandlocalization">Internationalization and Localization</h3>
+  <p>All strings that may or will appear in user interface layers are externalized.</p>
+  <p>Use the <code>//$NON-NLS-1$</code> syntax to aid automated externalization processes.</p>
+  <p>Prefer the XML format of Properties in order to support Unicode.</p>
+  <p>To properly support non-BMP planes of Unicode, programmatically represent characters as <code>int</code>s, or where more appropriate, as char[].</p>  
+</div> 
+
+<h2 id="namingspecifics">Naming and syntax specifics</h2>
+<p>Class-wide (member) variables are prefixed with 'm'. Example:</p>
+<pre><code>
+public class PeekerPool {
+  private static Map mFeatures = null;  //static features of a peeker saxparser
+  private static Map mProperties = null;  //static properties of a peeker saxparser
+  private static PeekerPool mInstance = new PeekerPool(); //singleton instance 
+</code></pre> 
+
+<h2 id="jrecompatibility">JRE Compatibility</h2>
+
+<p>If nothing else is explicitly stated for a particular project, code written should be compatible with the <em>most recent</em> and <em>prior</em> JRE released by Sun. In other words, there are normally two JRE versions that we are coding for compatibility with.</p> 
+
+<h2 id="documentation">Documentation</h2>
+<p>All documentation is written using the english language.</p> 
+<h3 id="package-leveldocumentation">Package-level documentation</h3>
+<p>Packages where all members contribute to a uniform contract have package-level documentation using the Javadoc <code>package.html</code> format. This document contains introductory information on the purpose of the package, and  usage examples (using inlined pseudocode).</p> 
+<h3 id="class-leveldocumentation">Class-level documentation</h3>
+<p>At the top of the class file (before any import statements) the following occurs:</p>
+<ul>
+  <li>copyright statement</li>
+  <li>license statement (if available).</li>
+</ul>
+
+<p>Version information is not provided inline: we rely exclusively on repositories (CVS, SVN) to track and provide versioning and history information.</p>
+<p>A Javadoc comment at the class-level describes the intent/contract of the class, using extensive {@link} and @see to provide contextual hooks.</p>
+<p>The class-level Javadoc comment always contains @author.</p> 
+<p>All class member variables have a same-line inline comment defining them. Example:</p>
+<pre><code>
+
+public class PeekResult {
+    private String mInputSourceSystemId = null;      //the path of the doc being peeked
+    private String mPrologPublicId = null;  //first encountered public id, may remain null 
+    private String mPrologSystemId = null;  //first encountered system id, may remain null
+    private String mPrologXmlVersion = null;  //XML version in xml declaration 
+
+</code></pre>
+
+<h3 id="method-leveldocumentation">Method-level documentation</h3>
+<p>Generally, <code>all</code> methods have a Javadoc comment, irrespective of visibility.</p>
+<p>When a method is an implementation of an interface contract, the following approach is used:</p>
+<ul>
+<li>The formal javadoc comment is made on the interface.</li>
+<li>The implementing method explicitly references this interface method using this syntax:
+<pre><code>
+/*
+ * (non-Javadoc)
+ * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
+ */
+public void skippedEntity(String name) throws SAXException { 
+
+}
+</code></pre>
+
+<p>(This comment can be autogenerated in Eclipse by doing <kbd>/</kbd>, <kbd>*</kbd>,<kbd>ENTER</kbd>).</p>
+
+</li> 
+</ul> 
+
+<h3>Inline documentation</h3>
+<p>Use the <code>TODO</code> keyword followed by a comment to denote an improvable routine.</p>
+<p>Use the <code>FIXME</code> keyword followed by a comment to denote an unfinished routine.</p> 
+ 
+<h2 id="debuggingswitches">Debugging switches</h2>
+  <p>Especially when implementing new components, add conditional debugging messages to critical parts of the new code.</p>
+  <p>Debug mode is set using a System Property flag. The most generic flag is <code>org.daisy.debug</code>. If nothing else has been decided for a specific routine, use this flag.</p>
+  <p>Always prefix the conditional debug strings with "DEBUG: ".</p>
+  <p>Always use System.out as the destination.</p>
+  <p>Example:</p>
+
+<pre><code>
+} catch (SomeException se) { 
+	if (System.getProperty("org.daisy.debug") != null) {
+		System.out.println("DEBUG: SomeClass#someMethod SomeException");
+}   
+</code></pre> 
+ 
+<h2 id="repositorybehavior">Repository behavior</h2>
+
+<p>A repository commit <strong>always</strong> contains a detailed description of changes made to the committed class.</p>
+<p>When committing a class where you made a fix or an append to someone elses work (i.e. you are not the author at class-level),</p>
+
+<ol>
+<li>comment out the old code (dont delete)</li>
+<li>attach an inline comment containing your initials/name, date, and describing the change you made</li>
+</ol>
+<p>It is up to the discretion of the original author to clean out these commented out portions.</p>
+
+<p>Example:</p>
+
+<pre><code>
+//mPeekResult.setPrologEncoding(locator.getEncoding());
+//mPeekResult.setPrologXmlVersion(locator.getXMLVersion());
+//mg 20050602: changed the above two setters, now using a cast:    
+try{         
+	Locator2 locator2 = (Locator2) locator;   
+	mPeekResult.setPrologEncoding(locator2.getEncoding());
+	mPeekResult.setPrologXmlVersion(locator2.getXMLVersion());      
+}catch (ClassCastException cce) { 
+</code></pre>
+
+</body>
+</html>

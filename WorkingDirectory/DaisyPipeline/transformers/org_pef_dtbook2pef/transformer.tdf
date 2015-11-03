@@ -1,0 +1,111 @@
+<transformer version="1.1">
+	<name>DTBook to PEF</name>
+	<description>Transforms DTBook 2005-3 into PEF 2008-1</description>
+	<classname>org_pef_dtbook2pef.DTBook2PEF</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_dtbook2pef.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>
+			<description>The output file</description>
+			<example>file:///path/to/output/folder/</example>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>identifier</name>
+			<description>Publication identifier</description>
+			<example>PEF00001</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>date</name>
+			<description>Publication date. Leave blank to use today's date formatted as defined by dateFormat.</description>
+			<example>2009-01-01</example>
+			<default></default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>setup</name>
+			<description>Conversion setup</description>
+			<example>en-US</example>
+			<enum>
+				<value>sv-SE</value>
+				<value>sv-SE-FA44</value> <!-- Only implemented for braille -->
+				<value>en-US</value> <!-- Only implemented for text -->
+			</enum>
+			<default>sv-SE</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>outputFormat</name>
+			<description>Output format</description>
+			<example>pef</example>
+			<enum>
+				<value>pef</value>
+				<value>text</value>
+			</enum>
+			<default>pef</default>
+		</parameter>
+
+		<parameter required="false" type="application/xml">
+			<name>config</name>
+			<description>Path to configuration settings</description>
+			<example>file:///path/to/file.xml</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>duplex</name>
+			<description>Emboss sheets on both sides</description>
+			<example>true</example>
+			<default>true</default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>writeTempFiles</name>
+			<description>Write temporary files.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="application/xml">
+			<name>tempFilesDirectory</name>
+			<description>Path to temp files directory</description>
+			<example>file:///path/to/file.xml</example>
+			<default>C:\TEMP\</default>
+		</parameter>
+
+		<!-- Other date formats can be generated. However, since PEF 2008-1 requires ISO8601 the resulting file will be invalid if this is changed. -->
+		<parameter required="false" type="string">
+			<name>dateFormat</name>
+			<description>Date format, see http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html</description>
+			<example>yyyy-MM-dd</example>
+			<default>yyyy-MM-dd</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cols</name>
+			<description>Column width, in characters. Leave blank to use the default value for this setup/format combination.</description>
+			<example>50</example>
+			<default></default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

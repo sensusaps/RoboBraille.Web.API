@@ -1,0 +1,135 @@
+<transformer version="1.1">
+	<name>Unicode Transcoder</name>
+	<description>Performs character set transcoding on all XML documents in a fileset, 
+	roundtripping through a Unicode representation. Can optionally substitute characters 
+	in the XML file with replacement strings.</description>
+	<classname>int_daisy_unicodeTranscoder.UCTranscoder</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_unicodeTranscoder.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input XML file (standalone or manifest)</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>	
+		
+		<parameter required="false" direction="out" type="string">
+			<name>outputEncoding</name>
+			<description>
+			  Character set encoding of the output file(s). 
+			  If not set, the input characterset will be maintained.
+			</description>
+			<example>iso-8859-1</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>performCharacterSubstitution</name>
+			<description>Enables/disables the optional character substitution process.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>				
+			</enum>
+			<default>false</default>
+		</parameter>
+												
+		<parameter required="false" direction="in" type="text/plain">
+			<name>substitutionTables</name>
+			<description>
+				An optional comma separated list of tables containing replacement strings.
+				The provided table must comply to the Java Properties XML format.
+				This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>D:/path/to/table-1.xml, D:/path/to/table-2.xml</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" direction="out" type="string">
+			<name>excludeFromSubstitution</name>
+			<description>
+			  A character set name defining a set of characters that should be excluded from translation.
+   			  This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>US-ASCII</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>fallbackToLatinTransliteration</name>
+			<description>
+			   Determines whether a character substitution attempt should 
+			   fallback to a transliteration to Latin attempt if a replacement text was not found 
+			   in user provided substitution table(s).
+  			   This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>				
+			</enum>
+			<default>false</default>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>fallbackToNonSpacingMarkRemovalTransliteration</name>
+			<description>
+			   Determines whether a character substitution attempt should 
+			   fallback to a transliteration to nonspacing mark removal (typically disaccentuation) 
+			   attempt if a replacement text was not found in user provided substitution table(s).
+  			   This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>				
+			</enum>
+			<default>false</default>
+		</parameter>
+
+
+		<parameter required="false" direction="in" type="enum">
+			<name>fallbackToUCD</name>
+			<description>
+			   Determines whether a character substitution attempt should fallback 
+			   to names in the UCD table if a replacement text is not found in user 
+			   provided substitution table(s).
+  			   This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>				
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>substituteInAttributeValues</name>
+			<description>
+			   Determines whether character substitution processing should be applied 
+			   to attribute values. If this is set to false, substitution processing will 
+			   only be applied to element text nodes.
+			   This parameter only has effect if the parameter performCharacterReplacement is set to true.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>				
+			</enum>
+			<default>false</default>
+		</parameter>
+						
+	</parameters>	
+
+</transformer>

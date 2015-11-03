@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="charsetSwitcherEncoding" value="utf-8" required="false">
+		<nicename>Output encoding</nicename>
+		<description>Select the output characterset encoding</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="charsetSwitcherLineBreaks" value="default" required="false">
+		<nicename>Linebreaks</nicename>
+		<description>Select the type of linebreak to use</description>
+		<datatype>
+			<enum>
+			  <item nicename="UNIX" value="unix" />
+			  <item nicename="DOS" value="dos" />
+			  <item nicename="Mac" value="mac" />
+			  <item nicename="System default" value="default" />
+			</enum>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

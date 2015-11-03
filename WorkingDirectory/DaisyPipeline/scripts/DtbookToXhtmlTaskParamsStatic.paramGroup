@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+		<parameter>
+			<name>daisy_noteref</name>
+			<value>${daisyNoterefs}</value>
+		</parameter>
+
+		<parameter>
+			<name>toc_gen</name>
+			<value>${genToc}</value>
+		</parameter>
+
+		<parameter>
+			<name>chunk_gen</name>
+			<value>${genChunks}</value>
+		</parameter>
+</paramGroup>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+<!ENTITY DTBookFixCategoryScriptParam SYSTEM "../../DTBookFixCategoryScriptParam.paramGroup">
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../DTBookFixTaskParamsStatic.paramGroup">
+]>
+<taskScript version="2.0" name="RtfToDtbook">
+	<nicename>RTF to DTBook</nicename>
+	<description>Convert an RTF document to DTBook</description>
+   	<documentation uri="../../../doc/scripts/RtfToDtbook.html"/>
+    <comment/>
+			
+	<parameter name="rtf" value="" required="true">
+		<nicename>Input RTF file</nicename>
+		<description>Select the input RTF file</description>
+		<datatype>
+			<file mime="application/rtf" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="dtbook" value="" required="true">
+		<nicename>Output DTBook file</nicename>
+		<description>Select the output DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>		
+	
+	&DTBookFixCategoryScriptParam;
+	&DTBookFixScriptParamsStatic;		
+	&ValidatorScriptParamsSimpleStatic;		
+			
+	<task name="ca_cnib_rtf2dtbook" interactive="false">
+		<parameter>
+			<name>rtf</name>
+			<value>${rtf}</value>
+		</parameter>
+					
+		<parameter>
+			<name>dtbook</name>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
+		</parameter>						
+	</task>		
+
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${dtbook}</value>
+		</parameter>		
+		
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFixRunCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;	
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${dtbook}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;
+												
+	</task>	
+			
+</taskScript>

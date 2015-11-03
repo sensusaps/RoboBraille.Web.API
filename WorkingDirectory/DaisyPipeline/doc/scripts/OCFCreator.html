@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: OCF Creator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: OCF Creator</h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<!--
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+-->
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>Create a <a href="http://www.idpf.org/ocf/ocf1.0/index.htm">Open eBook Publication Structure Container Format (OCF) 1.0</a> archive from one or several input documents.</p>
+<!--
+<h2 id="inputReqs">Input Requirements</h2>
+<h2 id="output">Output</h2>
+-->
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+	<dt>Input file(s)</dt>
+	<dd>Select the document(s)/publication(s) to add to the OCF archive. If you are adding a publication that consists of several files (such as an OEBPS OPS publication), point only to the root (package) file; all other associated files will be added automatically.</dd>
+	<dt>Output OCF</dt>
+	<dd>Identify the output OCF file. The recommended file extension is <code>epub</code>.</dd>
+	</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/int_daisy_ocfCreator.html">OCF Creator</a></li>
+</ol>
+
+</body>
+</html>

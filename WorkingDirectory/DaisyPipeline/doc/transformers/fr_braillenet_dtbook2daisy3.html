@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>fr_braillenet_dtbook2daisy3</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>DTBook to DAISY 3 Text-Only</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Convert a DTBook document to a text-only DAISY 3 book.</p>
+<p>Note: this transformer uses the XSLT <em>dtbook2daisy3textonly.xsl</em> placed in org/daisy/util/xml/xslt/stylesheets.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A DTBook document, valid to the 2005-1 DTD or later. This transformer does not support DTBook documents with MathML islands.</p>
+
+<h2 id="output">Output</h2>
+
+<p>A text-only DAISY 3 DTB (Z39.86-2005). Note that the spine of the generated DTB will be composed of only one big SMIL document.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>The path to the input DTBook file.</dd>
+	<dt>output</dt>
+	<dd>The path to the OPF manifest of the output DAISY 3 book.</dd>
+	<dt>copyReferring</dt>
+	<dd>Whether to copy auxiliary files (e.g. images) to the output directory.</dd>	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	
+<h2 id="future">Further development</h2>
+<ul>
+	<li>Add support for DTBook+MathML.</li>
+	<li>Add support for multiple SMIL spine items.</li>
+</ul>
+
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>None. This transformer is a wrapper for an XSLT included in the Pipeline utility stylesheets.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>XSLT by Alex Bernier, BrailleNet.</p>
+<p>Transformer wrapper by Romain Deltour, DAISY.</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

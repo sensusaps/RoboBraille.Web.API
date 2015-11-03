@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY BraillePaperFormatParamsStatic SYSTEM "../../BraillePaperFormatParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="EmbossPEF">
+	<nicename>Emboss PEF (generic embosser)</nicename>
+	<description>This script sends a PEF 2008-1 file to an embosser</description>
+	<documentation uri="../../../doc/scripts/EmbossPEF.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A PEF-file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	&BraillePaperFormatParamsStatic;
+
+	<parameter name="deviceName" value="" required="true">
+		<nicename>Device name</nicename>
+		<description>Name of embosser as labelled by the computer</description>
+		<datatype>
+			<string regex=".{3,}"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="copies" value="1" required="false">
+		<nicename>Copies</nicename>
+		<description>Set the number of copies</description>
+		<datatype>
+			<string regex="[1-9][0-9]*"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="pageRange" value="" required="false">
+		<nicename>Page range</nicename>
+		<description>Emboss a selection of pages</description>
+		<datatype>
+			<string regex="(([0-9]+-)?[0-9]*)?"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="false">
+		<nicename>Keep output file</nicename>
+		<description>Keep the print file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+	<task name="org_pef_text/pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>table</name>
+			<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
+		</parameter>
+		
+		<parameter>
+			<name>embosser</name>
+			<value>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</value>
+		</parameter>
+
+		<parameter>
+			<name>deviceName</name>
+			<value>${deviceName}</value>
+		</parameter>
+		
+		<parameter>
+			<name>papersize</name>
+			<value>${papersize}</value>
+		</parameter>
+
+		<parameter>
+			<name>pageRange</name>
+			<value>${pageRange}</value>
+		</parameter>
+		
+		<parameter>
+			<name>copies</name>
+			<value>${copies}</value>
+		</parameter>
+
+	</task>
+
+</taskScript>

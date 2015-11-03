@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wrapperSettings version="2007-1" xmlns="http://www.tpb.se/ns/2007/blockwrapper">
+
+	<group name="address" tag="address"/>
+
+	<group name="blockquote" tag="blockquote"/>
+	
+	<group name="epigraph" tag="epigraph"/>
+	
+	<group name="imggroup" tag="imggroup"/>
+	
+	<group name="note" tag="note" addID="true"/>
+
+	<group name="poem" tag="poem"/>
+	
+	<group name="prodnote-optional" tag="prodnote">
+		<attribute name="render" value="optional"/>
+	</group>
+
+	<group name="prodnote-required" tag="prodnote">
+		<attribute name="render" value="required"/>
+	</group>
+
+	<group name="p-list" tag="list">
+		<attribute name="type" value="pl"/>
+	</group>
+	
+	<group name="list" tag="list" type="list">
+		<attribute name="type" value="pl"/>
+		<listitem name="li">
+			<attribute name="class" value="added"/>
+		</listitem>
+	</group>
+
+	<group name="nativeList" tag="list" type="list">
+		<attribute name="type" value="pl"/>
+		<listitem name="li">
+			<attribute name="class" value="nativeList"/>
+		</listitem>
+	</group>
+	
+	<!-- tpb production -->
+	<group name="se-tpb-annotation" tag="annotation" addID="true"/>
+	
+	<group name="se-tpb-prodnote" tag="prodnote">
+		<attribute name="render" value="optional"/>
+	</group>
+	
+	<group name="se-tpb-caption" tag="caption"/>
+	
+	<group name="se-tpb-poem" tag="poem"/>
+	
+	<group name="se-tpb-sidebar" tag="sidebar">
+		<attribute name="render" value="optional"/>
+	</group>
+
+	<group name="se-tpb-dl" tag="dl"/>
+	
+	
+</wrapperSettings>

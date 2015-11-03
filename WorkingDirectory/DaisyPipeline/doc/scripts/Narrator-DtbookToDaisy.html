@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Narrator</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Narrator</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<!--
+<li><a href="#mp3">Encoding to MP3</a></li>
+-->
+<li><a href="#linux">Running Narrator on Linux</a></li>
+<li><a href="#math">Support for the MathML-in-DAISY extension</a></li>
+<li><a href="#multilang">Support for multi-language TTS configuration</a></li>
+<li><a href="#slaves">Configuring Narrator for concurrent TTS rendering</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This script creates a DAISY/NISO 2005 DTB and a Daisy 2.02 DTB from a DTBook 2005 document. A <acronym title="Text To Speech">TTS</acronym> system is used to create
+   the audio for the book. <code>xml:lang</code> attributes in the DTBook input document are used
+   to switch language of the TTS.</p>
+   
+<p class="alert">Note - at the time of writing, the default distribution of the Daisy Pipeline 
+supports running the Narrator script on the Windows&trade; <a href="#linux">Linux</a>, and Mac OS X&trade; operating systems.</p>
+
+<p class="alert">Note - this script requires that you have the <strong>Lame MP3 encoder</strong> installed on your system. Please refer to the <a href="../enduser/installing-lame.html">LAME installation instructions</a>.</p>   
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>Any valid DTBook 2005 document with the following restrictions:</p>
+<ul>
+  <li>Note references and annotation references are only allowed within the same DTBook document.</li>
+</ul>
+
+<p>In order to conform to the Narrator internal requirements, the following transformations can be automatically applied to the input document:</p>
+<ul>
+  <li>Lists (<code>&lt;list&gt;</code>) and definition lists (<code>&lt;dl&gt;</code>) inside paragraphs (<code>&lt;p&gt;</code>) are extracted and moved as siblings of the paragraph.</li>
+  <li>The <code>dc:Language</code>, <code>dc:Date</code> and <code>dc:Publisher</code> metadata may be generated if they were not already set.</li>
+  <li>An <code>xml:lang</code> attribute will be added to the DTBook root element if it was not already present.</li>
+  <li>A <code>doctitle</code> element will be added to the front matter of the DTBook document if it was not already present.</li>
+  <li>Dummy headings will be added to the DTBook document in the following cases:
+		<ul>
+			<li>A level has no heading but at least one of its descendant sub-levels has a heading.</li>
+			<li>No <code>h1</code> or <code>hd</code> were found in the entire document.</li>
+		</ul>
+	</li>
+</ul>
+
+<p>The input document is validated to make sure it complies to the above rules when this script is
+   run.</p>
+
+<h2 id="output">Output</h2>
+<p>A valid Daisy 2.02 full text full audio book with full skipabillity (page numbers, sidebars,
+   production notes and foot notes). The book is synchronized on sentence level and the audio
+   is encoded in MP3 format.</p>
+<p>A valid DAISY/NISO 2005 full text full audio book with full skipabillity and escapability.
+   As a part of the Narrator chain, the book is validated using ZedVal.</p>
+
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several
+	transformer docs here instead of duplicating. Remember though that the
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+	<dl id="paramslist">
+		<dt>Input DTBook file</dt>
+		<dd><strong>Required.</strong> A DTBook 2005 document valid against to the rules described in the <a href="#inputReqs">input
+		    requirements</a> section.</dd>
+	    
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
+		    the resulting DAISY/NISO 2005 book will be located in the <code>z3986-mp3</code> subdirectory while the Daisy 2.02 book will be located in the <code>daisy202</code> subdirectory.</dd>
+	
+		<dt>DTBook Fix</dt>
+		<dd><strong>Optional.</strong> Selects whether to apply DTBook Fix routines to the input document.</dd>
+			
+		<dt>Apply sentence detection</dt>
+		<dd><strong>Optional.</strong> Selects whether to apply sentence detection to the input document.</dd>
+			
+		<dt>Multi-language support</dt>
+		<dd><strong>Optional.</strong> Selects whether to use different TTS voices depending on the <code>xml:lang</code> attributes.</dd>	
+	
+		<dt>MP3 Bitrate</dt>
+		<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality but the audio files will be larger.</dd>
+	
+		<dt>2.02 href target</dt>
+		<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC of the DAISY 2.02 book.</dd>
+	</dl>
+
+<!--
+<h2 id="mp3">Encoding to MP3</h2>
+<p>If you are using Lame to encode MP3 files, you need to use version 3.98.2 or later.</p>
+<p>For hints on where to get Lame, please see the <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">Pipeline add-ins page</a>.</p>
+-->
+<h2 id="linux">Running Narrator on Linux</h2>
+<p>This script can be run out-of-the-box on Linux providing that two libraries are installed.</p>
+
+<dl>
+<dt>The eSpeak TTS library</dt>
+<dd>
+<p>If you are using later versions of Ubuntu, eSpeak and its dependencies should be installed by default. Assure this is true by issuing the command <code>espeak "testing"</code> or something similar.</p>
+<p>If you do not have eSpeak installed, get it at <a href="http://espeak.sourceforge.net/">eSpeak SourceForge homepage</a>.</p>
+<p><em>Note for advanced users - you can configure which eSpeak voice to use for which language by changing the Speech Generator TTS builder configuration. This is done in <code>transformers/speechgen2/tts/ttsbuilder.xml</code></em>.</p>
+</dd>
+
+<dt>Lame MP3 Encoder</dt>
+<dd>
+	<p>The Lame MP3 encoder needs to be installed, and the <code>pipeline.user.properties</code> file needs to point to the installation path.</p>
+	<p>Using Aptitude (for example on Ubuntu), install lame through the shell via the command <code>sudo aptitude install lame</code>.</p>
+	<p>In pipeline.user.properties (or through the Pipeline GUI if you are using that) change pipeline.lame.path to <code>/usr/bin/lame</code>.</p> 
+</dd>
+</dl>
+ 
+<h2 id="math">Support for the MathML in DAISY extension</h2>
+<p>This script supports the <a href="http://www.daisy.org/projects/mathml/">MathML in DAISY</a> extension.</p>
+<p>The following key points should be taken into account when using this script to generate MathML-enabled DTBs:</p>
+<ul>
+<li>MathML in DAISY requires that the MathML islands have an alternate image and alternate text for use by reading systems that do not support MathML natively.<br/> 
+If your input document does not have the alternate image and alternate text, you will need to install an <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">add-in</a> to the Pipeline that provides the functionality to add these values.</li>
+<li>MathML in DAISY is an extension to the DAISY 3 (DAISY/NISO) standard. This script will still output a DAISY 2.02 DTB when MathML is present in the input, but in the 2.02 version of the DTB MathML islands are converted to measly images with alternate text.</li>
+</ul> 
+
+<h2 id="multilang">Support for multi-language TTS configuration</h2>
+<p>The separate document <a href="Narrator-multilang.html">Speechgen2 multi-language support</a> describes how to refine the configuration of per-language TTS engines in the Narrator.</p>
+<p><em>Note - this requires manual edition of XML configuration files</em>.</p>
+
+<h2 id="slaves">Configuring Narrator for concurrent TTS rendering</h2>
+<p>The separate document <a href="Narrator-multiplettsslaves.html">Running speechgen2 using multiple TTS slaves</a> describes how to configure Narrator to use multiple concurrent TTS engines. <em>Note - this requires high technical proficiency</em>.</p>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+	<li><a href="../transformers/se_tpb_dtbookfix.html">DTBook Fix</a></li>
+	<li><a href="../transformers/int_daisy_filesetRenamer.html">File Set Renamer</a></li>
+	<li><a href="../transformers/int_daisy_mathAltCreator.html">DTBook MathML Alt Creator</a></li>
+	<li><a href="../transformers/se_tpb_xmldetection.html">Abbreviation, acronym and sentence detection</a></li>
+	<li><a href="../transformers/se_tpb_annonsator.html">Structure announcer</a></li>
+	<li><a href="../transformers/int_daisy_mixedContentNormalizer.html">Synchronization point normalization</a></li>
+	<li><a href="../transformers/se_tpb_speechgen2.html">Speech Generator</a></li>
+	<li><a href="../transformers/se_tpb_filesetcreator.html">File Set Creator</a></li>
+	<li><a href="../transformers/se_tpb_dtbAudioEncoder.html">Audio encoder</a></li>
+	<li><a href="../transformers/se_tpb_zed2daisy202.html">Z3986-2005 to Daisy 2.02 Converter</a></li>
+</ol>
+
+</body>
+</html>

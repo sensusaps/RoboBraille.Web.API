@@ -1,0 +1,82 @@
+<transformer version="1.1">
+	<name>ODT to DAISY 3.0 XML</name>
+	<description>OpenDocument Text to DAISY 3.0 XML transformer</description>
+	<classname>int_vspiewak_odt2daisy.Odt2daisy</classname>
+	<jar>lib/odt2daisy.jar</jar>
+	<jar>lib/JODL.jar</jar>
+	<license>GPL 3.0</license>
+	<author>Vincent Spiewak</author>
+	<support>http://sourceforge.net/projects/odt2daisy/forums/forum/989286</support>
+	<documentation uri="../../doc/transformers/int_vspiewak_odt2daisy.html"/>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/vnd.oasis.opendocument.text">
+			<name>odt</name>
+			<description>The input OpenDocument Text file</description>
+			<example>file:///path/to/file.odt</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>dtbook</name>
+			<description>The output DAISY 3.0 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+	   <parameter required="false" type="string">
+			<name>uid</name>
+			<description>Unique IDentifier of the DAISY 3.0 XML file</description>
+			<example>3fc08cc4-b0d8-4d12-be2e-d40048ea3cba</example>
+    	    <default></default>
+		</parameter>
+					
+	   <parameter required="false" type="string">
+			<name>title</name>
+			<description>Title of the DAISY 3.0 XML file</description>
+			<example>A simple DAISY Book</example>
+			<default></default>
+		</parameter>
+
+	   <parameter required="false" type="string">
+			<name>creator</name>
+			<description>Creator of the DAISY 3.0 XML file</description>
+			<example>Vincent Spiewak</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>publisher</name>
+			<description>Publisher of the DAISY 3.0 XML file</description>
+			<example>Vincent Spiewak</example>
+			<default></default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>producer</name>
+			<description>Producer of the DAISY 3.0 XML file</description>
+			<example>Vincent Spiewak</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>alt</name>
+			<description>Enable ALTernative level markup</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>css</name>
+			<description>Enable CSS</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>page</name>
+			<description>Enable pagination</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>				
+	</parameters>
+	
+</transformer>

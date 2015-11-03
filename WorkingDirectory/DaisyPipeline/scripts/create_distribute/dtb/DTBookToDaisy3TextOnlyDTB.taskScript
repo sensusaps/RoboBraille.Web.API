@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<taskScript name="textOnlyDtbCreator" version="2.0">
+    <nicename>DAISY XML (DTBook) to DAISY 3 Text-Only DTB [BETA]</nicename>
+    <description>Converts a DAISY XML document (DTBook 2005) to a  Z39.86-2005 text-only DTB fileset.
+    Applies validation, normalization and sentence detection passes to the DTBook input.</description>
+    <documentation uri="../../../doc/scripts/DTBookToDaisy3TextOnlyDTB.html" />
+
+    <parameter name="input" value="" required="true">
+        <nicename>Input DTBook file</nicename>
+        <description>Select the input DTBook file (Z39.86-2005 textual content file)</description>
+        <datatype>
+            <file mime="application/x-dtbook+xml" type="input"/>
+        </datatype>
+    </parameter>
+
+    <parameter name="outputPath" value="" required="true">
+        <nicename>Output directory</nicename>
+        <description>Select the directory for the output text-only DTB</description>
+        <datatype>
+            <directory type="output"/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="dtbookFix" value="REPAIR_TIDY_NARRATOR" required="false">
+		<nicename>DTBook Fix</nicename>
+		<description>Select whether to apply DTBook Fix routines</description>
+		<datatype>
+			<enum>
+				<item nicename="Do not apply DTBook Fix routines" value="NOTHING"/>
+				<item nicename="Apply DTBook Fix routines" value="REPAIR_TIDY_NARRATOR"/>
+			</enum>
+		</datatype>
+	</parameter>
+
+    <!--
+        0.  DTBook Fix
+        run Narrator category (which *includes* repair executors)
+    -->
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/temp/dtbookFix.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFix}</value>
+		</parameter>
+		
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>false</value>
+		</parameter>
+
+		<parameter>
+			<name>forceRun</name>
+			<value>false</value>
+		</parameter>
+		
+		<parameter>
+			<name>renameIllegalFilenames</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	
+    <!--
+        1.  Validate the input file.
+        We use the Narrator schemas to ensure good structure
+    -->
+    <task name="int_daisy_validator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/temp/dtbookFix.xml</value>
+        </parameter>
+        <parameter>
+            <name>schemas</name>
+            <value>-//TPB//SCH dtbook 2005 Narrator//EN</value>
+        </parameter>
+    </task>
+
+    <!--
+        2.  Add sentence markup
+     -->
+    <task name="se_tpb_xmldetection" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/temp/dtbookFix.xml</value>
+        </parameter>
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/temp/dtbookSentence.xml</value>
+        </parameter>
+        <parameter>
+            <name>doAbbrAcronymDetection</name>
+            <value>false</value>
+        </parameter>
+        <parameter>
+            <name>doWordDetection</name>
+            <value>false</value>
+        </parameter>
+        <parameter>
+            <name>copyReferredFiles</name>
+            <value>true</value>
+        </parameter>
+    </task>
+
+    <!--
+        3.  Normalize synch points
+    -->
+    <task name="int_daisy_mixedContentNormalizer" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/temp/dtbookSentence.xml</value>
+        </parameter>
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/temp/$safeFilenameNoExt{input}.xml</value>
+        </parameter>
+    </task>
+
+    <!--
+        4.  Create the text-only DTB
+    -->
+    <task name="us_rfbd_textOnlyDtbCreator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/temp/$safeFilenameNoExt{input}.xml</value>
+        </parameter>
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}</value>
+        </parameter>
+    </task>
+
+    <!--
+        5.  Validate the output DTB
+    -->
+    <task name="int_daisy_validator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/$safeFilenameNoExt{input}.opf</value>
+        </parameter>
+        <parameter>
+            <name>abortThreshold</name>
+            <value>ERROR</value> 
+        </parameter>
+    </task>
+
+    <!--
+        6.  Kill the temp files
+    -->
+    <task name="pipeline_system_deleter" interactive="false">
+        <parameter>
+            <name>delete</name>
+            <value>${outputPath}/temp</value>
+        </parameter>
+    </task>
+</taskScript>

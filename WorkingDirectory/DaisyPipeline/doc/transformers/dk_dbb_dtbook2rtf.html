@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>dk_dbb_dtbook2rtf</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>dk_dbb_dtbook2rtf</em></h1>
+<p class="alert">This transformer is an early release, that has not been thoroughly tested on documents in multiple langauges.</p>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>Generates a RTF file from an input DTBook document</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>A valid DTBook 2002 or DTBook 2005 series document.</p>
+
+<h2 id="output">Output</h2>
+<p>An RTF document.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl id="paramslist">
+		<dt>xml</dt>
+		<dd>Path to input DTBook document.</dd>
+		<dt>xslt</dt>
+		<dd>Stylesheet to use. Defaults to dtbook_rtf_call.xsl, which in its turn uses dtbook_rtfNoNcc.xsl</dd>
+		<dt>inclTOC</dt>
+		<dd>Indicates if a TOC should be generated</dd> 
+		<dt>inclPagenum</dt>
+		<dd>Indicates if page numbering should be written to the output</dd> 
+		<dt>factory</dt>
+		<dd>JAXP factory to use to create an XSLT Transformer instance</dd>	
+		<dt>out</dt>
+		<dd>Path to output RTF</dd>
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	
+<h2 id="future">Further development</h2>
+<ul>
+	<li>Directionality</li>
+	<li>Inline language</li>
+	<li>
+		Tables:
+		<ul>
+			<li>Add support for col and colgroup</li>
+			<li>Add support for @align and @valing</li>
+			<li>Add support for @colspan and @rowspan</li>
+		</ul>
+	</li>
+	<li>
+		Lists:
+		<ul>
+			<li>Add support for @bullit on list</li>
+			<li>Add support for @enum on list</li>
+		</ul>
+	</li>
+	<li>Fonts, directionality and language</li>
+</ul>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>Requeres @id on all level headings in order for TOC generation to work.</p>
+<p>This can be achieved by running transformer dk_dbb_addIdsToDtbook in a pre-process</p>
+
+<h2 id="owner">Author</h2>
+<p>Ole Holst Andersen, DBB.</p>
+
+<h2 id="licensing">Licensing</h2>
+<p>LGPL</p>
+
+</body>
+</html>

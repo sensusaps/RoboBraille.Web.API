@@ -1,0 +1,1 @@
+Please read through "Robobraille Web Api Guide To Test" in order to understand the purpose of the files.

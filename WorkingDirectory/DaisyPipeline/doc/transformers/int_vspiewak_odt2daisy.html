@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+	<title>int_vspiewak_odt2daisy</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_vspiewak_odt2daisy</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+  <p class="alert">This document remains to be written</p>
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Convert an OpenDocument Text (ODT) to DTBook using the Java library odt2daisy at 
+   <a href="http://odt2daisy.sf.net">odt2daisy.sf.net</a>.
+</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The document must be well structured. For more informations, see "Authoring Guidelines" in the
+   <a href="http://odt2daisy.sf.net/doc/">online documentation</a> available in many formats.
+</p>
+
+<h2 id="output">Output</h2>
+<p>The output DTBook document may or may not be valid, why post-transform validation is highly recommended.</p>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>odt</dt>
+	<dd>Input OpenDocument Text file</dd>
+	<dt>dtbook</dt>
+	<dd>Output DAISY 3.0 XML file</dd>
+	<dt>uid</dt>
+	<dd>Unique IDentifier of the DAISY 3.0 XML file. If ommited, generate an UUID.</dd>	
+	<dt>title</dt>
+	<dd>Title of the DAISY 3.0 XML file</dd>
+	<dt>creator</dt>
+	<dd>Creator of the DAISY 3.0 XML file</dd>
+	<dt>publisher</dt>
+	<dd>Publisher of the DAISY 3.0 XML file</dd>
+	<dt>producer</dt>
+	<dd>Producer of the DAISY 3.0 XML file</dd>
+	<dt>alt</dt>
+	<dd>ALTernate Level markup</dd>
+	<dt>css</dt>
+	<dd>Include CSS linked to DAISY 3.0 XML file</dd>
+	<dt>page</dt>
+	<dd>Include pagenum tag into DAISY 3.0 XML file</dd>
+	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>An update list of development tasks is available in the 
+   <a href="https://sourceforge.net/tracker/?group_id=272398&amp;atid=1158054">Feature Requests Tracker</a>.
+</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+   <li>Java runtime (1.5 or +)</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Vincent Spiewak</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>GPL 3.0 Licence</p>
+</body></html>

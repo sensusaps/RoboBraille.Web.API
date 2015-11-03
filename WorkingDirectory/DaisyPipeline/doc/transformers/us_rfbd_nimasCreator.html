@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation:  us_rfbd_nimasCreator</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>us_rfbd_nimasCreator</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>
+	The purpose of this transformer is to create a NIMAS fileset from
+	a valid DTBook document, referenced images, and associated PDF.
+</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>
+	A valid DTBook document; all referenced images in appropriate folder
+	structure; PDF of cover.  The DTBook document and the root of the image hierarchy
+	should be in the same directory.  Also, all required metadata, which may be
+	either given as parameters or in the DTBook file itself.
+</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>A copy of all input files plus a valid package file delivered to a given output directory.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will throw an exception and abort execution.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	
+	<dl id="paramslist">
+	<dt>xml</dt>
+	<dd>The input DTBook document</dd>
+	<dt>pdf</dt>
+	<dd>The input PDF document</dd>
+	<dt>output</dt>
+	<dd>The directory into which to place the output NIMAS fileset</dd>
+	<dt>dc:title</dt>
+	<dd>Dublin Core title</dd>
+	<dt>dc:identifier</dt>
+	<dd>Dublin Core Identifier</dd>
+	<dt>dc:language</dt>
+	<dd>Dublin Core Language</dd>
+	<dt>dc:publisher</dt>
+	<dd>Dublin Core Publisher</dd>
+	<dt>dc:date</dt>
+	<dd>Dublin Core Date (date of publication)</dd>
+	<dt>dc:rights</dt>
+	<dd>Dublin Core Rights</dd>
+	<dt>dc:source</dt>
+	<dd>Dublin Core Source (ISBN)</dd>
+	<dt>nimas-SourceEdition</dt>
+	<dd>NIMAS source edition</dd>
+	<dt>nimas-SourceDate</dt>
+	<dd>NIMAS source date</dd>
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+<p>
+	[None]
+</p>
+
+<h2 id="future">Further development</h2>
+ <ul>
+ 	<li>Need to implement autodetect of metadata from dtbook</li>
+ 	<li>Add optional metadata items per NIMAC spec</li>
+ 	<li>Rename metadata parameters to something more helpful</li>
+ 	<li>Create script to use this transformer in conjunction with dtbook repairs</li>
+ </ul>
+<h2 id="dependencies">Dependencies</h2>
+<p>
+	org.daisy.util.dtb.builder.OpfBuilder
+</p>
+
+<h2 id="owner">Author</h2>
+James Pritchett
+
+<h2 id="licensing">Licensing</h2>
+LGPL
+
+</body>
+</html>

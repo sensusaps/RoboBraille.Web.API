@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>int_daisy_unicodeNormalizer</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_unicodeNormalizer</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Performs unicode normalization on all XML documents in a fileset using one 
+of the four standard normalization forms provided by the Unicode Consortium.</p>
+
+<p>For more information on the reasons for and practice of Unicode normalization, see:</p>
+<ul>
+	<li><a href="http://www.w3.org/TR/charmod-norm/">http://www.w3.org/TR/charmod-norm/</a></li>
+	<li><a href="http://www.unicode.org/reports/tr15/">http://www.unicode.org/reports/tr15/</a></li>
+	<li><a href="http://icu.sourceforge.net/apiref/icu4j/com/ibm/icu/text/Normalizer.html">http://icu.sourceforge.net/apiref/icu4j/com/ibm/icu/text/Normalizer.html</a></li>
+</ul>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer is written to work on any file/fileset that can be represented by the <code>org.daisy.util.fileset</code> package.</p>
+<p>Normalization will only be done on XML members of the input fileset; all other types of members pass through untouched.</p> 
+<p>If no file in the fileset is of type XML, then the whole fileset will pass through untouched. It is therefore safe to place this transformer in contexts whose dataflow varies considerably.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose XML members has been normalized using one of the four Unicode normalization algorithms. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>No specific recovery scheme. On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf -->
+	<dl>
+		<dt>input</dt>
+		<dd>pathspec of the manifest member of input fileset</dd>
+
+		<dt>output</dt>
+		<dd>pathspec of output directory</dd>
+
+		<dt>textnodesOnly</dt>
+		<dd>If valued true, will only normalize element text nodes (and not attribute values, and other types of valuecarrying nodes). Default: false.</dd>
+
+		<dt>normalizationForm</dt>
+		<dd>
+			<p>Selects normalization form to use. Allowed values: <code>NFD|NFKD|NFC|NFKC</code>. Default: <code>NFC</code>, which is the one recommended in <a href="http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC">Character Model for the World Wide Web</a>.</p>
+		</dd>
+		
+	</dl>
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<p>None.</p>
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>No known refactoring wishes at the time of writing.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li><a href="http://www-306.ibm.com/software/globalization/icu/index.jsp">IBM icu4j</a> (at time of writing: icu4j_3_4_4.jar)</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling, Daisy Consortium</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?> <taskScript version="2.0" name="DtbookToRtf"> <nicename>DTBook to RTF</nicename> <description>Convert a
+DTBook document to RTF</description> <documentation uri="../../../doc/scripts/DTBookToRTF.html" /> <comment />
+
+ <parameter name="input" value="" required="true">
+  <nicename>Input DTBook</nicename>
+  <description>Select input DTBook file</description>
+  <datatype>
+   <file mime="application/x-dtbook+xml" type="input" />
+  </datatype>
+ </parameter>
+
+ <parameter name="inclTOC" value="true" required="true">
+  <nicename>Include TOC in output</nicename>
+  <description>Whether to include an TOC in the generated RTF document</description>
+  <datatype><boolean/></datatype>
+ </parameter>
+
+ <parameter name="output" value="" required="true">
+  <nicename>Output RTF</nicename>
+  <description>Select the output RTF file</description>
+  <datatype>
+   <file mime="application/rtf" type="output" />
+  </datatype>
+ </parameter>
+ 
+ <parameter name="inclPagenum" value="false" required="true">
+  <nicename>Include Page Numbering</nicename>
+  <description>Whether to write page numbers in the generated RTF document</description>
+  <datatype><boolean/></datatype>
+ </parameter>
+ 
+ <task name="dk_dbb_addIdsToDtbook" interactive="false">
+  <parameter>
+    <name>xml</name>
+    <value>${input}</value>
+  </parameter>
+  <parameter>
+    <name>out</name>
+    <value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+  </parameter>
+  </task>
+
+ <task name="dk_dbb_dtbook2rtf" interactive="false">
+  <parameter>
+    <name>xml</name>
+    <value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+  </parameter>
+  <parameter>
+    <name>out</name>
+    <value>${output}</value>
+  </parameter>
+  <parameter>
+    <name>inclTOC</name>
+    <value>${inclTOC}</value>
+  </parameter>
+  <parameter>
+    <name>inclPagenum</name>
+    <value>${inclPagenum}</value>
+  </parameter>
+ </task>
+
+  <task name="pipeline_system_deleter" interactive="false">
+    <parameter>
+      <name>delete</name>
+      <value>$parent{output}/pipeline__temp/</value>
+    </parameter>
+  </task>
+
+</taskScript>

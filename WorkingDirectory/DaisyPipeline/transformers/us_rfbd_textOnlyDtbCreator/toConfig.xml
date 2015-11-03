@@ -1,0 +1,42 @@
+﻿<!-- 
+Default configuration file for TextOnlyDtbCreator
+jpritchett@rfbd.org
+27 May 2010
+	* Added syncAttribute option
+23 Dec 2009 (first version)
+
+To change the defaults, create a new configuration file and reference
+it in the task script using the configFile parameter.
+-->     
+<toConfig>
+	<!-- These are the elements that create SMIL synch points.
+	     Format for entries:
+	     	<synchElement ns="" name="" />
+	     where @ns is namespace URL (defaults to dtbook) and @name is element name
+	     
+	     By default, we do not use this; provided here for documentary purposes, but commented-out.
+	-->
+	<!--
+    <synchElements>
+        <synchElement name="sent" />
+        <synchElement name="pagenum" />
+        <synchElement name="noteref" />
+        <synchElement name="annoref" />
+        <synchElement name="linenum" />
+    </synchElements>
+    -->
+    <!-- An alternative or additional way to identify synchronizing elements is by an attribute.
+    	 All elements with the given synchAttribute will create SMIL synch points.
+         This could be provided by the int_daisy_mixedContentNormalizer transformer, for example.
+         Format for entry:
+         	<synchAttribute ns="" name="" />
+         where @ns is namespace URL (required) and @name is attribute name.
+         
+         This is set up to be compatible with int_daisy_mixedContentNormalizer by default
+    -->
+    <synchAttribute ns="http://www.w3.org/2001/SMIL20/" name="sync" />
+    
+    <!-- This is the default number of events in a SMIL file, after which
+    a new file is created (at the next heading) -->
+    <smilEventThreshold value="600" />
+</toConfig>

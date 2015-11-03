@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+	<parameter name="filesetRenamerPattern" value="seq+label" required="false">
+		<nicename>Renaming pattern</nicename>
+		<description>renaming pattern to apply - see documentation</description>
+		<datatype>
+			<enum>
+			  <item nicename="seq+label" value="seq+label" />
+			  <item nicename="uid+seq" value="uid+seq" />
+			  <item nicename="random" value="rnd(2)" />
+			  <item nicename="echo" value="echo" />
+  			  <item nicename="uid+random" value="uid+rnd(2)" />		
+  			  <item nicename="uid+seq+label" value="uid+seq+label" />		  			  	  
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="filesetRenamerExclude" value="Z3986DtbookFile, Xhtml10File, CssFile, ImageFile" required="false">
+		<nicename>File types to exclude</nicename>
+		<description>comma separated list of file types to exclude from renaming, see documentation</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="filesetRenamerFilesystemSafe" value="true" required="false">
+		<nicename>Use filesystem safe names</nicename>
+		<description>Use only the characters A-Z,a-z,0-9, hyphen and underscore in output filenames</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="filesetRenamerMaxFilenameLength" value="60" required="false">
+		<nicename>Max filename length</nicename>
+		<description>The maximum number of characters in the output filename, excluding extension. Default is 60.</description>
+		<datatype>
+			<integer/>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

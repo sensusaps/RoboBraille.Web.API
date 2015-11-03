@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-type"
+            content="application/xhtml+xml; charset=utf-8" />
+        <title>Pipeline Script: DAISY XML (DTBook) to DAISY 3 Text-Only DTB [BETA]</title>
+        <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+    </head>
+    <body>
+        <h1 class="title">Pipeline Script: <em>DAISY XML (DTBook) to DAISY 3 Text-Only DTB - XSLT [BETA]</em></h1>
+        <!-- script documentation contains primarily end-user-centric information -->
+        <div id="toc" class="toc">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#inputReqs">Input Requirements</a></li>
+                <li><a href="#output">Output</a></li>
+                <li><a href="#config">Configuration</a></li>
+                <li><a href="#transformers">Appendix: List of Transformers
+                    used</a></li>
+            </ul>
+        </div>
+        <h2 id="overview">Overview</h2>
+        <p>This script takes a Z39.86-2005 textual content file (DTBook file) and
+            creates a full Z39.86-2005 (DAISY 3) text-only DTB from it.</p>
+        <h2 id="inputReqs">Input Requirements</h2>
+        <p> The input file must be a valid Z39.86-2005 textual content file (DTBook
+            file). It must have good heading structure: no missing headings, etc. The
+            script will validate for this before running the transformation. </p>
+        <p>Note that the heading structure can be dynamically corrected by applying the optional
+        DTBook Fix step.</p>
+        <h2 id="output">Output</h2>
+        <p> The output is a fully-feature, conforming Z39.86-2005 text-only DTB. This
+            output fileset includes a package file, NCX file, SMIL files,
+            textual-content file with appropriate SMIL references, resource file, and
+            all media files associated with the textual content and resource files.
+            The DTB includes support for skippable and escapable structures (as
+            mandated in the Z39.86-2005 specification) and SMIL links for anchors,
+            annotation references and note references. associated </p>
+        <h2 id="config">Configuration</h2>
+        <dl id="paramslist">
+            <dt>input</dt>
+            <dd>The full path and name of the input DTBook file (Z39.86-2005 textual content file).</dd>
+            <dt>outputPath</dt>
+            <dd>The directory in which to place the output DTB fileset.</dd>
+            <dt>dtbookFix</dt>
+            <dd>Selects whether to apply DTBook Fix routines.</dd>
+        </dl>
+        <h2 id="transformers">Appendix: List of Transformers used</h2>
+        <p>The documents linked below are parts of the <em>Transformer technical
+                documentation</em>. These are developer and systems-administrator
+            centric documents.</p>
+        <ol>
+            <li><a href="../transformers/se_tpb_dtbookfix.html">DTBook Fix</a></li>   
+            <li><a href="../transformers/int_daisy_validator.html">DTBook validator</a></li>
+            <li><a href="../transformers/se_tpb_xmldetection.html">Sentence detector</a></li>
+            <li><a href="../transformers/se_tpb_syncPointNormalizer.html">Synch point
+            normalizer</a></li>
+            <li><a href="../transformers/us_rfbd_textOnlyDtbCreator.html">Text-only DTB creator</a></li>   
+            <li><a href="../transformers/int_daisy_validator.html">DAISY 3 validator</a></li>
+        </ol>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+		
+		&ValidatorTaskParamsSimpleStatic;
+
+		<parameter>
+			<name>abortOnException</name>
+			<value>${validatorAbortOnException}</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>${validatorInputSchemas}</value>
+		</parameter>		
+
+		<parameter>
+			<name>delegates</name>
+			<value>${validatorInputDelegates}</value>
+		</parameter>
+
+		<parameter>
+			<name>forceImplementation</name>
+			<value>${validatorForceImplementation}</value>
+		</parameter>
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>${validatorRequireInputType}</value>
+		</parameter>
+
+		<parameter>
+			<name>xmlStylesheet</name>
+			<value>${validatorXmlStylesheet}</value>
+		</parameter>		
+		
+</paramGroup>

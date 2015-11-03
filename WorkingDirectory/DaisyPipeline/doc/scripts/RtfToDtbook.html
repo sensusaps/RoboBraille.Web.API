@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: RTF to DTBook</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>RTF to DTBook</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#inputReqs">Input Requirements</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script converts an RTF file to DTBook XML, and then validates the result.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>An RTF file. To ensure correctness of the DTBook output, make sure to follow the <a href="#rtf-formatting">RTF authoring guidelines</a>.</p>
+
+<h2 id="output">Output</h2>
+<p>A DTBook file, which may or may not be valid - be sure to check the result of the validation pass!</p>
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+	<dt><strong>Required.</strong> Input RTF file</dt>
+	<dd></dd>
+	<dt><strong>Required.</strong> Output DTBook file</dt>
+	<dd></dd>
+	<dt><strong>Optional.</strong> XML Validation Report</dt>
+	<dd>Select a file to store the DTBook validation XML report in. Note that information on the validation result is always shown in the user interface; regardless of whether you activate this option or not.</dd>	
+	</dl>
+
+
+
+<h2 id="rtf-formatting">RTF authoring guidelines</h2>
+			   <p>The following mapping between RTF styles and DTBook elements is explicitly supported.</p>
+               <p>RTF  style names appear in bold; opening DTBook tags and attributes in HTML code.</p>               
+               <table>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Normal</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;p&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Heading 1</strong> through<strong> Heading 6</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, with relevant <code>&lt;levelx&gt;</code> section wrappers added. Nesting must proceed in natural DTBook order.
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Page numbers</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;pagenum&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Block Text</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;blockquote&gt;&lt;p&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Lists</td>
+                     <td rowspan="1" colspan="1">Nesting supported:<ul>
+                           <li>
+                              <strong>List Bullet</strong>: <code>&lt;list type="ul"&gt;</code>, <code>&lt;li&gt;</code>
+                              <ul>
+                                 <li>
+                                    <strong>List Bullet 2</strong> is second level list, etc.</li>
+                              </ul>
+                           </li>
+                           <li>
+                              <strong>List Number</strong>: <code>&lt;list type="ol"&gt;</code>, <code>&lt;li&gt;</code>
+                              <ul>
+                                 <li>
+                                    <strong>List Number 2</strong> is second level list, etc.</li>
+                              </ul>
+                           </li>
+                           <li>list attributes:<ul>
+                                 <li>
+                                    <code>enum="1"</code>: when the first list item marker has an ordinal from 1-9</li>
+                                 <li>
+                                    <code>enum="a"</code>: for initial item markers a-h</li>
+                                 <li>
+                                    <code>enum="A"</code>: for item markers A-H, and their start attributes</li>
+                                 <li>
+                                    <code>enum="i"</code>: for lower case roman numerals</li>
+                                 <li>
+                                    <code>enum="I"</code>: for upper case roman numerals</li>
+                                 <li>
+                                    <code>start="[x]"</code>: for arabic or alphabetic enum types which do not start at "1", "a" or "A".</li>
+                              </ul>
+                           </li>
+                           <li>list item markers themselves are dropped, given the intention of dtbook to convey these logically.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Tables</td>
+                     <td rowspan="1" colspan="1">Simple tables are supported, using basic <code>&lt;table&gt;</code> and <code>&lt;tr&gt;</code> elements.<ul>
+                           <li>
+                              <strong>Header</strong>: <code>&lt;th&gt;</code>
+                           </li>
+                           <li>
+                              <strong>Normal</strong>: <code>&lt;td&gt;</code>
+                           </li>
+                           <li>column-spanning cells are not tagged as such.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Footnotes</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;noteref&gt;</code>, <code>&lt;note&gt;</code>
+                        <ul>
+                           <li>Two types of footnotes are supported: proper Word footnotes, and <em>manual</em> footnotes, using styles <strong>Footnote Reference</strong> and <strong>Footnote Text</strong>. The ID attributes assigned are derived from the footnote number, so a document with duplicate footnote numbers will need to be assigned unique IDs in the XML.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Caption</td>
+                     <td rowspan="1" colspan="1">If beside an image, an <code>&lt;imggroup&gt;</code> is created, with a dummy <code>&lt;img&gt;</code> tag and <code>&lt;caption&gt;</code> tag for the text.</td>
+                  </tr>
+               </table>
+
+               <h2>Character styles</h2>
+               <table>
+                  <tr>
+                     <td rowspan="1" colspan="1">Page Number</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;pagenum&gt;</code>
+                        <ul>
+                           <li>Arabic numerals: <code>page="normal"</code>
+                           </li>
+                           <li>Roman numerals: <code>page="front"</code>
+                           </li>
+                           <li>Other: <code>page="special"</code>
+                           </li>
+                           <li>ID attribute: page number prefixed by the letter p, e.g. <code>id="p12"</code>
+                           </li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">italic/underline</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;em&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">bold</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;strong&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">superscript</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;sup&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">subscript</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;sub&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">HTML Code</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;code&gt;</code>
+                     </td>
+                  </tr>
+               </table>
+
+
+
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/ca_cnib_rtf2dtbook.html">RTF to DTBook</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

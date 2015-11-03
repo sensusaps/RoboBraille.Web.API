@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="dtbForwardMigrator">
+	<nicename>DTB Forward Migrator [BETA]</nicename>
+	<description>Migrate a Daisy 2.02 DTB to Z39.86-2005</description>
+	<documentation uri="../../../doc/scripts/DTBForwardMigrator.html"/>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input NCC</nicename>
+		<description>Select input NCC</description>
+		<datatype>
+			<file mime="application/x-dtbd202ncc+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	 <parameter name="inputDtbType" value="DETECT" required="false">
+		<nicename>Input DTB Type</nicename>
+		<description>Select input DTB type (NCC-Only or Full/Partial Text)</description>
+		<datatype>
+			<enum>
+			  <item nicename="Auto detect" value="DETECT" />
+			  <item nicename="NCC Only" value="NCC_NCX_ONLY" />
+			  <item nicename="Full/Partial text" value="TEXT" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="newIdentifier" value="" required="false">
+		<nicename>Identifier</nicename>
+		<description>A unique identifier of the publication.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="addNcxNavLabelAudio" value="false" required="false">
+		<nicename>Add NCX navLabel audio</nicename>
+		<description>Set whether to add audio to NCX navLabels (costly operation)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="transferNCCMetadata" value="false" required="false">
+		<nicename>Transfer NCC metadata</nicename>
+		<description>Set whether to transfer metadata from the 2.02 NCC to the DTBook</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="minNavLabelAudioLength" value="1000" required="false">
+		<nicename>Audio clip length (ms)</nicename>
+		<description>Set minimum audio clip length (milliseconds) for NCX navLabel audio</description>
+		<datatype>
+			<integer min="1" max="5000"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="userCss" value="" required="false">
+		<nicename>Optional CSS</nicename>
+		<description>Select a CSS to append to output DTBook document</description>
+		<datatype>
+			<file mime="text/css" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="userRes" value="" required="false">
+		<nicename>Optional Resource File</nicename>
+		<description>Select a Resource file to append to output fileset</description>
+		<datatype>
+			<file mime="application/x-dtbresource+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_dtbMigrator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>destination</name>
+			<value>${output}</value>
+		</parameter>
+		<parameter>
+			<name>outputVersion</name>
+			<value>Z2005</value>
+		</parameter>
+		<parameter>
+			<name>inputType</name>
+			<value>${inputDtbType}</value>
+		</parameter>
+		<parameter>
+			<name>newIdentifier</name>
+			<value>${newIdentifier}</value>
+		</parameter>		
+		<parameter>
+			<name>outputCSS</name>
+			<value>${userCss}</value>
+		</parameter>	
+		<parameter>
+			<name>outputResourceFile</name>
+			<value>${userRes}</value>
+		</parameter>
+		<parameter>
+			<name>ncxAddNavLabelAudio</name>
+			<value>${addNcxNavLabelAudio}</value>
+		</parameter>	
+		<parameter>
+			<name>dtbookTransferNCCMetadata</name>
+			<value>${transferNCCMetadata}</value>
+		</parameter>	
+		<parameter>
+			<name>ncxMinNavLabelAudioLength</name>
+			<value>${minNavLabelAudioLength}</value>
+		</parameter>			
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/package.opf</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>false</value>
+		</parameter>
+	</task>	
+	
+</taskScript>

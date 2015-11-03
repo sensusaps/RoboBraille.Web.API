@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Audacity Save-as-DAISY</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Audacity Save-as-DAISY</em> [BETA]</h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">From Audacity project to DTB</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#issues">Known issues in this beta</a></li>
+<!-- <li><a href="#transformers">Appendix: List of Transformers used</a></li> -->
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>
+This script creates a DAISY/NISO NCX (audio) only digital talking book from an Audacity project. 
+By using markers in the Audacity project in a predefined way in the recorded audio, the resulting DTB can contain headings and pagenumbers
+
+<!--, producer notes and sidebars -->.</p>
+
+<p>Note: when you save the Audacity project, you <strong>must choose the option to <em>import</em> the audio files into the project</strong>.</p>
+
+<p>A special "set-the-duration" technique (described <a href="#durMarkers">below</a>) also allows the pagenumbers <!-- producer notes and sidebars --> to become skippable in the output DTB.</p>
+
+<p><strong>This script has been tested against Audacity version 1.3.7. Earlier versions are not supported.</strong></p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>An Audacity project file (*.aup), following the DTB-enabling conventions as described in the section below.</p>
+
+<h3>Using Audacity to create an NCX-Only DTB</h3>
+
+<p><strong>Cardinal Rule One</strong> For each wave track in Audacity, there must be a label track immediately below.</p> 
+
+<p>You can record your project using one wavetrack only, or you can use several wavetracks, as long as all wavetracks have a label track immediately below. The image below shows an Audicity DTB project which uses two Wave tracks; each wave track has a label track immediately below.</p>
+
+<img src="./img/audacity-layout.jpg" alt="A view of the Audacity main window, with two wave tracks that each have a label track just south." />
+
+<h4>Creating headings</h4>
+<img src="./img/audacity-headingmarker.jpg" alt="Audacity Wave Track, a Label track below with a heading marker reading 'h2 Chapter 3: Galapagos' " />
+<p>For each heading you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>h1, h2, h3, h4, h5, or h6</code> for the marker to be detected as a heading.</p>
+<p>The text following in the marker value will become the heading text. For example, a marker value of <code>h2 Chapter 3 Galapagos</code> will create a level 2 heading with the title "Chapter 3 Galapagos".</p>
+
+<p>It is important to remember that heading must be in numbered order. That is an h2 must follow an h1, another h2 or an h3.</p>
+
+<h4>Creating pages</h4>
+<p>For each page you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>p</code> for the marker to be detected as a pagenumber.</p>
+<p>For example, the marker value "p56" will create a normal pagenumber with the value "56". </p>
+<p>You can also create special and front pages; the marker value <code>pIV</code> will create a front page with the roman numeral four. The marker value <code>pA23</code> will create a page-special with the value A23.</p>
+<br/>
+<img src="./img/audacity-pagemarker.jpg" alt="Audacity Wave Track, a Label track below with a heading marker reading 'p5' " />
+<p>You can also have pagenumbers be autonumbered during the Pipeline DTB generation phase. 
+Simply create a marker with the value <code>p</code> and then activate the autonumbering feature of this script in the Pipeline user interface. Note - if you activate page renumbering while saving as DAISY, all normal pages will be renumbered, even those that were actually given a value in the Marker value field.</p>
+
+<h4 id="phrases">Creating general phrases</h4>
+<p>Any marker added (with or without duration) that does <strong>not</strong> use the heading or page tokens as described above will be regarded as general DAISY phrases.</p>
+
+<!--
+<h4>Creating producer notes</h4>
+<p>For each producer note you want create, drop a Marker. The markers value must begin with <code>prodnote</code> for the marker to be detected as a producer note.</p>
+
+<h4>Creating sidebars</h4>
+<p>For each producer note you want create, drop a Marker. The markers value must begin with <code>sidebar</code> for the marker to be detected as a sidebar.</p>
+-->
+
+<h4 id="durMarkers"><em>Use markers with duration if you can!</em></h4>
+<p>By creating markers that have a duration (i.e. a start and an end point), you will provide for a maximum quality output DTB. Adopt this technique in the following way:</p>
+<ul>
+<li>Create markers that spans each heading announcement (the heading will not become skippable, this just enables proper labels to be set in the NCX)</li>
+<li>Create markers that spans each page number announcement (the page number will become skippable).</li>
+<!--
+<li>Create markers that spans each sidebar (the entire sidebar, not just the sidebar title announcement)</p>
+<li>Create markers that spans each producer note (the entire producer note, not just the producer note title announcement)</p>
+-->
+</ul>
+<p>The picture below shows a page announcment whose start and end point has been marked using a Marker with duration.</p>
+<img src="./img/audacity-pageduration.jpg" alt="Audacity Wave Track, a Label track below with a page marker with duration. The duration spans the page announcement, not the entire page contents." />
+
+<h4>Title and Author</h4>
+<p>The conversion process assumes that the reading of the documents title is the first marked phrase of the recording, and that the documents author is the second marked phrase.</p>
+<p>You would typically mark the first phrase as also being a heading one, and the second as being a <a href="#phrases">general phrase</a>.</p>
+
+<img src="./img/audacity-titleauthor.jpg" alt="Audacity Label Track, marking the duration of the initial Title and Author phrases" />
+
+<h4>Metadata</h4>
+<img src="./img/audacity-metaeditor.jpg" alt="picture of the Audacity metadata editor" />
+
+<p>The audacity metadata editor will capture the following fields and bring them into the DTB:</p>
+<dl>
+<dt>Artist Name</dt>
+<dd>Will be captured as the publication author (dc:creator)</dd>
+<dt>Album title</dt>
+<dd>Will be captured as the publication title (dc:title)</dd>	
+<dt>Year</dt>
+<dd>Will be captured as the publication date (dc:date). You should use the the syntax <code>YYYY-MM-DD</code> in this field.</dd>
+<dt>uid</dt>
+<dd>Will be captured as the publication identifier (dc:identifier). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
+<dt>lang</dt>
+<dd>Will be captured as the publication language (dc:language). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
+
+<dt>publisher</dt>
+<dd>Will be captured as the book's publisher (dc:publisher). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
+
+
+</dl>
+
+<p>If you dont provide the metadata required for a valid DTB, dummy values will be inserted during the Save-as-DAISY process. Dont forget to fix these (in the .opf) before finalizing the project!</p>
+
+<h2 id="output">From Audacity project to DTB</h2>
+<ul>
+<li>Make sure the Audacity project is saved (*.aup). Note - at this time you must <strong>not</strong> use any of the "Export as..." features of Audaciy. Just save the project, and if you are prompted to "import external files", accept the import.</li>
+<li>Open the Pipeline, select the "Audacity Save-as-DAISY script" (available in the <code>creation/advanced</code> directory)</li>
+<li>For the input file, point to the Audacity *.aup file that you saved in the steps above</li>
+<li>Add the additional required parameters, and launch the conversion process.</li>
+<li>Note: the output is a validated z3986-2005 NCX-only DTB, using wav files. In later (post-beta) versions of this script, MP3 encoding and Daisy 2.02 downgrade features can be added.</li>
+</ul>
+
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+		<dt>Input file</dt>
+		<dd><strong>Required.</strong> The input Audacity project file (*.aup)</dd>
+	
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The directory to store the output in. This <em>can</em> be set as the same as the input directory, but it is recommended to use another directory than the input directory.</dd>
+
+		<dt>Page auto numbering</dt>
+		<dd><strong>Optional.</strong> Select whether to renumber all normal page numbers in the book, and if so which page to start from.</dd>
+		
+	</dl>
+	
+<h2 id="issues">Known issues in this beta</h2>	
+<dl>
+  <dt>Sketchy support for "uncommon" sample rates</dt>
+  <dd><p>Certain sample rates in the input audio files can cause the output audio to sound like "static". Until this issue is fixed, make sure to use "standard" sample rates (such as 44.1k) and bit depths (such as 16 bit) in the input audio files. You can use Audacity to easily do this conversion.</p><p>Also, to be on the safe side, it is recommended to make a test Save-as-DAISY run early on in the project (before doing any extensive editing) and assure that the output audio files sound ok.</p></dd>
+</dl>  
+<!--		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_playlist2dtb.html">Playlist to DTB</a></li>
+</ol>
+-->
+</body>
+</html>

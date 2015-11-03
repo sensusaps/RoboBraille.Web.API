@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../DTBookFixTaskParamsStatic.paramGroup">
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBookFix">
+	<nicename>DTBook Fixer</nicename>
+	<description>Fixes common DTBook errors and problems</description>
+   	<documentation uri="../../../doc/scripts/DTBookFix.html"/>
+    <comment/>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input File</nicename>
+		<description>Select input DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output File</nicename>
+		<description>Select output file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>
+
+    <!-- Dont use DTBookFixCategoryScriptParam here, 
+    since there is no point in exposing the NOTHING alternative --> 
+    
+	<parameter name="runCategories" value="REPAIR_TIDY" required="true">
+		<nicename>Active Categories</nicename>
+		<description>Select the type of manipulation to be performed (See documentation for more information)</description>
+		<datatype>
+			<enum>
+			  <item nicename="Tidy only" value="TIDY" />
+			  <item nicename="Repair only" value="REPAIR" />
+			  <item nicename="Repair, then Tidy" value="REPAIR_TIDY" />
+			  <!-- <item nicename="Narrator specific fixes" value="NARRATOR" /> -->
+			</enum>
+		</datatype>
+	</parameter>
+
+	&DTBookFixScriptParamsStatic;
+	
+	&ValidatorScriptParamsSimpleStatic;
+	
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>${runCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;
+		
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+	
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+
+ 	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+										
+	</task>
+
+</taskScript>

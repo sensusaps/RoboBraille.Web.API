@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>Pipeline Script: PEF File Merger</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Pipeline Script: PEF File Merger</h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#inputReqs">Input Requirements</a></li>
+  <li><a href="#output">Output</a></li>
+  <li><a href="#config">Configuration</a></li>
+  <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>This script merges several PEF files into one. The purpose of this script is
+to facilitating the use of PEF files with braille editors that do not support
+multi volume files.</p>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>This script accepts a folder path as input. The folder must contain PEF
+2008-1 documents only.</p>
+
+<p>Merge order is determined by file name. See below for options.</p>
+
+<p>The first file is copied in full, and used as a skeleton for the new file.
+The contents of the <strong>&lt;volume&gt;</strong> parts of the other files
+are appended to the new file before the <strong>&lt;/body&gt;</strong> tag.</p>
+
+<p></p>
+<!-- detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<p>The output is a PEF 2008-1 document.</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+<dl id="paramslist">
+  <dt>Input directory</dt>
+    <dd>Select input directory</dd>
+  <dt>Output file</dt>
+    <dd>Select output PEF document</dd>
+  <dt>Identifier</dt>
+    <dd>A publication identifier</dd>
+  <dt>Sorting type</dt>
+    <dd>Type of sorting algorithm to use. Available options are "Numeral
+      grouping" and "Standard". Standard sorting can generate non-intuitive
+      behaviour. E.g. the standard sort order of the files 'volume-1.pef',
+      'volume-2.pef' and 'volume-10.pef' is 1, 10, 2. The "Numeral grouping"
+      sorting type avoids this behaviour by evaluating the sort order of number
+      groups as numbers instead of as strings, e.g. the files in the above
+      example would be sorted in the order 1, 2, 10. Note that the "Numeral
+      grouping" sorting algorithm disregards character case on all platforms,
+      unlike the "Standard" algorithm.</dd>
+</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+
+<p>The documents linked below are parts of the <em>Transformer technical
+documentation</em>. These are developer and systems-administrator centric
+documents.</p>
+<ol>
+  <li><a
+    href="../transformers/org_pef_pefFileMerger.html">org_pef_pefFileMerger</a></li>
+  <li><a
+  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
+</ol>
+</body>
+</html>

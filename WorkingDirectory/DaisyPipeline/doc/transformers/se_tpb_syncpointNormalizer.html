@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_syncpointNormalizer</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_syncpointNormalizer</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>This transformer performs synchronization point normalization on a XML document. It is used as a step
+in the Narrator transformer chain, making sure each synchronization point in a DTBook file is contained in its own
+XML element. For example, the transformer inserts <code>&lt;span&gt;</code> elements around the text nodes before
+and after an inline <code>&lt;pagenum&gt;</code> element.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The transformer has only been tested with DTBook documents created while running the Narrator
+transfomer chain. While the transformer is able to detect the document type and use different configuration files,
+there is only support for DTBook documents having sentence level markup.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<p>A document where each synchronization point is a separate XML element, making it possible to represent each
+synchronization point as a fragment i SMIL.</p>
+
+<h3 id="failure">On error</h3>
+<p>On error, this transformer will throw an exception and abort execution.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>The input XML document.</dd>
+	
+	<dt>output</dt>
+	<dd>The output XML document.</dd>
+	</dl>
+	
+<h2 id="future">Further development</h2>
+<ul>
+<li>Support for compound XML documents.</li>
+<li>Support for different synchronization levels (word, sentence, paragraph, level).</li>
+</ul>
+
+<h2 id="dependencies">Dependencies</h2>
+<p>The transformer uses StAX for XML processing.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

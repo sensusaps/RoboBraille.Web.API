@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<configuration>
+	<spanElement namespace="http://www.daisy.org/z3986/2005/dtbook/" name="span"/>
+	
+	<mustSynchronize>
+		<element name="pagenum"/>
+		<element name="noteref"/>
+		<element name="annoref"/>
+	</mustSynchronize>
+	
+	<synchronize>
+		<element name="sent"/>
+	</synchronize>
+	
+</configuration>

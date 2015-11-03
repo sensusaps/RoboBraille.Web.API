@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+  <title>Transformer Description File (TDF) Grammar version 1.1</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+
+<body>
+
+  <h1>Daisy Pipeline Transformer Description File (TDF) Grammar version 1.1</h1>
+
+  <p class="author">Markus Gylling, Linus Ericson</p>
+  <p class="updated">Latest update: 2007-03-27</p>
+
+  <p class="summary">This documents describes the <em>Transformer Description File</em> grammar for the Daisy Pipeline.</p>
+  
+    <h2 class="toc">Contents</h2>
+  <ul>
+   	<!-- <li><a href="#introduction">Introduction</a></li> -->
+   	<li><a href="#grammar">The grammar</a></li>
+  	<li><a href="#example">Example</a></li>
+  	<li><a href="#notes">Notes</a></li>  	
+  	<li><a href="#rng">Appendix. RelaxNG+Schematron grammar for tdf</a></li>  	  	
+
+  </ul>
+  
+  <h2 id="grammar">The grammar</h2>
+
+  <p>The Transformer Description file (TDF) is divided into three main parts, the general information part, the parameters part and the platforms part.</p>
+ 
+   <h3 id="tdfgeneral">General information</h3>
+   <p>The general information part of the TDF contains a set of elements:</p>
+   <dl>
+     <dt>name</dt><dd>The (nice) name of the transformer.</dd>
+     <dt>description</dt><dd>A brief description of what the transformer does.</dd>
+     <dt>classname</dt><dd>The name of the Java class for this transformer. The classname should be the fully qualified classname 
+     	starting from the <code>transformers</code> directory.</dd>
+     <dt>license</dt><dd>The license of the transformer (e.g. LGPL).</dd>
+     <dt>author</dt><dd>The author of the transformer.</dd>
+     <dt>support</dt><dd>Explains if there is any (user) support available for this transformer.</dd>
+     <dt>documentation</dt><dd>The uri attribute contains a relative link to extended documentation of the transformer. 
+     	Normally, the destination of the URI is an XHTML document in the <code>/doc/transformers</code> subfolder.
+     	A template for this XHTML document exists in the <code>/doc/templates</code> folder.
+   	</dd>
+   </dl>
+
+    <h3 id="tdfparameters">Parameters</h3>
+    <p>The <code>parameters</code> element contains a set of <code>parameter</code> elements. A <code>parameter</code> can be 
+    configured to be supplied from the task script  when the transformer is run, or be hard-coded in the Transformer Description File.</p>
+    
+    <p>During execution time, these parameters will be supplied to the Transformer as a Map in the execute() method. 
+    	The Transformer accesses each parameter by the name defined in the TDF.</p>
+    
+    <p>For hard-coded parameters, three values needs to be specified: A <code>type</code> attribute specifying the MIME<a href="#note2" class="note"><sup>2</sup></a> type 
+    of the parameter, a <code>name</code> element specifying the name of the parameter and a <code>value</code> element specifying the value.</p>
+
+ 	<p>For parameters that are to be supplied by the task script, things are a bit more complicated. First, there is a <code>required</code> attribute specifying whether
+	the parameter must (or just may) be supplied in the task script or if it can have a default value. If the value of the  <code>required</code> attribute is
+	<code>false</code>, there must be a <code>default</code> element in the end of the <code>parameter</code> element specifying the default value.
+	</p>
+
+	<p>As there was for hard-coded parameters, there is also a <code>type</code> attribute specifying the MIME<a href="#note2" class="note"><sup>2</sup></a> type of the parameter. 
+	There may also be a <code>direction</code> attribute having the value <code>in</code> or <code>out</code>. Input parameters
+ 	(e.g. input file name) should have the <code>direction="in"</code> attribute, and output parameters (e.g. output file name) should have the
+	 <code>direction="out"</code> attribute.</p>
+
+	 <p> To create parameters with enumerated values, the <code>type</code> parameter shall be set to 'enum'. After the <code>example</code> element, an <code>enum</code>
+	 element must be defined having the following syntax:</p>
+ 
+ <pre><code>
+ &lt;enum&gt;
+   &lt;value&gt;ONE&lt;/value&gt;
+   &lt;value&gt;TWO&lt;/value&gt;
+   &lt;value&gt;THREE&lt;/value&gt;
+ &lt;/enum&gt;
+</code></pre>
+
+ <p>
+ The <code>parameter</code> element has three sub elements, the <code>name</code>,
+ <code>description</code> and <code>example</code> elements, specifying the name
+ of the parameter, a description of what the parameter does (for documentation
+ purposes or for use as balloon help in GUIs) and an example value. As described
+ above, the <code>default</code> element must only be specified when the
+ <code>required</code> attribute is set to false.
+ </p>
+
+ <h4>Variable substitution</h4>
+ <p>A fixed set of variables are usable in the parameter definitions which are substituted dynamically when the TDF is parsed:</p>
+ <ul>
+ 	<li><code>${transformer_dir}</code>: The path to the directory containing this TDF</li>
+ 	<li><code>${dollar}</code>: A dollar sign</li>
+ </ul>
+
+ <h4>Parameter examples</h4>
+ <p>
+ In the example below, the required input parameter <code>ncc</code> should be of type
+ <code>application/x-ncc-2.02+xml</code>.
+ </p>
+ <pre><code>
+ &lt;parameter required="true" direction="in" type="application/x-ncc-2.02+xml"&gt;
+   &lt;name&gt;ncc&lt;/name&gt;
+   &lt;description&gt;The navigation control center file&lt;/description&gt;
+   &lt;example&gt;file:///path/to/ncc.html&lt;/example&gt;
+ &lt;/parameter&gt;
+</code></pre>
+
+ <p>
+ In the example below, the value will be substituted to the path of the style sheet located in 
+the same directory as the TDF.
+ </p>
+ <pre><code>
+ &lt;parameter type=&quot;string&quot;&gt;
+   &lt;name&gt;stylesheet&lt;/name&gt;			
+   &lt;value&gt;${transformer_dir}/xml2dtbook.xsl&lt;/value&gt;
+ &lt;/parameter&gt;
+</code></pre>
+
+ <h3 id="tdfplatforms">Platforms</h3>
+ <p>
+ The <code>platforms</code> element contains a set of <code>platform</code>
+ elements. If specified, the current platform must match at least one of the
+ <code>platform</code> elements in order for this transformer to be considered
+ as supported.
+ </p>
+
+ <p>
+ Each <code>platform</code> element contains a set of <code>property</code>
+ elements. Each property checks a specific platform property and all property
+ checks within a <code>platform</code> element must be successful in order to
+ qualify as a supported platform.
+ </p>
+
+ <p>
+ Each <code>property</code> contains a <code>name</code> element and a
+ <code>value</code> element. The <code>name</code> element specifies the name
+ of the property to check, and the <code>value</code> element contains a
+ regular expression describing the supported values of that property. The
+ properties and their values are defined in the java runtime system. In the
+ example below, Windows systems of version 5 and any Linux system are supported:
+ </p>
+
+ <pre><code>
+&lt;platforms&gt;
+  &lt;platform&gt;
+    &lt;property&gt;
+      &lt;name&gt;os.name&lt;/name&gt;
+      &lt;value&gt;Windows.*&lt;/value&gt;
+
+    &lt;/property&gt;
+    &lt;property&gt;
+      &lt;name&gt;os.version&lt;/name&gt;
+      &lt;value&gt;5\..*&lt;/value&gt;
+    &lt;/property&gt;
+
+  &lt;/platform&gt;
+
+  &lt;platform&gt;
+    &lt;property&gt;
+      &lt;name&gt;os.name&lt;/name&gt;
+      &lt;value&gt;Linux.*&lt;/value&gt;
+
+    &lt;/property&gt;
+  &lt;/platform&gt;
+&lt;/platforms&gt;
+ </code></pre>
+
+  <h2 id="example">Example</h2>
+<pre><code>
+&lt;transformer version="1.1"&gt;
+  &lt;name&gt;Validator&lt;/name&gt;
+  &lt;description&gt;Validate filesets and XML documents of various types&lt;/description&gt;
+  &lt;classname&gt;int_daisy_validator.ValidatorDriver&lt;/classname&gt;
+  &lt;license&gt;LGPL&lt;/license&gt;
+  &lt;author&gt;Markus Gylling&lt;/author&gt;
+  &lt;support&gt;https://lists.sourceforge.net/lists/listinfo/daisymfc-support&lt;/support&gt;
+  &lt;documentation uri="../../doc/transformers/int_daisy_validator.html"/&gt;
+  
+  &lt;parameters&gt;
+
+    &lt;parameter required="true" direction="in" type="application/xml"&gt;
+      &lt;name&gt;input&lt;/name&gt;
+      &lt;description&gt;Path to input file or fileset manifest to be validated&lt;/description&gt;
+      &lt;example&gt;C:/myDocuments/myDocument.opf&lt;/example&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter required="false" type="enum"&gt;
+      &lt;name&gt;requireInputType&lt;/name&gt;
+      &lt;description&gt;A string describing one input type that is required, 
+      	else an error will be generated. (These are from 
+      	FilesetType.getNiceName)&lt;/description&gt;
+      &lt;example&gt;Dtbook&lt;/example&gt;
+      &lt;enum&gt;
+        &lt;value&gt;off&lt;/value&gt; 
+        &lt;value&gt;Dtbook document&lt;/value&gt;
+        &lt;value&gt;XHTML document&lt;/value&gt;
+        &lt;value&gt;DAISY 2.02 DTB&lt;/value&gt;
+        &lt;value&gt;Z3986 DTB&lt;/value&gt;    
+      &lt;/enum&gt;
+      &lt;default&gt;off&lt;/default&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter required="false" type="string"&gt;
+      &lt;name&gt;schemas&lt;/name&gt;
+      &lt;description&gt;
+        Comma separated list of schema identifiers to validate the input document against. 
+        Identifiers may be expressed as filepaths, public or system IDs.
+        RelaxNG, W3C Schema, Schematron and Compound are allowed types of schemas.
+        Schemas that occur inline in the validated document do not need to be namedropped here.
+      &lt;/description&gt;
+      &lt;example&gt;
+        D:/example.sch, http://www.example.com/example.rng, -//TPB//RNG dtbook 2005-1 Narrator//EN&lt;/example&gt;
+      &lt;default/&gt;
+    &lt;/parameter&gt;
+    
+    &lt;parameter required="false" type="string"&gt;
+      &lt;name&gt;delegates&lt;/name&gt;
+      &lt;description&gt;
+        Comma separated list of delegates (implementations of org.daisy.util.fileset.validation.ValidatorDelegate)
+      &lt;/description&gt;
+      &lt;example&gt;org.daisy.util.fileset.validation.delegate.impl.XMLEncodingDelegate&lt;/example&gt;
+      &lt;default/&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter required="false" type="string"&gt;
+      &lt;name&gt;forceImplementation&lt;/name&gt;
+      &lt;description&gt;
+        A fully qualified name of an implementation of a org.daisy.util.fileset.validation.Validator. 
+        Use this parameter to force the validator to use the named implementation (overriding default assignment)
+      &lt;/description&gt;
+      &lt;example&gt;org.daisy.util.fileset.validation.myValidatorImpl&lt;/example&gt;
+      &lt;default/&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter required="false" type="enum"&gt;
+      &lt;name&gt;abortThreshold&lt;/name&gt;
+      &lt;description&gt;Validation error severity level - when to perform a Transformer abort&lt;/description&gt;
+      &lt;example&gt;WARNING&lt;/example&gt;
+      &lt;enum&gt;
+        &lt;value&gt;NONE&lt;/value&gt; &lt;!-- dont abort on any kind of validation message --&gt;
+        &lt;value&gt;WARNING&lt;/value&gt;
+        &lt;value&gt;ERROR&lt;/value&gt;
+        &lt;value&gt;SEVERE&lt;/value&gt;
+      &lt;/enum&gt;
+      &lt;default&gt;ERROR&lt;/default&gt;
+    &lt;/parameter&gt;
+
+    &lt;parameter required="false" type="enum"&gt;
+      &lt;name&gt;abortOnException&lt;/name&gt;
+      &lt;description&gt;Whether to perform a Transformer abort when a caught exception occurs&lt;/description&gt;
+      &lt;example&gt;false&lt;/example&gt;
+      &lt;enum&gt;
+        &lt;value&gt;true&lt;/value&gt;
+        &lt;value&gt;false&lt;/value&gt;
+      &lt;/enum&gt;
+      &lt;default&gt;true&lt;/default&gt;
+    &lt;/parameter&gt;
+    
+    &lt;parameter required="false" direction="out" type="application/xml"&gt;
+      &lt;name&gt;xmlReport&lt;/name&gt;
+      &lt;description&gt;Path to xml output&lt;/description&gt;
+      &lt;example&gt;/home/user/reports/myreport.xml&lt;/example&gt;
+      &lt;default/&gt;
+    &lt;/parameter&gt;
+    
+    &lt;parameter required="false" type="string"&gt;
+      &lt;name&gt;xmlStylesheet&lt;/name&gt;
+      &lt;description&gt;
+        The value of the xml-stylesheet processing instruction in the 
+        generated xml output. If absent, no xml-stylesheet will be inserted
+        in the output. Only looked at if xmlReport is not null.
+      &lt;/description&gt;
+      &lt;example&gt;validator.xsl&lt;/example&gt;
+      &lt;default/&gt;
+    &lt;/parameter&gt;
+         
+  &lt;/parameters&gt;
+
+&lt;/transformer&gt;
+</code></pre>
+
+
+
+  <h2 id="notes">Notes</h2>
+  <p id="note2">2. The Pipeline uses more MIME types than those defined by IANA. 
+  The Pipeline MIME registry (MIMETypeRegistry.xml) lives in the <code>org.daisy.util.mime.</code> package. 
+  If you do not have access to the source code, 
+  <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/util/mime/MIMETypeRegistry.xml?view=markup">browse the registry online</a>.</p>
+
+<!-- </div> -->
+
+<h2 id="rng">Appendix. RelaxNG+Schematron grammar for tdf v1.1</h2>
+
+<pre><code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;grammar 
+  xmlns="http://relaxng.org/ns/structure/1.0" 
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+&gt;
+    &lt;!-- RelaxNG schema for Transformer Description Files (*.tdf) --&gt;
+    &lt;!-- v1.1: added the optional documentation element --&gt;
+
+  &lt;start&gt;
+    &lt;ref name="transformer"/&gt;
+  &lt;/start&gt;
+
+  &lt;define name="transformer"&gt;
+    &lt;element name="transformer"&gt;
+      &lt;attribute name="version"&gt;
+        &lt;data type="normalizedString"/&gt;
+      &lt;/attribute&gt;
+      
+      &lt;ref name="details"/&gt;
+      &lt;ref name="parameters"/&gt;
+      &lt;ref name="platforms"/&gt;
+    &lt;/element&gt;
+  &lt;/define&gt;
+  
+  &lt;define name="details"&gt;
+    &lt;element name="name"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="description"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="classname"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;zeroOrMore&gt;
+      &lt;element name="jar"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;/zeroOrMore&gt;
+    &lt;element name="license"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="author"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="support"&gt;&lt;text/&gt;&lt;/element&gt;    
+    &lt;optional&gt;
+      &lt;element name="documentation"&gt;
+        &lt;attribute name="uri"&gt;
+            &lt;!--  the uri is relative to transformer TDF document,
+            and thus typically looks (../../doc/transformers/transformerdoc.html)
+             --&gt;
+          &lt;data type="anyURI"/&gt;
+        &lt;/attribute&gt;
+          &lt;empty/&gt;    
+      &lt;/element&gt;
+    &lt;/optional&gt;
+  &lt;/define&gt;
+
+  &lt;define name="parameters"&gt;
+    &lt;element name="parameters"&gt;
+      &lt;zeroOrMore&gt;        
+        &lt;element name="parameter"&gt;
+          &lt;choice&gt;
+            &lt;ref name="parameter_normal"/&gt;
+            &lt;ref name="parameter_hard"/&gt;
+          &lt;/choice&gt;                  
+        &lt;/element&gt;
+      &lt;/zeroOrMore&gt;
+    &lt;/element&gt;
+  &lt;/define&gt;
+  
+  &lt;define name="platforms"&gt;
+    &lt;optional&gt;
+      &lt;element name="platforms"&gt;
+        &lt;oneOrMore&gt;
+          &lt;element name="platform"&gt;
+            &lt;oneOrMore&gt;
+              &lt;element name="property"&gt;
+                &lt;element name="name"&gt;&lt;text/&gt;&lt;/element&gt;
+                &lt;element name="value"&gt;&lt;text/&gt;&lt;/element&gt;
+              &lt;/element&gt;
+            &lt;/oneOrMore&gt;
+          &lt;/element&gt;
+        &lt;/oneOrMore&gt;
+      &lt;/element&gt;
+    &lt;/optional&gt;
+  &lt;/define&gt;
+
+  &lt;define name="parameter_normal"&gt;
+    &lt;sch:pattern name="Required attribute test" 
+	  xmlns:sch="http://www.ascc.net/xml/schematron"&gt;
+        &lt;sch:rule context="transformer/parameters/parameter"&gt;
+        &lt;sch:report test="@required='false' and not(default)"&gt;
+		  A non-required parameter must have a default value&lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+    &lt;sch:pattern name="Enum test" xmlns:sch="http://www.ascc.net/xml/schematron"&gt;
+        &lt;sch:rule context="transformer/parameters/parameter"&gt;
+        &lt;sch:report test="@type='enum' and not(enum)"&gt;
+		  Enum type must be defined&lt;/sch:report&gt;
+        &lt;sch:report test="enum and not(@type='enum')"&gt;
+		  Type is not enum&lt;/sch:report&gt;
+        &lt;sch:report test="enum and default and not(default=enum/value)"&gt;
+		  Default value must be of enum type&lt;/sch:report&gt;
+        &lt;/sch:rule&gt;
+    &lt;/sch:pattern&gt;
+    &lt;attribute name="required"&gt;
+      &lt;data type="boolean"/&gt;
+    &lt;/attribute&gt;
+    &lt;attribute name="type"&gt;
+      &lt;data type="normalizedString"/&gt;
+    &lt;/attribute&gt;
+    &lt;optional&gt;
+      &lt;attribute name="direction"&gt;
+        &lt;choice&gt;
+          &lt;value&gt;in&lt;/value&gt;
+          &lt;value&gt;out&lt;/value&gt;
+        &lt;/choice&gt;
+      &lt;/attribute&gt;
+    &lt;/optional&gt;
+    &lt;element name="name"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="description"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="example"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;optional&gt;
+      &lt;element name="enum"&gt;
+        &lt;oneOrMore&gt;
+          &lt;element name="value"&gt;&lt;text/&gt;&lt;/element&gt;
+        &lt;/oneOrMore&gt;
+      &lt;/element&gt;
+    &lt;/optional&gt;
+    &lt;optional&gt;
+      &lt;element name="default"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;/optional&gt;
+  &lt;/define&gt;
+  
+  &lt;define name="parameter_hard"&gt;
+    &lt;attribute name="type"&gt;
+      &lt;data type="normalizedString"/&gt;
+    &lt;/attribute&gt;
+    &lt;element name="name"&gt;&lt;text/&gt;&lt;/element&gt;
+    &lt;element name="value"&gt;&lt;text/&gt;&lt;/element&gt;
+  &lt;/define&gt;
+
+&lt;/grammar&gt;
+</code></pre>
+
+</body>
+
+</html>

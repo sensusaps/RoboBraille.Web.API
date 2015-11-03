@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type"
+  content="application/xhtml+xml; charset=UTF-8" />
+  <title>Pipeline Script: DTBook to text</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+<body>
+<h1 class="title">Pipeline Script: DTBook to text [BETA]</h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#inputReqs">Input Requirements</a></li>
+  <li><a href="#output">Output</a></li>
+  <li><a href="#config">Configuration</a></li>
+  <li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>This script converts a DTBook document into text.</p>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+<p>This script accepts DTBook documents.</p>
+<!-- detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<p>The output is a PEF 2008-1 document.</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several 
+	transformer docs here instead of duplicating. Remember though that the 
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+<dl id="paramslist">
+  <dt>Input DTBook file</dt>
+    <dd>Select input DTBook document</dd>
+  <dt>Output text file</dt>
+    <dd>Select path to output file</dd>
+  <dt>Column width</dt>
+    <dd>Set column width, in characters</dd>
+  <dt>Conversion Setup</dt>
+    <dd>Conversion setup to apply. See the conversion setup documentation for
+      more information: 
+      <ul>
+        <li><a
+          href="../../transformers/org_pef_dtbook2pef/setups/en_US/doc-files/DefaultTextSystem.html">English</a></li>
+        <li><a
+          href="../../transformers/org_pef_dtbook2pef/setups/sv_SE/doc-files/SwedishTextSystem.html">Swedish</a></li>
+      </ul>
+    </dd>
+  <dt>Settings file</dt>
+    <dd>A file containing additional conversion settings</dd>
+</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+
+<p>The documents linked below are parts of the <em>Transformer technical
+documentation</em>. These are developer and systems-administrator centric
+documents.</p>
+<ol>
+  <li><a
+  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
+  <li><a
+  href="../transformers/se_tpb_hyphenator.html">se_tpb_hyphenator</a></li>
+  <li><a
+  href="../transformers/org_pef_dtbook2pef.html">org_pef_dtbook2pef</a></li>
+  <li><a
+    href="../transformers/pipeline_system_deleter.html">pipeline_system_deleter</a></li>
+</ol>
+</body>
+</html>

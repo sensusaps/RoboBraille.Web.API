@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="dtbookVolumeSplit">
+	<nicename>DTBook Volume Splitter [BETA]</nicename>
+	<description>Insert volume split points into a DTBook document</description>
+	<documentation uri="../../../doc/scripts/DTBookVolumeSplitter.html"/>
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook XML file</nicename>
+		<description>Select input DTBook XML file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output DTBook XML file</nicename>
+		<description>Select the output DTBook XML file</description>
+		<datatype>
+			<file mime="application/xhtml+xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="number_of_volumes" value="1" required="true">
+		<nicename>Number of volumes</nicename>
+		<description>Select the desired number of volumes</description>
+		<datatype>
+			<enum>
+			  <item nicename="1" value="1" />
+			  <item nicename="2" value="2" />
+			  <item nicename="3" value="3" />
+			  <item nicename="4" value="4" />
+			  <item nicename="5" value="5" />
+			  <item nicename="6" value="6" />
+			  <item nicename="7" value="7" />
+			  <item nicename="8" value="8" />
+			  <item nicename="9" value="9" />
+			  <item nicename="10" value="10" />
+			  <item nicename="11" value="11" />
+			  <item nicename="12" value="12" />
+			  <item nicename="13" value="13" />
+			  <item nicename="14" value="14" />
+			  <item nicename="15" value="15" />
+			  <item nicename="16" value="16" />
+			  <item nicename="17" value="17" />
+			  <item nicename="18" value="18" />
+			  <item nicename="19" value="19" />
+			  <item nicename="20" value="20" />
+			  <item nicename="21" value="21" />
+			  <item nicename="22" value="22" />
+			  <item nicename="23" value="23" />
+			  <item nicename="24" value="24" />
+			  <item nicename="25" value="25" />
+			  <item nicename="26" value="26" />
+			  <item nicename="27" value="27" />
+			  <item nicename="28" value="28" />
+			  <item nicename="29" value="29" />
+			  <item nicename="30" value="30" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="allowed_stretch" value="0.1" required="false">
+		<nicename>Allowed Stretch</nicename>
+		<description>How much can a volume be streched so that the volume splits occur at nearby level1</description>
+		<datatype>
+			<enum>
+			  <item nicename="Do not stretch" value="0" />
+			  <item nicename="5 percent" value="0.05" />
+			  <item nicename="10 percent" value="0.1" />
+			  <item nicename="20 percent" value="0.2" />
+			  <item nicename="30 percent" value="0.3" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>false</value>
+		</parameter>
+	</task>
+
+	<task name="ch_sbs_dtbookInsertVolumeSplitPoints" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		<parameter>
+			<name>number_of_volumes</name>
+			<value>${number_of_volumes}</value>
+		</parameter>		
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>	
+	
+</taskScript>

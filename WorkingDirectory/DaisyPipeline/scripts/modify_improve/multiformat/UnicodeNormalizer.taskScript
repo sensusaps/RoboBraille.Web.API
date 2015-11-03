@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="UnicodeNormalizer">
+	<nicename>Unicode Normalizer</nicename>
+	<description>Performs Unicode Normalization on all XML documents in a fileset</description>
+   	<documentation uri="../../../doc/scripts/UnicodeNormalizer.html"/>
+    <comment>     	
+     	Commandline template:
+	         ${workspace_loc}/dmfc/scripts/manipulation/advanced/UnicodeNormalizer.taskScript
+			--input=${workspace_loc}/dmfc/samples/input/dtbook/dontworrybehappy.xml
+     	    --output=${workspace_loc}/dmfc/samples/output/normalizer/
+    </comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input manifest file (NCC, OPF, etc)</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+
+	<parameter name="normalizationForm" value="NFC" required="false">
+		<nicename>Normalization form</nicename>
+		<description>Select the normalization form to use - see documentation</description>
+		<datatype>		
+			<enum>
+			  <item nicename="NFD" value="NFD" />
+			  <item nicename="NFKC" value="NFKC" />
+			  <item nicename="NFC" value="NFC" />
+			  <item nicename="NFKD" value="NFKD" />
+			</enum>
+		</datatype>
+	</parameter>
+
+
+	<parameter name="textnodesOnly" value="false" required="false">
+		<nicename>Textnodes only</nicename>
+		<description>Normalize element textnodes only (not attribute values etc)</description>
+		<datatype>		
+			<boolean/>
+		</datatype>
+	</parameter>
+						
+	<task name="int_daisy_unicodeNormalizer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>normalizationForm</name>
+			<value>${normalizationForm}</value>
+		</parameter>
+
+		<parameter>
+			<name>textnodesOnly</name>
+			<value>${textnodesOnly}</value>
+		</parameter>
+				
+	</task>
+
+
+</taskScript>

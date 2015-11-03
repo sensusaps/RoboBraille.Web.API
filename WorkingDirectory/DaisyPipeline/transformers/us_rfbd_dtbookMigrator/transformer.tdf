@@ -1,0 +1,52 @@
+<transformer version="1.0">
+	<name>DTBook Migrator</name>
+	<description>
+		Upgrade a DTBook document to a later version of itself. 
+		The default behavior is to upgrade to the latest published version,
+		but this can be overriden using options.
+	</description>
+	<classname>us_rfbd_dtbookMigrator.DtbookMigrator</classname>
+	<license>LGPL</license>
+	<author>James Pritchett</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/us_rfbd_dtbookMigrator.html"/>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The input DTBook XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>version</name>
+			<description>The desired output version</description>
+			<example>2005-2</example>
+			<enum>
+				<value>LATEST</value> 
+				<value>2005-1</value>
+				<value>2005-2</value>
+				<value>2005-3</value>
+			</enum>
+			<default>LATEST</default>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>out</name>
+			<description>The output DTBook XML document</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+		
+		<!-- 
+		<parameter type="application/xml">
+			<name>xslt</name>
+			<value>${transformer_dir}/dtbook2005-1to2.xsl</value>
+		</parameter>
+		<parameter type="string">
+			<name>factory</name>
+			<value>com.icl.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		-->
+		
+	</parameters>
+</transformer>

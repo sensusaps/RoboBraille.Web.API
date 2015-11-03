@@ -1,0 +1,48 @@
+<transformer version="1.0">
+	<name>DTBook to DAISY 3 text-only</name>
+	<description>Transforms a DTBook 2005 document to a text-only DAISY 3 book</description>
+	<classname>fr_braillenet_dtbook2daisy3.DTBookToDaisy3</classname>
+	<license>LGPL</license>
+	<author>Alex Bernier, Romain Deltour</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+    <documentation uri="../../doc/transformers/fr_braillenet_dtbook2daisy3.html"/> 
+	
+	<!-- 
+		Note: this transformer uses the XSLT dtbook2daisy3textonly.xsl 
+		placed in org/daisy/util/xml/xslt/stylesheets 
+	-->
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>input</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outputDir</name>
+			<description>The output directory</description>
+			<example>file:///path/to/dir</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="string">
+			<name>outputName</name>
+			<description>The name of the output OPF file (without extension)</description>
+			<example>dtb</example>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>copyReferring</name>
+			<description>Copy referring files</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>			
+				
+	</parameters>	
+
+</transformer>

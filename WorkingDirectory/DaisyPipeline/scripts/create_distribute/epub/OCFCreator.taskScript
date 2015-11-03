@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="OCFCreator">
+	<nicename>OCF Creator</nicename>
+	<description>Create an Open Container Format archive (OCF 1.0) containing one or several manifestations of a publication.</description>
+   	<documentation uri="../../../doc/scripts/OCFCreator.html"/>
+    <comment>
+
+    </comment>
+			
+	<parameter name="input" value="" required="true">
+		<nicename>Input file(s)</nicename>
+		<description>Select the input document(s)</description>
+		<datatype>
+			<files mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output OCF</nicename>
+		<description>Select the output .epub file</description>
+		<datatype>
+			<file mime="application/epub+zip" type="output"/>
+		</datatype>
+	</parameter>
+			
+
+	<task name="int_daisy_ocfCreator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>						
+	</task>
+
+						
+</taskScript>

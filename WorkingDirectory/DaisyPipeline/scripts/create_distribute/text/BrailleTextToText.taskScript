@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY BrailleFormatOutputParamsStatic SYSTEM "../../BrailleFormatOutputParamsStatic.paramGroup">
+<!ENTITY BrailleFormatInputParamsStatic SYSTEM "../../BrailleFormatInputParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="TextToText">
+	<nicename>Braille text to text</nicename>
+	<description>This script converts from one ASCII type braille file into another.</description>
+	<documentation uri="../../../doc/scripts/TextToText.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Input text file</description>
+		<datatype>
+			<file mime="text/plain" type="input"/>
+		</datatype>
+	</parameter>
+	
+	&BrailleFormatInputParamsStatic;
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Output text file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	&BrailleFormatOutputParamsStatic;
+	
+	<task name="org_pef_text/text2pef" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}.tmp</value>
+		</parameter>
+		
+		<parameter>
+			<name>mode</name>
+			<value>${mode}</value>
+		</parameter>
+	</task>
+
+	<task name="org_pef_text/pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${output}.tmp</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>table</name>
+			<value>${table}</value>
+		</parameter>
+		
+		<parameter>
+			<name>pad</name>
+			<value>${pad}</value>
+		</parameter>
+	</task>
+	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}.tmp</value>
+		</parameter>
+	</task>
+
+</taskScript>

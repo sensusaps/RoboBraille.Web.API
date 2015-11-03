@@ -1,0 +1,40 @@
+﻿<transformer version="2.0">
+	<name>Z39.86-2005 text-only book creator (beta)</name>
+	<description>Creates a Z39.86-2005 test-only fileset from a dtbook file</description>
+	<classname>us_rfbd_textOnlyDtbCreator.TextOnlyDtbCreator</classname>
+	<license>unknown</license>
+	<author>James Pritchett</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/us_rfbd_textOnlyDtbCreator.html"/>
+	
+	<parameters>
+
+<!-- input path -->
+		<parameter required="true" direction="in" type="string">
+			<name>input</name>
+			<description>The path to the input dtbook file</description>
+			<example>C:/tmp/book.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="in" type="string">
+			<name>output</name>
+			<description>Where to put the output fileset</description>
+			<example>C:/tmp/output</example>
+		</parameter>
+
+		<parameter required="false" direction="in" type="string">
+		    <name>configFile</name>
+		    <description>Configuration file for the transformer</description>
+		    <example>C:/tmp/toConfig.xml</example>
+		    <default>${transformer_dir}/toConfig.xml</default>
+		</parameter>
+
+		<parameter required="false" direction="in" type="string">
+		    <name>resourceFile</name>
+		    <description>Resource file to include in package</description>
+		    <example>C:/tmp/toResource.res</example>
+		    <default>${transformer_dir}/toResource.res</default>
+		</parameter>
+	</parameters>
+
+</transformer>

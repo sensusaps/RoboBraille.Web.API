@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: DTBook to XHTML</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>DTBook to XHTML</em></h1>
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script converts a DTBook 2005 document to XHTML 1.0.</p>
+<p>The script can be configured so that the output XHTML is suitable for Daisy 2.02 production.</p>
+<p>The conversion supports DTBook documents with embedded MathML: the output XHTML document will in this case not be
+XHTML 1.0, but instead use the W3C <strong>DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1</strong> profile.</p>
+
+<h2 id="config">Configuration</h2>
+
+<dl id="paramslist">	
+		<dt>Input DTBook</dt>
+		<dd><strong>Required.</strong> The input DTBoook document; the grammar version needs to be in the 2005 series.</dd>
+
+		<dt>Output XHTML</dt>
+		<dd><strong>Required.</strong> Resulting XHTML 1.O document.</dd>
+		
+		<dt>DAISY 2.02 style noterefs</dt>
+		<dd><strong>Optional.</strong> Select whether to align the output to the <a href="http://www.daisy.org/z3986/specifications/d202skiprec/d202_skippability_rec.html">Daisy 2.02 skippability recommendation</a> by putting bodyref attributes on note references. The default is <strong>false</strong>.</dd>
+
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> Select the output characterset encoding. If not set, the output encoding will be the default <strong>utf-8</strong>.</dd>
+		
+		<dt>Linebreaks</dt>
+		<dd><strong>Optional.</strong>Select the type of linebreak to use; values are UNIX, Mac, Dos or System default. The default is the system default.</dd>
+		
+		<dt>XML Validation Report</dt>
+		<dd><strong>Optional.</strong> Path to a file to store a validation XML report in.</dd>
+			
+		<dt>ToC Generation</dt>
+		<dd><strong>Optional.</strong> Generate a Table of Contents from the DTBook headers.</dd>
+			
+		<dt>Multiple HTML Pages</dt>
+		<dd><strong>Optional.</strong> Split the output in multiple HTML pages.</dd>	
+</dl>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+<ol>
+	<li><a href="../transformers/int_daisy_unicodeNormalizer.html">Unicode Normalizer</a></li>
+</ol>
+
+</body>
+</html>

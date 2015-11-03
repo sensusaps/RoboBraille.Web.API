@@ -1,0 +1,69 @@
+<transformer version="1.1">
+	<name>HTML to XHTML converter</name>
+	<description>Converts an HTML document to XHTML</description>
+	<classname>int_daisy_html2xhtml.Html2Xhtml</classname>
+	<license>Academic Free License</license>
+	<author>John Cowan (http://mercury.ccil.org/~cowan/XML/tagsoup/); Markus Gylling</author>
+	<support>http://daisymfc.sourceforge.net</support>	
+	<documentation uri="../../doc/transformers/int_daisy_html2xhtml.html"/>
+	
+	<parameters>	
+	    <parameter required="true" direction="in" type="text/html">
+			<name>input</name>
+			<description>Path to the HTML input file</description>
+			<example>D:/path/to/input.html</example>
+		</parameter>
+				
+		<parameter required="true" direction="out" type="application/xhtml+xml">
+			<name>outDir</name>
+			<description>The output file (the output file will have the same name as the input file)</description>
+			<example>D:/path/to/outputdir/</example>
+		</parameter>	
+
+		<parameter required="false" type="enum">
+			<name>stripUnknownElems</name>
+			<description>Strip unknown elements (ignoreBogons)</description>
+			<example>false</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>encoding</name>
+			<description>Encoding of input file, if known</description>
+			<example>Shift_JIS</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>cleanLevel</name>
+			<description>
+				The level of cleaning of the XHTML done in the default process, after the HTML has been taken to XHTML.
+				This parameter is insignificant if the user specifies stylesheets using the xsl parameter.
+			</description>
+			<example>MEDIUM</example>
+			<enum>
+				<value>NONE</value>
+				<value>MEDIUM</value>
+				<value>MAXED</value>
+			</enum>
+			<default>NONE</default>
+		</parameter>	
+
+		<parameter required="false" type="application/xslt+xml">
+			<name>xsl</name>
+			<description>
+				A comma separated list of one or more XSLT (version 1.0 or 2.0) stylesheets to transform the XHTML with, after the initial process where the HTML is taken to "raw" XHTML.
+				If more than one stylesheet is specified here, the transformation will occur in the sequence given in this parameter ("xslt1.xsl, xslt2.xsl").
+				If this parameter is not set, a built-in XSLT processing scheme is used, optionally based on the value of the "cleanLevel" parameter.
+				If this parameter is set, the parameter "cleanLevel" is insignificant.
+			</description>
+			<example>D:/path/to/stylesheet-1.xsl, D:/path/to/stylesheet-2.xsl</example>
+            <default/>
+		</parameter>	
+							
+	</parameters>	
+</transformer>

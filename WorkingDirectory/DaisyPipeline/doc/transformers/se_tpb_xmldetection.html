@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>se_tpb_xmldetection</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_xmldetection</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>This transformer can do abbreviation, initialism and acronym detection, sentence
+detection and word detection in XML documents.</p>
+<p>Multiple XML grammars are supported; only a configuration
+file is needed to support a new grammar but so far only support for DTBook documents has
+been added.</p>
+<p>The internal Java <code>BreakIterator</code> is used to perform the sentence and word
+detection, so any language supported by Java should work with this transformer. 
+<code>xml:lang</code> markup is used to switch the language.</p>
+<p>The abbreviation, initialism and acronym detection is based on word lists in
+configuration files. So far, there are configuration files for english, swedish and
+french. The transformer will not fail catastrophically if it finds a language it has no
+configuration file for, it will simply mean that no abbreviations or acronyms will be
+found for that particular language.</p>
+
+<p>This transformer differentiates between three types of abbreviations.
+In <em>initialisms</em>, each letter is pronounced (e.g. HTML). An <em>acronyms</em> is
+pronounced as a word (e.g. DAISY), where an <em>abbreviation</em> is pronounced by
+spelling out the abbreviation (e.g. is pronounced as "for example").</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>A document having a doctype declaration or root element XML namespace supported by the
+configuration files.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+<p>An XML document having abbreviation and acronym markup, sentence markup or word markup.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will throw an exception and abort execution.</p>
+
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd><b>Required.</b> Path to the input XML document</dd>
+	<dt>output</dt>
+	<dd><b>Required.</b> Path of the output XML document</dd>
+	<dt>doAbbrAcronymDetection</dt>
+	<dd><b>Optional.</b> If set to <code>true</code> (the default), abbreviation, initialism
+	and acronym	detection will be performed.</dd>	
+	<dt>doSentenceDetection</dt>
+	<dd><b>Optional.</b> If set to <code>true</code> (the default), sentence detection will
+	be performed.</dd>
+	<dt>doWordDetection</dt>
+	<dd><b>Optional.</b> If set to <code>true</code> (the default), word detection will be performed.</dd>
+	<dt>copyReferredFiles</dt>
+	<dd><b>Optional.</b> If set to <code>true</code> (the default), referred files, such as images
+	referenced from a DTBook document, will be copied to the output.</dd>
+	<dt>customLang</dt>
+	<dd><b>Optional.</b> A file containing custom abbreviations, initialisms and acronyms. These
+	abbreviations and acronyms will be available regardless of language.</dd>
+	<dt>doOverride</dt>
+	<dd><b>Optional.</b> If set to <code>true</code> (defalt is <code>false</code>), the abbreviations,
+	initialisms	and acronyms in the custom language file will override the language specific ones
+	defined in the different language dependant configuration files.</dd>
+	<dt>doSingleSentAdd</dt>
+	<dd><b>Optional.</b> If set to <code>false</code> (defalt is <code>true</code> which is also the original 
+	behavior of this transformer), sent elements will not be added in the case where they would become the only 
+	descendant of the parent element.	
+	</dd>	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<h4>File format for abbreviations and acronyms</h4>
+	<p>The <code>language</code> root element basically contains three sub elements
+	(<code>initialism</code>, <code>acronym</code> and <code>abbreviation</code>). Each of these
+	elements can have three attributes:</p>
+	<dl>
+	<dt>before</dt><dd>A regular expression describing the text before an abbreviation, initialism
+	or acronym.</dd>
+	<dt>after</dt><dd>A regular expression describing the text after an abbreviation, initialism
+	or acronym.</dd>
+	<dt>suffix</dt><dd>A regular expression describing the allowed suffixes to the acronym (such as
+	a plural 's').</dd>
+	</dl>
+	<p>Each abbreviation, initialism or acronym consists of a <code>key</code> element. Each 
+	<code>key</code> has one or more <code>name</code> elements describing the string(s) to
+	be matched. The <code>expansion</code> element contains the expanded version of the
+	abbreviation, initialism or acronym.</p>
+	
+	<pre>
+&lt;key&gt;
+	&lt;name&gt;o.s.v.&lt;/name&gt;
+	&lt;name&gt;o.s.v&lt;/name&gt;
+	&lt;name&gt;osv.&lt;/name&gt;
+	&lt;name&gt;o s v&lt;/name&gt;
+	&lt;expansion&gt;och så vidare&lt;/expansion&gt;
+&lt;/key&gt;</pre>
+
+	<p class="alert">This section can be expanded.</p>
+	<!-- mayEndSentence attribute, exp attribute, id attribute -->
+	
+	<h4>File format for XML grammar definitions</h4>
+	<p class="alert">This section remains to be written</p>
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>StAX is used for XML processing.</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Linus Ericson, TPB</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

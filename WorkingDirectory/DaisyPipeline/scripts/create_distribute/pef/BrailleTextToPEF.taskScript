@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY BrailleFormatInputParamsStatic SYSTEM "../../BrailleFormatInputParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="TextToPef">
+	<nicename>Text to PEF</nicename>
+	<description>This script converts an ASCII type braille file into a PEF 2008-1 document.</description>
+	<documentation uri="../../../doc/scripts/TextToPEF.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A braille formatted text file</description>
+		<datatype>
+			<file mime="text/plain" type="input"/>
+		</datatype>
+	</parameter>
+	
+	&BrailleFormatInputParamsStatic;
+		
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Output PEF-file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>The title of the publication</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="author" value="" required="false">
+		<nicename>Author</nicename>
+		<description>The author of the publication</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="identifier" value="" required="false">
+		<nicename>Identifier</nicename>
+		<description>The publications unique identifier. If no value is supplied, it will be a generated.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="language" value="" required="false">
+		<nicename>Language</nicename>
+		<description>Set the document language (as defined by IETF RFC 3066)</description>
+		<datatype>
+			<string regex="([a-zA-Z]{1,8}(\-[0-9a-zA-Z]{1,8})*)?"/>
+		</datatype>
+	</parameter>
+
+	<task name="org_pef_text/text2pef" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>mode</name>
+			<value>${mode}</value>
+		</parameter>
+		
+		<parameter>
+			<name>author</name>
+			<value>${author}</value>
+		</parameter>
+		
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>
+		
+		<parameter>
+			<name>identifier</name>
+			<value>${identifier}</value>
+		</parameter>
+		
+		<parameter>
+			<name>language</name>
+			<value>${language}</value>
+		</parameter>
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+</taskScript>
