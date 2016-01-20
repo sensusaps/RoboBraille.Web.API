@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -9,10 +10,12 @@ namespace RoboBraille.WebApi.Models
     {
         public HTMLtoPDFJob()
         {
+            DownloadCounter = 0;
             SubmitTime = DateTime.UtcNow;
             FinishTime = DateTime.UtcNow;
         }
 
-        public PaperSize size { get; set; }
+        [NotMapped]
+        public PaperSize paperSize { get; set; }
     }
 }

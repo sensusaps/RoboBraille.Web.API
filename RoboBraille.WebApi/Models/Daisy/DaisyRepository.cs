@@ -52,38 +52,41 @@ namespace RoboBraille.WebApi.Models
                     if (res != null)
                         job.ResultContent = res;
                     else success = false;
+
+                    string mime = "application/zip";
+                    string fileName = job.FileName;
+                    string fileExtension = ".zip";
+                    if (DaisyOutput.Epub3WMO.Equals(job.DaisyOutput))
+                    {
+                        mime = "application/epub+zip";
+                        fileExtension = ".epub";
+                    }
                     using (var context = new RoboBrailleDataContext())
                     {
-                        job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.UtcNow.Date;
-                        context.Entry(job).State = EntityState.Modified;
-                        context.SaveChanges();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    Trace.WriteLine(ex.Message);
-                }
-
-                if (!success)
-                {
-                    try
-                    {
-                        using (var context = new RoboBrailleDataContext())
+                        if (!success)
                         {
                             job.Status = JobStatus.Error;
                             job.FinishTime = DateTime.UtcNow.Date;
                             context.Entry(job).State = EntityState.Modified;
                             context.SaveChanges();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex.Message);
+                        else
+                        {
+                            job.ResultFileExtension = fileExtension;
+                            job.ResultMimeType = mime;
+                            job.DownloadCounter = 0;
+                            job.Status = JobStatus.Done;
+                            job.FinishTime = DateTime.UtcNow.Date;
+                            context.Entry(job).State = EntityState.Modified;
+                            context.SaveChanges();
+                        }
                     }
                 }
-
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                    RoboBrailleProcessor.SetJobFaulted(job);
+                }
             }, job);
 
             return Task.FromResult(job.Id);
@@ -110,19 +113,20 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-
-                var job = (DaisyJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
-                string mimeType = "application/zip";
-                string fileName = job.FileName+".zip";
-                if (DaisyOutput.Epub3WMO.Equals(job.DaisyOutput)) { 
-                    mimeType = "application/epub+zip";
-                    fileName = job.FileName + ".epub";
+                try
+                {
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
-                result = new FileResult(job.ResultContent, mimeType,fileName);
+                catch (Exception)
+                {
+                    // ignored
+                }
                 return result;
             }
         }

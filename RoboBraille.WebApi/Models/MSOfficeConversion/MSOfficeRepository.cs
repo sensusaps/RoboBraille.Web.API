@@ -43,7 +43,7 @@ namespace RoboBraille.WebApi.Models
 
             var task = Task.Factory.StartNew(t =>
             {
-                string sourceFilePath = FileDirectory+@"\Source\" + job.Id + job.FileName+"."+job.FileExtension;
+                string sourceFilePath = FileDirectory + @"\Source\" + job.Id + job.FileName + "." + job.FileExtension;
                 bool success = true;
                 try
                 {
@@ -126,7 +126,7 @@ namespace RoboBraille.WebApi.Models
                                     html = OfficeWordProcessor.ConvertToHtml(job.FileContent);
                                     break;
                                 case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                                    html = OfficePresentationProcessor.ConvertPptx(sourceFilePath, job.MSOfficeOutput,job.Id.ToString());
+                                    html = OfficePresentationProcessor.ConvertPptx(sourceFilePath, job.MSOfficeOutput, job.Id.ToString());
                                     break;
                                 default:
                                     success = false;
@@ -139,7 +139,7 @@ namespace RoboBraille.WebApi.Models
                         case MSOfficeOutput.rtf:
                             string rtf = null;
                             switch (job.MimeType.ToLowerInvariant())
-                            { 
+                            {
                                 case "text/html":
                                 case "application/xhtml+xml":
                                     rtf = rhp.ConvertHtmlToRtf(Encoding.UTF8.GetString(job.FileContent));
@@ -164,8 +164,32 @@ namespace RoboBraille.WebApi.Models
                     }
                     if (success)
                     {
+                        string mime = "text/plain";
+                        string fileExtension = ".txt";
+                        switch (job.MSOfficeOutput)
+                        {
+                            case MSOfficeOutput.pdf:
+                                mime = "application/pdf";
+                                fileExtension = ".pdf";
+                                break;
+                            case MSOfficeOutput.html:
+                                mime = "text/html";
+                                fileExtension = ".html";
+                                break;
+                            case MSOfficeOutput.rtf:
+                                mime = "application/rtf";
+                                fileExtension = ".rtf";
+                                break;
+                            case MSOfficeOutput.txt:
+                            default:
+                                fileExtension = ".txt";
+                                break;
+                        }
                         using (var context = new RoboBrailleDataContext())
                         {
+                            job.DownloadCounter = 0;
+                            job.ResultFileExtension = fileExtension;
+                            job.ResultMimeType = mime;
                             job.Status = JobStatus.Done;
                             job.FinishTime = DateTime.UtcNow.Date;
                             context.Entry(job).State = EntityState.Modified;
@@ -178,7 +202,8 @@ namespace RoboBraille.WebApi.Models
                     success = false;
                     Trace.WriteLine(ex.Message);
                 }
-                finally {
+                finally
+                {
                     if (File.Exists(sourceFilePath))
                         File.Delete(sourceFilePath);
                 }
@@ -227,34 +252,15 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = (MSOfficeJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-                string fileName = job.FileName;
-                string mime = "text/plain";
-                switch (job.MSOfficeOutput)
-                {
-                    case MSOfficeOutput.pdf:
-                        mime = "application/pdf";
-                        fileName += ".pdf";
-                        break;
-                    case MSOfficeOutput.html:
-                        mime = "text/html";
-                        fileName += ".html";
-                        break;
-                    case MSOfficeOutput.rtf:
-                        mime = "application/rtf";
-                        fileName += ".rtf";
-                        break;
-                    case MSOfficeOutput.txt:
-                    default:
-                        fileName += ".txt";
-                        break;
-                }
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, mime, fileName);
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
                 catch (Exception)
                 {

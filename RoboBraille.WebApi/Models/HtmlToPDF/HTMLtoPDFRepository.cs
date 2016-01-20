@@ -33,7 +33,7 @@ namespace RoboBraille.WebApi.Models
             if (job == null)
                 return null;
 
-            switch (job.size) { 
+            switch (job.paperSize) { 
                 case PaperSize.a1:
                     pageSize = PageSize.A1;
                     break;
@@ -123,7 +123,7 @@ namespace RoboBraille.WebApi.Models
 
                     File.WriteAllBytes(tempfile + ".html", job.FileContent);
                     htmlStream = new StreamReader(tempfile + ".html").ReadToEnd();
-                    
+
 
                     if (!string.IsNullOrEmpty(htmlStream))
                     {
@@ -131,112 +131,117 @@ namespace RoboBraille.WebApi.Models
                         var fsOut = new MemoryStream();
                         var stringReader = new StringReader(htmlStream);
                         Document document = new Document(pageSize, 5, 5, 5, 5);
-                            try
+                        try
+                        {
+                            //Document setup
+
+                            var pdfWriter = PdfAWriter.GetInstance(document, fsOut);
+                            pdfWriter.SetTagged();
+                            pdfWriter.SetPdfVersion(PdfWriter.PDF_VERSION_1_7);
+                            pdfWriter.CreateXmpMetadata();
+                            pdfWriter.AddViewerPreference(PdfName.DISPLAYDOCTITLE, PdfBoolean.PDFTRUE);
+                            pdfWriter.Info.Put(new PdfName("Producer"), new PdfString("©" + DateTime.Now.Year.ToString() + " Robobraille.org"));
+
+
+                            //PDF/A-1A Conformance
+                            //pdfWriter = PdfAWriter.GetInstance(document, fsOut, PdfAConformanceLevel.PDF_A_1A);
+
+
+                            document.Open();
+                            document.AddCreationDate();
+
+
+                            //Custom tag processor
+                            var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
+                            tagProcessors.AddProcessor(HTML.Tag.HTML, new HTMLTagProcessor(document));
+                            tagProcessors.AddProcessor(HTML.Tag.TITLE, new HTMLTagProcessor(document));
+                            tagProcessors.AddProcessor(HTML.Tag.TABLE, new TableTagProcessor());
+                            tagProcessors.AddProcessor(HTML.Tag.TH, new THTagProcessor());
+
+                            string colorProfilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/colors/sRGB.profile");
+                            string defaultCSSPath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/css/default.css");
+
+                            //Setup color profile
+                            ICC_Profile icc = ICC_Profile.GetInstance(new FileStream(colorProfilePath, FileMode.Open, FileAccess.Read));
+                            pdfWriter.SetOutputIntents("Custom", "", "http://www.color.org", "sRGB IEC61966-2.1", icc);
+                            var xmlWorkerHelper = XMLWorkerHelper.GetInstance();
+                            var cssResolver = new StyleAttrCSSResolver();
+                            cssResolver.AddCssFile(defaultCSSPath, true);// CSS with default style for all converted docs
+
+
+
+                            //Register system fonts
+                            var xmlWorkerFontProvider = new XMLWorkerFontProvider();
+                            Environment.SpecialFolder specialFolder = Environment.SpecialFolder.Fonts;
+                            string path = Environment.GetFolderPath(specialFolder);
+                            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+                            FileInfo[] fontFiles = directoryInfo.GetFiles();
+                            foreach (var fontFile in fontFiles)
                             {
-                                //Document setup
-                                
-                                var pdfWriter = PdfAWriter.GetInstance(document, fsOut);
-                                pdfWriter.SetTagged();
-                                pdfWriter.SetPdfVersion(PdfWriter.PDF_VERSION_1_7);
-                                pdfWriter.CreateXmpMetadata();
-                                pdfWriter.AddViewerPreference(PdfName.DISPLAYDOCTITLE, PdfBoolean.PDFTRUE);
-                                pdfWriter.Info.Put(new PdfName("Producer"), new PdfString("©" + DateTime.Now.Year.ToString() + " Robobraille.org"));
-
-
-                                //PDF/A-1A Conformance
-                                //pdfWriter = PdfAWriter.GetInstance(document, fsOut, PdfAConformanceLevel.PDF_A_1A);
-                                
-
-                                document.Open();
-                                document.AddCreationDate();
-
-
-                                //Custom tag processor
-                                var tagProcessors = (DefaultTagProcessorFactory)Tags.GetHtmlTagProcessorFactory();
-                                tagProcessors.AddProcessor(HTML.Tag.HTML, new HTMLTagProcessor(document));
-                                tagProcessors.AddProcessor(HTML.Tag.TITLE, new HTMLTagProcessor(document));
-                                tagProcessors.AddProcessor(HTML.Tag.TABLE, new TableTagProcessor());
-                                tagProcessors.AddProcessor(HTML.Tag.TH, new THTagProcessor());
-
-                                string colorProfilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/colors/sRGB.profile");
-                                string defaultCSSPath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/css/default.css");
-
-                                //Setup color profile
-                                ICC_Profile icc = ICC_Profile.GetInstance(new FileStream(colorProfilePath, FileMode.Open, FileAccess.Read));
-                                pdfWriter.SetOutputIntents("Custom", "", "http://www.color.org", "sRGB IEC61966-2.1", icc);
-                                var xmlWorkerHelper = XMLWorkerHelper.GetInstance();
-                                var cssResolver = new StyleAttrCSSResolver();
-                                cssResolver.AddCssFile(defaultCSSPath, true);// CSS with default style for all converted docs
-
-
-
-                                //Register system fonts
-                                var xmlWorkerFontProvider = new XMLWorkerFontProvider();
-                                Environment.SpecialFolder specialFolder = Environment.SpecialFolder.Fonts;
-                                string path = Environment.GetFolderPath(specialFolder);
-                                DirectoryInfo directoryInfo = new DirectoryInfo(path);
-                                FileInfo[] fontFiles = directoryInfo.GetFiles();
-                                foreach (var fontFile in fontFiles)
+                                if (fontFile.Extension == ".ttf")
                                 {
-                                    if (fontFile.Extension == ".ttf")
-                                    {
-                                        xmlWorkerFontProvider.Register(fontFile.FullName);
-                                    }
-                                }
-
-
-                                //HTML & CSS parsing
-                                var cssAppliers = new CssAppliersImpl(xmlWorkerFontProvider);
-                                var htmlContext = new HtmlPipelineContext(cssAppliers);
-                                htmlContext.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors);
-                                PdfWriterPipeline pdfWriterPipeline = new PdfWriterPipeline(document, pdfWriter);
-                                HtmlPipeline htmlPipeline = new HtmlPipeline(htmlContext, pdfWriterPipeline);
-                                CssResolverPipeline cssResolverPipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
-                                XMLWorker xmlWorker = new XMLWorker(cssResolverPipeline, true);
-                                XMLParser xmlParser = new XMLParser(xmlWorker);
-                                xmlParser.Parse(stringReader);
-                                document.Close();
-                            }
-                            catch
-                            {
-                                //ignore
-                            }
-
-
-                            
-
-                            
-  
-
-                            //Data as byte array
-                            byte[] fileData = fsOut.ToArray();
-
-                            //For Test. Save file to temp
-                            //BinaryWriter Writer = new BinaryWriter(File.OpenWrite(tempfile + ".pdf"));             
-                            //Writer.Write(fileData);
-                            //Writer.Flush();
-                            //Writer.Close();
-
-                            try
-                            {
-                                using (var context = new RoboBrailleDataContext())
-                                {
-                                    ebJob.ResultContent = fileData;
-                                    ebJob.Status = JobStatus.Done;
-                                    context.Jobs.Attach(ebJob);
-                                    context.Entry(job).State = EntityState.Modified;
-                                    context.SaveChanges();
-                                    
-
+                                    xmlWorkerFontProvider.Register(fontFile.FullName);
                                 }
                             }
-                            catch (Exception ex)
+
+
+                            //HTML & CSS parsing
+                            var cssAppliers = new CssAppliersImpl(xmlWorkerFontProvider);
+                            var htmlContext = new HtmlPipelineContext(cssAppliers);
+                            htmlContext.SetAcceptUnknown(true).AutoBookmark(true).SetTagFactory(tagProcessors);
+                            PdfWriterPipeline pdfWriterPipeline = new PdfWriterPipeline(document, pdfWriter);
+                            HtmlPipeline htmlPipeline = new HtmlPipeline(htmlContext, pdfWriterPipeline);
+                            CssResolverPipeline cssResolverPipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+                            XMLWorker xmlWorker = new XMLWorker(cssResolverPipeline, true);
+                            XMLParser xmlParser = new XMLParser(xmlWorker);
+                            xmlParser.Parse(stringReader);
+                            document.Close();
+                        }
+                        catch
+                        {
+                            //ignore
+                        }
+
+
+
+
+
+
+
+                        //Data as byte array
+                        byte[] fileData = fsOut.ToArray();
+
+                        //For Test. Save file to temp
+                        //BinaryWriter Writer = new BinaryWriter(File.OpenWrite(tempfile + ".pdf"));             
+                        //Writer.Write(fileData);
+                        //Writer.Flush();
+                        //Writer.Close();
+
+                        try
+                        {
+                            string mime = "application/pdf";
+                            string fileExtension = ".pdf";
+                            using (var context = new RoboBrailleDataContext())
                             {
-                                Trace.WriteLine(ex.Message);
+                                ebJob.DownloadCounter = 0;
+                                ebJob.ResultFileExtension = fileExtension;
+                                ebJob.ResultMimeType = mime;
+                                ebJob.ResultContent = fileData;
+                                ebJob.Status = JobStatus.Done;
+                                context.Jobs.Attach(ebJob);
+                                context.Entry(job).State = EntityState.Modified;
+                                context.SaveChanges();
+
+
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine(ex.Message);
+                        }
 
 
-                        
+
 
                     }
                     else
@@ -251,8 +256,9 @@ namespace RoboBraille.WebApi.Models
                 {
                     //ignore
                 }
-                finally {
-                   // File.Delete(tempfile + ".html");
+                finally
+                {
+                    // File.Delete(tempfile + ".html");
                 }
 
 
@@ -293,11 +299,32 @@ namespace RoboBraille.WebApi.Models
                     return null;
 
                 string mime = "application/pdf";
-                
+                string fileExtension = ".pdf";
+                string fileName = job.FileName;
+                int downCounter = job.DownloadCounter;
+                var task = Task.Factory.StartNew(j =>
+                {
+                    try
+                    {
+                        job.DownloadCounter = downCounter + 1;
+                        if (downCounter > 0)
+                        {
+                            job.ResultFileExtension = fileExtension;
+                            job.ResultMimeType = mime;
+                        }
+                        context.Jobs.Attach(job);
+                        context.Entry(job).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                    catch
+                    {
+                        //ignored
+                    }
+                }, job);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, mime,job.FileName+".pdf");
+                    result = new FileResult(job.ResultContent, mime, fileName);
                 }
                 catch (Exception)
                 {

@@ -73,8 +73,13 @@ namespace RoboBraille.WebApi.Models
                             }
                         }
                     }
+                    string mime = "text/plain";
+                    string fileExtension = ".txt";
                     using (var context = new RoboBrailleDataContext())
                     {
+                        job.DownloadCounter = 0;
+                        job.ResultFileExtension = fileExtension;
+                        job.ResultMimeType = mime;
                         job.Status = JobStatus.Done;
                         job.FinishTime = DateTime.UtcNow.Date;
                         context.Entry(job).State = EntityState.Modified;
@@ -131,13 +136,20 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-
-                var job = (OcrConversionJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
-                result = new FileResult(job.ResultContent, "text/plain",job.FileName+".txt");
+                try
+                {
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
                 return result;
             }
         }

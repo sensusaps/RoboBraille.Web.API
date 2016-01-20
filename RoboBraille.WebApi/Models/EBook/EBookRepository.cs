@@ -98,17 +98,41 @@ namespace RoboBraille.WebApi.Models
                 {
                     // Log error.
                 }
-                finally {
+                finally
+                {
                     try
                     {
+                        EbookFormat fmtOptions = job.EbookFormat;
+                        string mime = "application/epub+zip";
+                        string fileExtension = ".epub";
+                        switch (fmtOptions)
+                        {
+                            case EbookFormat.epub:
+                                mime = "application/epub+zip";
+                                fileExtension = ".epub";
+                                break;
+
+                            case EbookFormat.mobi:
+                                mime = "application/x-mobipocket-ebook";
+                                fileExtension = ".prc";
+                                break;
+                            default:
+                                mime = "application/epub+zip";
+                                fileExtension = ".epub";
+                                break;
+                        }
+
                         using (var context = new RoboBrailleDataContext())
                         {
                             ebJob.ResultContent = File.ReadAllBytes(tempfile + outputFormat);
+                            ebJob.DownloadCounter = 0;
+                            ebJob.ResultMimeType = mime;
+                            ebJob.ResultFileExtension = fileExtension;
                             ebJob.Status = JobStatus.Done;
                             context.Jobs.Attach(ebJob);
                             context.Entry(job).State = EntityState.Modified;
                             context.SaveChanges();
-                            File.Delete(tempfile+".pdf");
+                            File.Delete(tempfile + ".pdf");
                             File.Delete(tempfile + outputFormat);
                         }
                     }
@@ -152,34 +176,15 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = (EBookJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
-                string mime = "application/epub+zip";
-                EbookFormat fmtOptions = (EbookFormat)Enum.Parse(typeof(EbookFormat), Convert.ToString(job.EbookFormat));
-                string fileName = job.FileName;
-                switch (fmtOptions)
-                {
-                    case EbookFormat.epub:
-                        mime = "application/epub+zip";
-                        fileName += ".epub";
-                        break;
-
-                    case EbookFormat.mobi:
-                        mime = "application/x-mobipocket-ebook";
-                        fileName += ".prc";
-                        break;
-                    default:
-                        mime = "application/epub+zip";
-                        fileName += ".epub";
-                        break;
-                }
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, mime, fileName);
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
                 catch (Exception)
                 {

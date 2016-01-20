@@ -24,58 +24,24 @@ namespace RoboBraille.WebApi.Models
             var speech = new SpeechSynthesizer();
 
             var voices = speech.GetInstalledVoices();
-            foreach (InstalledVoice vc in voices) {
+            foreach (InstalledVoice vc in voices)
+            {
                 result.Add(vc.VoiceInfo.Culture.DisplayName);
             }
             return result;
-        } 
+        }
         public Task<Guid> SubmitWorkItem(AudioJob job)
         {
             if (job == null)
                 return null;
 
-            VoiceGender gender = VoiceGender.NotSet;
-            CultureInfo ci = CultureInfo.CurrentCulture;
-            EncodingFormat eformat = EncodingFormat.Pcm;
-                switch (job.AudioLanguage)
-                {
-                   /* case AudioLanguage.DanishSara:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("da-DK");
-                        break;
-
-                    case AudioLanguage.DanishAnne:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("da-DK");
-                        break;
-
-                    case AudioLanguage.DanishCarsten:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("da-DK");
-                        break;*/
-
-                    case Language.enGB:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("en-GB");
-                        break;
-
-                    case Language.enUS:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("en-US");
-                        break;
-
-                    default:
-                        gender = VoiceGender.Female;
-                        ci = CultureInfo.GetCultureInfo("en-US");
-                        break;
-                }
-            try 
+            //optionally here you can check for voices and convert to audio without the use of rabbitmq, if the voices are installed on the same server
+            try
             {
                 // TODO : REMOVE and use authenticated user id
-                Guid uid;
-                Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                job.UserId = uid;
-
+                //Guid uid;
+                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+                //job.UserId = uid;
                 using (var context = new RoboBrailleDataContext())
                 {
                     try
@@ -104,55 +70,82 @@ namespace RoboBraille.WebApi.Models
             var task = Task.Factory.StartNew(t =>
             {
                 AudioJob auJob = (AudioJob)t;
-                string tempfile = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-                int rate = (int)Enum.Parse(typeof(AudioSpeed), Convert.ToString(auJob.SpeedOptions));
-
-                switch (auJob.FormatOptions) { 
-                    case AudioFormat.Mp3:
-                        tempfile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".mp3");
-                        break;
-                    case AudioFormat.Wav:
-                        tempfile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".wav");
-                        break;
-                    case AudioFormat.Wma:
-                        tempfile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".wma");
-                        break;
-                    case AudioFormat.Aac: 
-                        tempfile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".aac");
-                        break;
-                }
-
-                 
-
                 try
                 {
-                    var speech = new SpeechSynthesizer();
-                    speech.Rate = rate;
-                    speech.SelectVoiceByHints(gender, VoiceAge.Adult, 1, ci);
+                    //here do the conversion to audio or
+                    //send job to rabbitmq cluster
+                    byte[] result = AudioJobSender.SendAudioJobToQueue(auJob);
 
-                    var voices = speech.GetInstalledVoices();
-                    //Console.WriteLine("Installed voices: "+voices.Count);
-                    var safi = new SpeechAudioFormatInfo(eformat, 44100, 16, 2, 44100 * 4, 4, null);
-                    speech.SetOutputToWaveFile(tempfile, safi);
-                    Encoding enc = RoboBrailleTextProcessor.GetEncoding(job.FileContent);
-                    if (enc.Equals(Encoding.ASCII))
-                        enc = RoboBrailleTextProcessor.GetEncodingByCountryCode(job.AudioLanguage);
-                    speech.Speak(Encoding.UTF8.GetString(job.FileContent));
-                    speech.SetOutputToNull();
+                    //get file from the source where it was converted.
+                    string outputPath = Encoding.UTF8.GetString(result);
+                    outputPath = outputPath.Replace(@"C:", @"\\SERVERPATH"); //SERVERPATH is the name of your machine that converts audio on your local network
+                    if (File.Exists(outputPath))
+                    {
+                        result = File.ReadAllBytes(outputPath);
+                        File.Delete(outputPath);
+                    }
+                    else
+                    {
+                        result = null;
+                    }
+
+                    if (result == null)
+                    {
+                        RoboBrailleProcessor.SetJobFaulted(auJob);
+                        return;
+                    }
+                    else auJob.ResultContent = result;
+                    //}
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
+                    RoboBrailleProcessor.SetJobFaulted(auJob);
+                    return;
                 }
 
+                string mime = "audio/wav";
+                string fileExtension = ".wav";
+                AudioFormat fmtOptions = auJob.FormatOptions;
+
+                switch (fmtOptions)
+                {
+                    case AudioFormat.Mp3:
+                        mime = "audio/mpeg3";
+                        fileExtension = ".mp3";
+                        break;
+
+                    case AudioFormat.Wav:
+                        mime = "audio/wav";
+                        fileExtension = ".wav";
+                        break;
+
+                    case AudioFormat.Aac:
+                        mime = "audio/aac";
+                        fileExtension = ".aac";
+                        break;
+
+                    case AudioFormat.Wma:
+                        mime = "audio/wma";
+                        fileExtension = ".wma";
+                        break;
+
+                    default:
+                        mime = "audio/wav";
+                        fileExtension = ".wav";
+                        break;
+                }
                 try
                 {
                     using (var context = new RoboBrailleDataContext())
                     {
-                        auJob.ResultContent = File.ReadAllBytes(tempfile);
+                        auJob.DownloadCounter = 0;
+                        auJob.ResultFileExtension = fileExtension;
+                        auJob.ResultMimeType = mime;
+                        auJob.FinishTime = DateTime.UtcNow;
                         auJob.Status = JobStatus.Done;
                         context.Jobs.Attach(auJob);
-                        context.Entry(job).State = EntityState.Modified;
+                        context.Entry(auJob).State = EntityState.Modified;
                         context.SaveChanges();
                     }
                 }
@@ -161,85 +154,9 @@ namespace RoboBraille.WebApi.Models
                     Trace.WriteLine(ex.Message);
                 }
 
-                //MediaFoundationApi.Startup();
-                //MediaType mediaType = null;
-                //byte[] audioBuffer = File.ReadAllBytes(tempfile);
-
-                //switch (auJob.FormatOptions)
-                //{
-                //    case AudioFormatOptions.Mp3:
-                //        using (var reader = new MediaFoundationReader(tempfile))
-                //        {
-                //            var tempMp3File = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".mp3");
-                //            MediaFoundationEncoder.EncodeToMp3(reader, tempMp3File);
-                //            audioBuffer = File.ReadAllBytes(tempMp3File);
-                //        }
-                //        /*
-                //        mediaType = MediaFoundationEncoder.SelectMediaType(AudioSubtypes.MFAudioFormat_MP3,
-                //                                                           new Mp3WaveFormat(44100, 2, 0, 128), 
-                //                                                           44100);
-                //        if (mediaType != null)
-                //        {
-                //            var wavfmt = new WaveFormat(44100, 16, 2);
-                //            using (var mp3Stream = new MemoryStream())
-                //            using (var wavStream = new MemoryStream(auJob.FileContent))
-                //            using (var wavReader = new RawSourceWaveStream(wavStream, wavfmt))
-                //            using (var mp3Writer = new LameMP3FileWriter(mp3Stream, 
-                //                                                         wavReader.WaveFormat,      
-                //                                                         LAMEPreset.MEDIUM))
-                //            {
-                //                wavReader.CopyTo(mp3Writer);
-                //                audioBuffer = mp3Stream.GetBuffer();
-                //            }
-                //        }
-                //        */
-                //        break;
-
-                //    case AudioFormatOptions.Aac:
-                //        using (var reader = new MediaFoundationReader(tempfile))
-                //        {
-                //            var tempAacfile = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-                //            MediaFoundationEncoder.EncodeToAac(reader, tempAacfile);
-                //            audioBuffer = File.ReadAllBytes(tempAacfile);
-                //        }
-                //        break;
-
-                //    case AudioFormatOptions.Wma:
-                //        using (var reader = new MediaFoundationReader(tempfile))
-                //        {
-                //            var tempWmaFile = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-                //            MediaFoundationEncoder.EncodeToWma(reader, tempWmaFile);
-                //            audioBuffer = File.ReadAllBytes(tempWmaFile);
-                //        }
-                //        break;
-                //}
-
-                //if (audioBuffer != null)
-                //{
-                //    auJob.ResultContent = audioBuffer;
-                //    auJob.Status = JobStatus.Done;
-                //    auJob.FinishTime = DateTime.UtcNow.Date;
-
-                //    try
-                //    {
-                //        using (var context = new RoboBrailleDataContext())
-                //        {
-                //            context.Jobs.Attach(auJob);
-                //            context.Entry(auJob).State = EntityState.Modified;
-                //            context.SaveChanges();
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Trace.WriteLine(ex.Message);
-                //    }
-                //}
-
-                //MediaFoundationApi.Shutdown();
-
             }, job).ContinueWith(t =>
             {
-                
+
             }, TaskContinuationOptions.OnlyOnFaulted);
 
             return Task.FromResult(job.Id);
@@ -267,46 +184,15 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = (AudioJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
-                string mime = "audio/wav";
-                string fileName = job.FileName;
-                AudioFormat fmtOptions =(AudioFormat)Enum.Parse(typeof (AudioFormat), Convert.ToString(job.FormatOptions));
-
-                switch (fmtOptions)
-                {
-                    case AudioFormat.Mp3:
-                        mime = "audio/mpeg3";
-                        fileName += ".mp3";
-                        break;
-
-                    case AudioFormat.Wav:
-                        mime = "audio/wav";
-                        fileName += ".wav";
-                        break;
-
-                    case AudioFormat.Aac:
-                        mime = "audio/mp4";
-                        fileName += ".mp4";
-                        break;
-
-                    case AudioFormat.Wma:
-                        mime = "audio/wma";
-                        fileName += ".wma";
-                        break;
-
-                    default:
-                        mime = "audio/wav";
-                        fileName += ".wav";
-                        break;
-                }
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, mime, fileName);
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
                 catch (Exception)
                 {

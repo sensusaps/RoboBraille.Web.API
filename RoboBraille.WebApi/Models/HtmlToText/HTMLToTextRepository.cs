@@ -43,10 +43,15 @@ namespace RoboBraille.WebApi.Models
                 bool success = true;
                 try
                 {
+                    string mime = "text/plain";
+                    string fileExtension = ".txt";
                     string res = HTMLToTextProcessor.StripHTML(Encoding.UTF8.GetString(job.FileContent));
                     job.ResultContent = Encoding.UTF8.GetBytes(res);
                     using (var context = new RoboBrailleDataContext())
                     {
+                        job.DownloadCounter = 0;
+                        job.ResultFileExtension = fileExtension;
+                        job.ResultMimeType = mime;
                         job.Status = JobStatus.Done;
                         job.FinishTime = DateTime.UtcNow.Date;
                         context.Entry(job).State = EntityState.Modified;
@@ -103,14 +108,15 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = (HTMLToTextJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, "text/plain", job.FileName);
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
                 catch (Exception)
                 {

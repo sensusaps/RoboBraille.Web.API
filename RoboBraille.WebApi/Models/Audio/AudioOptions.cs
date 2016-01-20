@@ -2,44 +2,43 @@
 {
     public enum AudioSpeed : int
     {
-        Fastest = 6,
-        Faster = 4,
-        Fast = 2,
+        TooFast = 10,
+        StillFast = 9,
+        Fastest = 8,
+        Fastish = 7,
+        Faster = 6,
+        Fast5 = 5,
+        Fast4 = 4,
+        Fast = 3,
+        NotSoFast = 2,
+        KindOfFast = 1,
         Normal = 0,
-        Slow = -2,
-        Slower= -4,
-        Slowest = -6
+        KindOfSlow = -1,
+        NotSoSlow = -2,
+        Slow = -3,
+        Slow4 = -4,
+        Slow5 = -5,
+        Slower= -6,
+        Slowish= -7,
+        Slowest = -8,
+        StillSlow = -9,
+        TooSlow = -10
     }
-    //public enum AudioLanguage :uint
-    //{
-    //    enUS = 0x0409,
-    //    enGB = 0x0809
-    //   /* DanishAnne,
-    //    DanishSara,
-    //    DanishCarsten,
-    //    Arabic,
-    //    ArabicEnglish,
-    //    Belgium,
-    //    NetherlandsFemale,
-    //    NetherlandsMale,
-    //    French,
-    //    German,
-    //    Greek,
-    //    HungarianFemale,
-    //    HungarianMale,
-    //    IslandicFemale,
-    //    IslandicMale,
-    //    Lituanian,
-    //    Lativian,
-    //    Polish,
-    //    Portuguese,
-    //    Romanian,
-    //    Russian,
-    //    Slovenian,
-    //    SpanishCatalan,
-    //    SpanishLatinAmerica*/
-    //}
-
+    public enum VoicePropriety : int
+    {
+        Male = 1,
+        Female = 2,
+        Older = 3,
+        Younger = 4,
+        Bilingual = 5,
+        Cantonese = 6,
+        Mandarin = 7,
+        Taiwanese = 8,
+        Castilian = 9,
+        LatinAmerican = 10,
+        Anne = 11,
+        None = 0
+    }
     public enum AudioFormat :int
     {
         Mp3 =1,

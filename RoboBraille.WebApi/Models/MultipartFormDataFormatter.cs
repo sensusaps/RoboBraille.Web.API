@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using iTextSharp.text;
 using RoboBraille.WebApi.ABBYY;
+using System.Collections.Generic;
 
 
 
@@ -67,7 +68,6 @@ namespace RoboBraille.WebApi.Models
             var tempStorage = Path.GetTempPath();
             var tempStorageProvider = new MultipartFormDataStreamProvider(tempStorage);
             var msp = await content.ReadAsMultipartAsync(tempStorageProvider);
-
             Job job = null;
 
             if (type == typeof(AccessibleConversionJob))
@@ -95,6 +95,17 @@ namespace RoboBraille.WebApi.Models
                     SpeedOptions = (AudioSpeed)Enum.Parse(typeof(AudioSpeed), msp.FormData["speedoptions"]),
                     FormatOptions = (AudioFormat)Enum.Parse(typeof(AudioFormat), msp.FormData["formatoptions"])
                 };
+                if (msp.FormData.AllKeys.Contains("voicepropriety"))
+                {
+                    string[] props = msp.FormData["voicepropriety"].Split(':');
+                    List<VoicePropriety> propList = new List<VoicePropriety>();
+                    foreach (string prop in props)
+                    {
+                        propList.Add((VoicePropriety)Enum.Parse(typeof(VoicePropriety), prop));
+                    }
+                    ((AudioJob)job).VoicePropriety = propList;
+                }
+                else ((AudioJob)job).VoicePropriety = new List<VoicePropriety>() { VoicePropriety.None };
             }
             else if (type == typeof(BrailleJob))
             {
@@ -136,7 +147,7 @@ namespace RoboBraille.WebApi.Models
             {
                 job = new HTMLtoPDFJob
                 {
-                    size = (PaperSize)Enum.Parse(typeof(PaperSize), msp.FormData["size"])
+                    paperSize = (PaperSize)Enum.Parse(typeof(PaperSize), msp.FormData["size"])
                 };
             }
             else if (type == typeof(MSOfficeJob))
@@ -168,10 +179,27 @@ namespace RoboBraille.WebApi.Models
                 job.FileExtension = fileName.Substring(fileName.LastIndexOf(".")+1);
                 job.MimeType = msp.FileData[0].Headers.ContentType.MediaType;
             }
-            else return null;
+            else {
+                //1) check if a guid is present and exists in the database. 2) get the byte content from the database and use it in the new job
+                Guid previousJobId = Guid.Parse(msp.FormData["guid"]);
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                Job previousJob = rbp.CheckForJobInDatabase(previousJobId);
+                if (previousJob != null)
+                {
+                    job.FileContent = previousJob.ResultContent;
+                    job.FileName = previousJob.FileName;
+                    job.FileExtension = previousJob.ResultFileExtension;
+                    job.MimeType = previousJob.ResultMimeType;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            job.InputFileHash = RoboBrailleProcessor.GetInputFileHash(job.FileContent);
             job.Status = JobStatus.Started;
             job.SubmitTime = DateTime.UtcNow.Date;
-
             return job;
         }
     }

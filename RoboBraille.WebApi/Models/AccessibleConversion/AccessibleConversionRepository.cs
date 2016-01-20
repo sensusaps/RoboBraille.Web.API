@@ -57,6 +57,7 @@ namespace RoboBraille.WebApi.Models
             }
 
             // send the job to OCR server
+            // send the job to OCR server
             var task = Task.Factory.StartNew(j =>
             {
                 var job = (AccessibleConversionJob)j;
@@ -300,11 +301,91 @@ namespace RoboBraille.WebApi.Models
                     SetOCRTaskFaulted(job);
                     return;
                 }
+                string mime;
+                string fileExtension = ".txt";
+                switch (fileformat)
+                {
+                    case OutputFileFormatEnum.OFF_PDF:
+                        mime = "application/pdf";
+                        fileExtension = ".pdf";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_PDFA:
+                        mime = "application/pdf";
+                        fileExtension = ".pdf";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_RTF:
+                        mime = "text/rtf";
+                        fileExtension = ".rtf";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_Text:
+                        mime = "text/plain";
+                        fileExtension = ".txt";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_MSWord:
+                        mime = "application/msword";
+                        fileExtension = ".doc";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_HTML:
+                        mime = "text/html";
+                        fileExtension = ".html";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_CSV:
+                        mime = "text/csv";
+                        fileExtension = ".csv";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_DOCX:
+                        mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                        fileExtension = ".docx";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_EPUB:
+                        mime = "application/epub+zip";
+                        fileExtension = ".epub";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_MSExcel:
+                        mime = "application/vnd.ms-excel";
+                        fileExtension = ".xls";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_XLSX:
+                        mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        fileExtension = ".xlsx";
+                        break;
+
+                    case OutputFileFormatEnum.OFF_XML:
+                        mime = "application/xml";
+                        fileExtension = ".xml";
+                        break;
+                    case OutputFileFormatEnum.OFF_JPG:
+                        mime = "image/jpeg";
+                        fileExtension = ".jpg";
+                        break;
+                    case OutputFileFormatEnum.OFF_TIFF:
+                        mime = "image/tiff";
+                        fileExtension = ".tiff";
+                        break;
+
+                    default:
+                        mime = "text/plain";
+                        fileExtension = ".txt";
+                        break;
+                }
 
                 using (var context = new RoboBrailleDataContext())
                 {
                     try
                     {
+                        job.DownloadCounter = 0;
+                        job.ResultFileExtension = fileExtension;
+                        job.ResultMimeType = mime;
                         job.ResultContent = contents;
                         job.Status = JobStatus.Done;
                         context.Jobs.Attach(job);
@@ -346,93 +427,15 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = (AccessibleConversionJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
-                var fileformat = (OutputFileFormatEnum)job.TargetDocumentFormat;
-
-                string mime;
-                string fileName = job.FileName;
-                switch (fileformat)
-                {
-                    case OutputFileFormatEnum.OFF_PDF:
-                        mime = "application/pdf";
-                        fileName += ".pdf";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_PDFA:
-                        mime = "application/pdf";
-                        fileName += ".pdf";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_RTF:
-                        mime = "text/rtf";
-                        fileName += ".rtf";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_Text:
-                        mime = "text/plain";
-                        fileName += ".txt";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_MSWord:
-                        mime = "application/msword";
-                        fileName += ".doc";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_HTML:
-                        mime = "text/html";
-                        fileName += ".html";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_CSV:
-                        mime = "text/csv";
-                        fileName += ".csv";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_DOCX:
-                        mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                        fileName += ".docx";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_EPUB:
-                        mime = "application/epub+zip";
-                        fileName += ".epub";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_MSExcel:
-                        mime = "application/vnd.ms-excel";
-                        fileName += ".xls";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_XLSX:
-                        mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        fileName += ".xlsx";
-                        break;
-
-                    case OutputFileFormatEnum.OFF_XML:
-                        mime = "application/xml";
-                        fileName += ".xml";
-                        break;
-                    case OutputFileFormatEnum.OFF_JPG:
-                        mime = "image/jpeg";
-                        fileName += ".jpg";
-                        break;
-                    case OutputFileFormatEnum.OFF_TIFF:
-                        mime = "image/tiff";
-                        fileName += ".tiff";
-                        break;
-
-                    default:
-                        mime = "text/plain";
-                        break;
-                }
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
                 try
                 {
-                    result = new FileResult(job.ResultContent, mime, fileName);
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
                 }
                 catch (Exception)
                 {

@@ -1,10 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 
-namespace RoboBraille.WebApi.Models
+namespace AudioAgent
 {
+    public enum VoicePropriety : int
+    {
+        Male = 1,
+        Female = 2,
+        Older = 3,
+        Younger = 4,
+        Bilingual = 5,
+        Cantonese = 6,
+        Mandarin = 7,
+        Taiwanese = 8,
+        Castilian = 9,
+        LatinAmerican = 10,
+        Anne = 11,
+        None = 0
+    }
     public enum Language : uint
     {
         enUEB = 0x1,

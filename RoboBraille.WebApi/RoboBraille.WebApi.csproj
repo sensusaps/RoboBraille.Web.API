@@ -75,7 +75,7 @@
       <HintPath>..\packages\itextsharp.xmlworker.5.5.5\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="MarkupConverter">
-      <HintPath>..\..\..\Converting between RTF and HTML\C#\MarkupConverter\bin\Release\MarkupConverter.dll</HintPath>
+      <HintPath>..\Libs\MarkupConverter.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
@@ -106,7 +106,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenXmlPowerTools">
-      <HintPath>..\..\..\PowerTools\Open-Xml-PowerTools\OpenXmlPowerTools\bin\Release\OpenXmlPowerTools.dll</HintPath>
+      <HintPath>..\Libs\OpenXmlPowerTools.dll</HintPath>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -630,17 +630,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201511031159177_RBJobDB.cs" />
-    <Compile Include="Migrations\201511031159177_RBJobDB.Designer.cs">
-      <DependentUpon>201511031159177_RBJobDB.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Migrations\201601081129386_RBJobDB.cs" />
+    <Compile Include="Migrations\201601081129386_RBJobDB.Designer.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionOptions.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionRepository.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionJob.cs" />
     <Compile Include="Models\Audio\AudioJob.cs" />
     <Compile Include="Models\Audio\AudioJobRepository.cs" />
+    <Compile Include="Models\Audio\AudioJobSender.cs" />
     <Compile Include="Models\Audio\AudioOptions.cs" />
+    <Compile Include="Models\Audio\AudioReplyQueue.cs" />
     <Compile Include="Models\Braille\BrailleJob.cs" />
     <Compile Include="Models\Braille\BrailleJobRepository.cs" />
     <Compile Include="Models\Braille\BrailleOptions.cs" />
@@ -676,8 +676,10 @@
     <Compile Include="Models\MSOfficeConversion\RtfHTMLProcessor.cs" />
     <Compile Include="Models\MSOfficeConversion\WordTable.cs" />
     <Compile Include="Models\MultipartFormDataFormatter.cs" />
-    <Compile Include="Models\RoboBrailleTextProcessor.cs" />
     <Compile Include="Models\RoboBrailleDataContext.cs" />
+    <Compile Include="Models\RoboBrailleJob\IRoboBrailleJobRepository.cs" />
+    <Compile Include="Models\RoboBrailleJob\RoboBrailleJobRepository.cs" />
+    <Compile Include="Models\RoboBrailleProcessor.cs" />
     <Compile Include="Models\Sample\GenericJob.cs" />
     <Compile Include="Models\Sample\GenericJobOptions.cs" />
     <Compile Include="Models\Sample\GenericJobRepository.cs" />
@@ -708,9 +710,7 @@
     <WCFMetadataStorage Include="Service References\ABBYY\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201511031159177_RBJobDB.resx">
-      <DependentUpon>201511031159177_RBJobDB.cs</DependentUpon>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601081129386_RBJobDB.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

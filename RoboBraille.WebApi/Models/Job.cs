@@ -65,16 +65,29 @@ namespace RoboBraille.WebApi.Models
         public byte[] FileContent { get; set; }
 
         [JsonIgnore]
-        public byte[] ResultContent { get; set; }
-
+        public byte[] InputFileHash { get; set; }
 
         [JsonIgnore]
+        public byte[] ResultContent { get; set; }
+        
+        [JsonIgnore]
         public virtual ServiceUser User { get; set; }
+
+        //added 03.12.2015
+        [JsonIgnore]
+        public int DownloadCounter { get; set; }
+        
+        [JsonIgnore]
+        public string ResultFileExtension { get; set; }
+
+        [JsonIgnore]
+        public string ResultMimeType { get; set; }
 
         public Job()
         {
             SubmitTime = DateTime.UtcNow;
             FinishTime = DateTime.UtcNow;
+            DownloadCounter = 0;
         }
     }
 }

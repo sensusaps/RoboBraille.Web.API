@@ -63,8 +63,8 @@ namespace RoboBraille.WebApi.Models
                             case Language.nnNO:
                             case Language.isIS:
                             case Language.svSE:
-                                //strBraille = this.SensusBrailleConvert(job);
-                                //break;
+                            //strBraille = this.SensusBrailleConvert(job);
+                            //break;
                             default:
                                 strBraille = this.LouisBrailleConvert(job);
                                 break;
@@ -72,15 +72,35 @@ namespace RoboBraille.WebApi.Models
 
                     if (strBraille != null)
                     {
-                        strBraille = RoboBrailleTextProcessor.FormatBraille(strBraille, job);
+                        strBraille = RoboBrailleProcessor.FormatBraille(strBraille, job);
                         job.ResultContent = Encoding.UTF8.GetBytes(strBraille);
                     }
                     else
                     {
                         this.SetBrailleTaskFaulted(job);
                     }
+                    string fileExtension = ".txt";
+                    string mime = "text/plain";
+                    string fileName = job.FileName;
+                    var outputFormat = (OutputFormat)job.OutputFormat;
+
+                    switch (outputFormat)
+                    {
+                        case OutputFormat.Pef:
+                            mime = "application/x-pef";
+                            fileExtension = ".pef";
+                            break;
+                        default:
+                            fileExtension = ".txt";
+                            mime = "text/plain";
+                            break;
+
+                    }
                     using (var context = new RoboBrailleDataContext())
                     {
+                        job.DownloadCounter = 0;
+                        job.ResultFileExtension = fileExtension;
+                        job.MimeType = mime;
                         job.Status = JobStatus.Done;
                         job.FinishTime = DateTime.UtcNow.Date;
                         context.Entry(job).State = EntityState.Modified;
@@ -118,10 +138,10 @@ namespace RoboBraille.WebApi.Models
 
         private string DecodeBrailleString(BrailleJob job)
         {
-            Encoding enc = RoboBrailleTextProcessor.GetEncoding(job.FileContent);
+            Encoding enc = RoboBrailleProcessor.GetEncoding(job.FileContent);
             if (enc.Equals(Encoding.ASCII))
-                enc = RoboBrailleTextProcessor.GetEncodingByCountryCode(job.BrailleLanguage);
-           return enc.GetString(job.FileContent);
+                enc = RoboBrailleProcessor.GetEncodingByCountryCode(job.BrailleLanguage);
+            return enc.GetString(job.FileContent);
         }
 
         private string LouisBrailleConvert(BrailleJob job)
@@ -197,23 +217,19 @@ namespace RoboBraille.WebApi.Models
 
             using (var context = new RoboBrailleDataContext())
             {
-
-                var job = (BrailleJob)context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-
+                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
+                rbp.UpdateDownloadCounterInDb(job.Id);
                 FileResult result = null;
-                var outputFormat = (OutputFormat)job.OutputFormat;
-
-                switch (outputFormat)
+                try
                 {
-                    case OutputFormat.Pef:
-                        result = new FileResult(job.ResultContent, "application/x-pef",job.FileName+".pef");
-                        break;
-                    default:
-                        result = new FileResult(job.ResultContent, "text/plain",job.FileName+".txt");
-                        break;
-
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+                }
+                catch (Exception)
+                {
+                    // ignored
                 }
                 return result;
             }
