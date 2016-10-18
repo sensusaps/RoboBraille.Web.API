@@ -38,12 +38,12 @@ Otherwise inaccessible documents such as image files in gif, tiff, jpg, bmp, pcx
 V2 is the latest release and changes may occur, functionality may be added or removed, and the installation guide will be improved after more use of the application, and better feedback.
 
 V2 Changes:
-*improved testing, by adding dependency injection to Controller and Repository classes
-*new features:
-    **added frameworks for uploading videos to Amara and downloading subtitles
-    **added templates for Document Structure Recognition, Document Accessibility Checking and Language to Language Translation
-*improved efficiency of conversions
-*added more information to the database
+-improved testing, by adding dependency injection to Controller and Repository classes
+-new features:
+    --added frameworks for uploading videos to Amara and downloading subtitles
+    --added templates for Document Structure Recognition, Document Accessibility Checking and Language to Language Translation
+-improved efficiency of conversions
+-added more information to the database
 
 ## Beta V1
 
@@ -143,7 +143,7 @@ For any questions regarding the implementation and development of the solution p
 You can help improve the RoboBraille Web Api by making a donation to RoboBraille. We appreciate your support.http://robobraille.org/donate.
 
 # License
-Copyright 2015 Sensus ApS (http://www.sensus.dk/)
+Copyright 2016 Sensus ApS (http://www.sensus.dk/)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
