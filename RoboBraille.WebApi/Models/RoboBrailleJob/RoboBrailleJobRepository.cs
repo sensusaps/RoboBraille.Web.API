@@ -10,6 +10,7 @@ namespace RoboBraille.WebApi.Models
 {
     public class RoboBrailleJobRepository : IRoboBrailleJobRepository<Job>
     {
+        private RoboBrailleDataContext _context;
         public int GetWorkStatus(Guid jobId)
         {
             if (jobId.Equals(Guid.Empty))
@@ -33,8 +34,7 @@ namespace RoboBraille.WebApi.Models
                 var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                rbp.UpdateDownloadCounterInDb(job.Id);
+                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
                 FileResult result = null;
                 try
                 {

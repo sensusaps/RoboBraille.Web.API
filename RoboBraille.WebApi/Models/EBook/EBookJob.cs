@@ -8,7 +8,9 @@ namespace RoboBraille.WebApi.Models
 {
     public class EBookJob : Job
     {
-        public EBookJob() {
+        public EBookJob()
+        {
+            DownloadCounter = 0;
             SubmitTime = DateTime.UtcNow;
             FinishTime = DateTime.UtcNow;
         }

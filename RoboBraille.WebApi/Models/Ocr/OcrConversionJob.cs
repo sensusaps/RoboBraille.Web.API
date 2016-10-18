@@ -13,12 +13,20 @@ namespace RoboBraille.WebApi.Models
         
         public OcrConversionJob()
         {
-
+            Init();
         }
 
         public OcrConversionJob(Language lang)
         {
+            Init();
             this.OcrLanguage = lang;
+        }
+
+        private void Init()
+        {
+            DownloadCounter = 0;
+            SubmitTime = DateTime.UtcNow;
+            FinishTime = DateTime.UtcNow;
         }
     }
 }

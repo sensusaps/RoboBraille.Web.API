@@ -5,11 +5,11 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using RoboBraille.WebApi.Models;
 using System.Collections.Generic;
+using System.Net.Http;
 
 
 namespace RoboBraille.WebApi.Controllers
 {
-    //[Authorize]
     public class AccessibleConversionController : ApiController
     {
         private readonly IRoboBrailleJob<AccessibleConversionJob> _repository;
@@ -33,24 +33,28 @@ namespace RoboBraille.WebApi.Controllers
             return AccessibleConversionRepository.GetDestinationFormats();
         }
 
-        [AllowAnonymous]
-        [Route("api/accessibleconversion")]
-        public string GetMessage()
-        {
-            string user = string.IsNullOrWhiteSpace(User.Identity.Name) ? "Anonymous" : User.Identity.Name;
-            return string.Concat("RoboBraille Service User", " - ", user);
-        }
-
         /// <summary>
         /// POST accessible conversion job
         /// </summary>
         /// <param name="job">Accessible conversion job object</param>
         /// <returns>GUID jobid</returns>
-        
+
+        [Authorize]
         [Route("api/accessibleconversion")]
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(AccessibleConversionJob job)
         {
+            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+            job.UserId = userId;
+            if (RoboBrailleProcessor.IsSameJobProcessing(job,_repository.GetDataContext()))
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
+                    ReasonPhrase = "Job already processing"
+                };
+                throw new HttpResponseException(resp);
+            }
             Guid jobId = await _repository.SubmitWorkItem(job);
             return Ok(jobId.ToString("D"));
         }

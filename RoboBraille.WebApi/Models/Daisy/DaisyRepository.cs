@@ -13,23 +13,37 @@ namespace RoboBraille.WebApi.Models
 {
     public class DaisyRepository : IRoboBrailleJob<DaisyJob>
     {
+        private RoboBrailleDataContext _context;
+        private IDaisyRpcCall _daisyCall;
+
+        public DaisyRepository()
+        {
+            _context = new RoboBrailleDataContext();
+            _daisyCall = new DaisyRpcCall();
+        }
+
+        public DaisyRepository(RoboBrailleDataContext context, IDaisyRpcCall daisyCall)
+        {
+            _context = context;
+            _daisyCall = daisyCall;
+        }
         public System.Threading.Tasks.Task<Guid> SubmitWorkItem(DaisyJob job)
         {
             if (job == null)
                 return null;
 
             // TODO : REMOVE and use authenticated user id
-            Guid uid;
-            Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-            job.UserId = uid;
+            //Guid uid;
+            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+            //job.UserId = uid;
 
             try
             {
-                using (var context = new RoboBrailleDataContext())
-                {
-                    context.Jobs.Add(job);
-                    context.SaveChanges();
-                }
+                //using (var context = new RoboBrailleDataContext())
+                //{
+                    _context.Jobs.Add(job);
+                    _context.SaveChanges();
+                //}
             }
             catch (DbEntityValidationException ex)
             {
@@ -43,13 +57,13 @@ namespace RoboBraille.WebApi.Models
                 try
                 {
                     byte[] res = null;
-                    using (DaisyRpcCall drp = new DaisyRpcCall())
-                    {
-                        res = drp.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
-                    }
+                    //using (DaisyRpcCall drp = new DaisyRpcCall())
+                    //{
+                        res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
+                    //}
                     //DaisyPipelineConverter dpc = new DaisyPipelineConverter(job.Id.ToString());
                     //res = dpc.ManageDaisyConversion(job.FileContent,DaisyOutput.Epub3WMO.Equals(job.DaisyOutput));
-                    if (res != null)
+                    if (res != null && res.Length>0)
                         job.ResultContent = res;
                     else success = false;
 
@@ -61,14 +75,14 @@ namespace RoboBraille.WebApi.Models
                         mime = "application/epub+zip";
                         fileExtension = ".epub";
                     }
-                    using (var context = new RoboBrailleDataContext())
-                    {
+                    //using (var context = new RoboBrailleDataContext())
+                    //{
                         if (!success)
                         {
                             job.Status = JobStatus.Error;
                             job.FinishTime = DateTime.UtcNow.Date;
-                            context.Entry(job).State = EntityState.Modified;
-                            context.SaveChanges();
+                            _context.Entry(job).State = EntityState.Modified;
+                            _context.SaveChanges();
                         }
                         else
                         {
@@ -77,15 +91,15 @@ namespace RoboBraille.WebApi.Models
                             job.DownloadCounter = 0;
                             job.Status = JobStatus.Done;
                             job.FinishTime = DateTime.UtcNow.Date;
-                            context.Entry(job).State = EntityState.Modified;
-                            context.SaveChanges();
+                            _context.Entry(job).State = EntityState.Modified;
+                            _context.SaveChanges();
                         }
-                    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
-                    RoboBrailleProcessor.SetJobFaulted(job);
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
                 }
             }, job);
 
@@ -97,12 +111,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            }
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -111,13 +125,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                rbp.UpdateDownloadCounterInDb(job.Id);
+                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
                 FileResult result = null;
                 try
                 {
@@ -128,7 +141,13 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
-            }
+            //}
+        }
+
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            return _context;
         }
     }
 }

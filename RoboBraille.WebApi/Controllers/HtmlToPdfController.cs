@@ -30,10 +30,22 @@ namespace RoboBraille.WebApi.Controllers
         /// </summary>
         /// <param name="job">The HTMLtoPDFJob class parameter</param>
         /// <returns>A unique job ID</returns>
+        [Authorize]
         [Route("api/htmltopdf")]
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(HTMLtoPDFJob job)
         {
+            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+            job.UserId = userId;
+            if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
+                    ReasonPhrase = "Job already processing"
+                };
+                throw new HttpResponseException(resp);
+            }
             Guid jobId = await _repository.SubmitWorkItem(job);
             return Ok(jobId.ToString("D"));
         }

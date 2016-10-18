@@ -18,6 +18,21 @@ namespace RoboBraille.WebApi.Models
 {
     public class AudioJobRepository : IRoboBrailleJob<AudioJob>
     {
+
+        private RoboBrailleDataContext _context;
+        private IAudioJobSender _auSender;
+
+        public AudioJobRepository()
+        {
+            _context = new RoboBrailleDataContext();
+            _auSender = new AudioJobSender();
+        }
+
+        public AudioJobRepository(RoboBrailleDataContext context, IAudioJobSender auSender)
+        {
+            _context = context;
+            _auSender = auSender;
+        }
         public static List<string> GetInstalledLangs()
         {
             List<string> result = new List<string>();
@@ -36,18 +51,11 @@ namespace RoboBraille.WebApi.Models
                 return null;
 
             //optionally here you can check for voices and convert to audio without the use of rabbitmq, if the voices are installed on the same server
-            try
-            {
-                // TODO : REMOVE and use authenticated user id
-                //Guid uid;
-                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                //job.UserId = uid;
-                using (var context = new RoboBrailleDataContext())
-                {
+
                     try
                     {
-                        context.Jobs.Add(job);
-                        context.SaveChanges();
+                        _context.Jobs.Add(job);
+                        _context.SaveChanges();
                     }
                     catch (DbEntityValidationException dbEx)
                     {
@@ -59,14 +67,8 @@ namespace RoboBraille.WebApi.Models
                             }
                         }
                     }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
+                
+            
             var task = Task.Factory.StartNew(t =>
             {
                 AudioJob auJob = (AudioJob)t;
@@ -74,7 +76,7 @@ namespace RoboBraille.WebApi.Models
                 {
                     //here do the conversion to audio or
                     //send job to rabbitmq cluster
-                    byte[] result = AudioJobSender.SendAudioJobToQueue(auJob);
+                    byte[] result = (new AudioJobSender()).SendAudioJobToQueue(auJob);
 
                     //get file from the source where it was converted.
                     string outputPath = Encoding.UTF8.GetString(result);
@@ -91,7 +93,7 @@ namespace RoboBraille.WebApi.Models
 
                     if (result == null)
                     {
-                        RoboBrailleProcessor.SetJobFaulted(auJob);
+                        RoboBrailleProcessor.SetJobFaulted(auJob,_context);
                         return;
                     }
                     else auJob.ResultContent = result;
@@ -100,7 +102,7 @@ namespace RoboBraille.WebApi.Models
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
-                    RoboBrailleProcessor.SetJobFaulted(auJob);
+                    RoboBrailleProcessor.SetJobFaulted(auJob,_context);
                     return;
                 }
 
@@ -137,17 +139,15 @@ namespace RoboBraille.WebApi.Models
                 }
                 try
                 {
-                    using (var context = new RoboBrailleDataContext())
-                    {
                         auJob.DownloadCounter = 0;
                         auJob.ResultFileExtension = fileExtension;
                         auJob.ResultMimeType = mime;
                         auJob.FinishTime = DateTime.UtcNow;
                         auJob.Status = JobStatus.Done;
-                        context.Jobs.Attach(auJob);
-                        context.Entry(auJob).State = EntityState.Modified;
-                        context.SaveChanges();
-                    }
+                        _context.Jobs.Attach(auJob);
+                        _context.Entry(auJob).State = EntityState.Modified;
+                        _context.SaveChanges();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -163,17 +163,18 @@ namespace RoboBraille.WebApi.Models
 
         }
 
+
         public int GetWorkStatus(Guid jobId)
         {
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            }
+            //using (var context = new RoboBrailleDataContext())
+            //{
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -182,24 +183,28 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
+            //using (var context = new RoboBrailleDataContext())
+            //{
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
             {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                rbp.UpdateDownloadCounterInDb(job.Id);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
             }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
+            //}
+        }
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            return _context;
         }
     }
 }

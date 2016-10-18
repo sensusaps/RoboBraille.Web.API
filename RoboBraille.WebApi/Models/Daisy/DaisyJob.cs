@@ -11,7 +11,9 @@ namespace RoboBraille.WebApi.Models
 
         public DaisyJob()
         {
-
+            DownloadCounter = 0;
+            SubmitTime = DateTime.UtcNow;
+            FinishTime = DateTime.UtcNow;
         }
     }
 }

@@ -18,6 +18,7 @@ RoboBraille offers five different categories of services:
 * Daisy conversion services
 * E-book services
 * Accessibility services
+
 ## Braille services
 Transcription of documents to and from contracted and uncontracted Braille in accordance with the Braille codes for Bulgarian, Danish, British English, American English, French, German, Greek, Hungarian, Icelandic, Italian, Norwegian, Portuguese, Romanian, Slovenian and Spanish. The documents can furthermore be formatted and paginated, and delivered as ready-to-emboss files in a variety of digital Braille formats.
 
@@ -32,9 +33,22 @@ Otherwise inaccessible documents such as image files in gif, tiff, jpg, bmp, pcx
 
 # Versioning
 
+## Beta V2
+
+V2 is the latest release and changes may occur, functionality may be added or removed, and the installation guide will be improved after more use of the application, and better feedback.
+
+V2 Changes:
+*improved testing, by adding dependency injection to Controller and Repository classes
+*new features:
+    **added frameworks for uploading videos to Amara and downloading subtitles
+    **added templates for Document Structure Recognition, Document Accessibility Checking and Language to Language Translation
+*improved efficiency of conversions
+*added more information to the database
+
 ## Beta V1
 
-The current version is still an Beta release and changes may occur, functionality may be added or removed, and the installation guide will be improved after more use of the application.
+V1 was the original public Beta release.
+
 # Installation
 
 ## Prerequisites

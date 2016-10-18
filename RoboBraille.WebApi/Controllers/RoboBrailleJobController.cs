@@ -10,40 +10,28 @@ using System.Web.Http.Description;
 
 namespace RoboBraille.WebApi.Controllers
 {
-    public class DaisyConversionController : ApiController
-    {
-         private readonly IRoboBrailleJob<DaisyJob> _repository;
+    //[Authorize]
+    public class RoboBrailleJobController : ApiController
+    {  
+            private readonly IRoboBrailleJobRepository<Job> _repository;
 
-        public DaisyConversionController()
+        public RoboBrailleJobController()
         {
-            _repository = new DaisyRepository();
+            _repository = new RoboBrailleJobRepository();
         }
 
-        public DaisyConversionController(IRoboBrailleJob<DaisyJob> repository)
+        public RoboBrailleJobController(IRoboBrailleJobRepository<Job> repository)
         {
             _repository = repository;
         }
 
         /// <summary>
-        /// POST a new DaisyJob.
-        /// </summary>
-        /// <param name="job">The DaisyJob class parameter</param>
-        /// <returns>A unique job ID</returns>
-        [Route("api/daisy")]
-        [ResponseType(typeof(string))]
-        public async Task<IHttpActionResult> Post(DaisyJob job)
-        {
-            Guid jobId = await _repository.SubmitWorkItem(job);
-            return Ok(jobId.ToString("D"));
-        }
-
-        /// <summary>
-        /// GET daisy job status
+        /// GET audio job status
         /// </summary>
         /// <param name="jobId">The GUID job ID</param>
         /// <returns>A status code representing the job's state</returns>
-        [Route("api/daisy/getstatus")]
-        [ResponseType(typeof(string))]
+        [Route("api/robobraillejob/getstatus")]
+        [ResponseType(typeof (string))]
         public Task<string> GetJobStatus([FromUri] Guid jobId)
         {
             int status = _repository.GetWorkStatus(jobId);
@@ -55,8 +43,9 @@ namespace RoboBraille.WebApi.Controllers
         /// </summary>
         /// <param name="jobId">The GUID job ID</param>
         /// <returns>The file result</returns>
-        [Route("api/daisy/getresult")]
-        [ResponseType(typeof(FileResult))]
+        [AllowAnonymous]
+        [Route("api/robobraillejob/getresult")]
+        [ResponseType(typeof (FileResult))]
         public Task<IHttpActionResult> GetJobResult([FromUri] Guid jobId)
         {
             var fr = _repository.GetResultContents(jobId);
@@ -64,6 +53,14 @@ namespace RoboBraille.WebApi.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
 
             return Task.FromResult<IHttpActionResult>(fr);
+        }
+
+        [AllowAnonymous]
+        [Route("api/robobraillejob")]
+        public string GetMessage()
+        {
+            string user = string.IsNullOrWhiteSpace(User.Identity.Name) ? "Anonymous" : User.Identity.Name;
+            return string.Concat("RoboBraille Service User", " - ", user);
         }
     }
 }

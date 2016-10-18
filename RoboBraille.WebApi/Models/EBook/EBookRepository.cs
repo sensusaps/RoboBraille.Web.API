@@ -16,6 +16,16 @@ namespace RoboBraille.WebApi.Models
     public class EBookRepository : IRoboBrailleJob<EBookJob>
     {
         private readonly string calibre = ConfigurationSettings.AppSettings["CalibrePath"];
+        private RoboBrailleDataContext _context;
+
+        public EBookRepository()
+        {
+            _context = new RoboBrailleDataContext();
+        }
+        public EBookRepository(RoboBrailleDataContext roboBrailleDataContext)
+        {
+            _context = roboBrailleDataContext;
+        }
         public Task<Guid> SubmitWorkItem(EBookJob job)
         {
             string outputFormat = ".epub";
@@ -23,8 +33,9 @@ namespace RoboBraille.WebApi.Models
             if (job == null)
                 return null;
 
-            
-            switch (job.EbookFormat) { 
+
+            switch (job.EbookFormat)
+            {
                 case EbookFormat.epub:
                     outputFormat = ".epub";
                     break;
@@ -40,16 +51,16 @@ namespace RoboBraille.WebApi.Models
             try
             {
                 // TODO : REMOVE and use authenticated user id
-                Guid uid;
-                Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                job.UserId = uid;
+                //Guid uid;
+                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+                //job.UserId = uid;
 
-                using (var context = new RoboBrailleDataContext())
-                {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     try
                     {
-                        context.Jobs.Add(job);
-                        context.SaveChanges();
+                        _context.Jobs.Add(job);
+                        _context.SaveChanges();
                     }
                     catch (DbEntityValidationException dbEx)
                     {
@@ -62,7 +73,7 @@ namespace RoboBraille.WebApi.Models
                         }
                     }
 
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -122,19 +133,19 @@ namespace RoboBraille.WebApi.Models
                                 break;
                         }
 
-                        using (var context = new RoboBrailleDataContext())
-                        {
+                        //using (var context = new RoboBrailleDataContext())
+                        //{
                             ebJob.ResultContent = File.ReadAllBytes(tempfile + outputFormat);
                             ebJob.DownloadCounter = 0;
                             ebJob.ResultMimeType = mime;
                             ebJob.ResultFileExtension = fileExtension;
                             ebJob.Status = JobStatus.Done;
-                            context.Jobs.Attach(ebJob);
-                            context.Entry(job).State = EntityState.Modified;
-                            context.SaveChanges();
+                            _context.Jobs.Attach(ebJob);
+                            _context.Entry(job).State = EntityState.Modified;
+                            _context.SaveChanges();
                             File.Delete(tempfile + ".pdf");
                             File.Delete(tempfile + outputFormat);
-                        }
+                        //}
                     }
                     catch (Exception ex)
                     {
@@ -159,12 +170,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            }
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -174,13 +185,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                rbp.UpdateDownloadCounterInDb(job.Id);
+                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
                 FileResult result = null;
                 try
                 {
@@ -191,7 +201,13 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
-            }
+            //}
+        }
+
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            return _context;
         }
     }
 }

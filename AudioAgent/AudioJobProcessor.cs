@@ -205,6 +205,7 @@ namespace AudioAgent
                     File.Delete(outputFile);
                 //start put result on WEBSERVER2 file system
                 string toSend = @"\\WEBSERVERPATH\Temp\"+fileName;
+                //string toSend = @"C:\RoboBrailleWebApi\Temp" + fileName;
                 File.WriteAllBytes(toSend, result);
                 byte[] pathResult = Encoding.UTF8.GetBytes(toSend);
                 //stop

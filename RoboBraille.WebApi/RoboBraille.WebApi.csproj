@@ -619,7 +619,7 @@
     <Compile Include="Controllers\AudioController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\DaisyConversionController.cs" />
+    <Compile Include="Controllers\DaisyController.cs" />
     <Compile Include="Controllers\EBookController.cs" />
     <Compile Include="Controllers\GenericController.cs" />
     <Compile Include="Controllers\HtmlToPdfController.cs" />
@@ -627,6 +627,9 @@
     <Compile Include="Controllers\MSOfficeConversionController.cs" />
     <Compile Include="Controllers\OcrConversionController.cs" />
     <Compile Include="Controllers\BrailleController.cs" />
+    <Compile Include="Controllers\RoboBrailleJobController.cs" />
+    <Compile Include="Controllers\TranslationController.cs" />
+    <Compile Include="Controllers\VideoConversionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -641,6 +644,7 @@
     <Compile Include="Models\Audio\AudioJobSender.cs" />
     <Compile Include="Models\Audio\AudioOptions.cs" />
     <Compile Include="Models\Audio\AudioReplyQueue.cs" />
+    <Compile Include="Models\Audio\IAudioJobSender.cs" />
     <Compile Include="Models\Braille\BrailleJob.cs" />
     <Compile Include="Models\Braille\BrailleJobRepository.cs" />
     <Compile Include="Models\Braille\BrailleOptions.cs" />
@@ -649,6 +653,10 @@
     <Compile Include="Models\Daisy\DaisyPipelineConverter.cs" />
     <Compile Include="Models\Daisy\DaisyRepository.cs" />
     <Compile Include="Models\Daisy\DaisyRpcCall.cs" />
+    <Compile Include="Models\Daisy\IDaisyRpcCall.cs" />
+    <Compile Include="Models\DocumentAccessibility\DacChecker.cs" />
+    <Compile Include="Models\DocumentAccessibility\DacReport.cs" />
+    <Compile Include="Models\DocumentAccessibility\DacReportProcessor.cs" />
     <Compile Include="Models\EBook\EBookConversionOptions.cs" />
     <Compile Include="Models\EBook\EBookJob.cs" />
     <Compile Include="Models\EBook\EBookRepository.cs" />
@@ -668,6 +676,9 @@
     <Compile Include="Models\JobStatus.cs" />
     <Compile Include="Models\Braille\LouisFacade.cs" />
     <Compile Include="Models\Braille\LouisWrapper.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationJob.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationOptions.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationRepository.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeJob.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeOptions.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeRepository.cs" />
@@ -680,6 +691,9 @@
     <Compile Include="Models\RoboBrailleJob\IRoboBrailleJobRepository.cs" />
     <Compile Include="Models\RoboBrailleJob\RoboBrailleJobRepository.cs" />
     <Compile Include="Models\RoboBrailleProcessor.cs" />
+    <Compile Include="Models\RoboVideo\VideoConversionRepository.cs" />
+    <Compile Include="Models\RoboVideo\VideoJob.cs" />
+    <Compile Include="Models\RoboVideo\VideoJobProcessor.cs" />
     <Compile Include="Models\Sample\GenericJob.cs" />
     <Compile Include="Models\Sample\GenericJobOptions.cs" />
     <Compile Include="Models\Sample\GenericJobRepository.cs" />
@@ -719,12 +733,25 @@
   <ItemGroup>
     <Folder Include="bin\x64\" />
     <Folder Include="bin\x86\" />
+    <Folder Include="Models\DocumentStructureRecognition\" />
     <Folder Include="Views\testtest\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AmaraVideoClient\AmaraVideoClient.csproj">
+      <Project>{cce5537e-cd65-4ce5-88e7-ea6eacf56f18}</Project>
+      <Name>AmaraVideoClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DocumentStructureRecognition\DocumentStructureRecognition.csproj">
+      <Project>{961fb6b2-25ee-485f-a1ac-d88cdf69b964}</Project>
+      <Name>DocumentStructureRecognition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OfficeToPdf\OfficeToPDF.csproj">
       <Project>{13f3bab7-27ff-4391-a0fa-b56e84a12a20}</Project>
       <Name>OfficeToPDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TranslationService\TranslationService.csproj">
+      <Project>{39dd5cf0-0138-48ce-a544-43bde93c789a}</Project>
+      <Name>TranslationService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

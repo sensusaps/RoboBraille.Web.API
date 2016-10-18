@@ -17,7 +17,7 @@ namespace RoboBraille.WebApi.Models
     public class OfficePresentationProcessor
     {
         private static string FileDirectory = ConfigurationManager.AppSettings.Get("FileDirectory");
-        public static string ConvertPptx(string source, MSOfficeOutput msOut,string guid) {
+        public string ProcessDocument(string source, MSOfficeOutput msOut,string guid) {
             string result = null;
             Application app = new Application();
             var pres = app.Presentations.Open(source, MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoFalse);
@@ -32,16 +32,25 @@ namespace RoboBraille.WebApi.Models
                 catch {
 
                 }
-            }
+            } else
             if (msOut.Equals(MSOfficeOutput.rtf))
             {
                 pres.SaveCopyAs(FileDirectory + @"Temp\" + guid + ".rtf", PpSaveAsFileType.ppSaveAsRTF, MsoTriState.msoCTrue);
                 result = File.ReadAllText(FileDirectory + @"Temp\" + guid + ".rtf",Encoding.UTF8);
                 File.Delete(FileDirectory + @"Temp\" + guid + ".rtf");
-            }
+            } else
+                if (msOut.Equals(MSOfficeOutput.txt))
+                {
+                    string text ="";
+                    foreach (KeyValuePair<int, string> val in ExtractText(source))
+                    {
+                        text = text + val.Value + Environment.NewLine;
+                    }
+                    result = text;
+                }
             return result;
         }
-        public Dictionary<int, string> ProcessPresentationText(string source)
+        private static Dictionary<int, string> ExtractText(string source)
         {
             Dictionary<int, string> TextContent = new Dictionary<int, string>();
             int index = 1;
@@ -63,7 +72,8 @@ namespace RoboBraille.WebApi.Models
 
                     // Get the inner text of the slide:
                     IEnumerable<A.Text> texts = slide.Slide.Descendants<A.Text>();
-
+                    var videos = slide.Slide.Descendants<Video>();
+                    var videos2 = slide.Slide.CommonSlideData.ShapeTree.Descendants<DocumentFormat.OpenXml.Drawing.VideoFromFile>();
                     foreach (A.Text text in texts)
                     {
                         if (text.Text.Length > 1)

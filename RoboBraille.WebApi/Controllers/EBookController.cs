@@ -10,6 +10,7 @@ using System.Web.Http.Description;
 
 namespace RoboBraille.WebApi.Controllers
 {
+    [Authorize]
     public class EBookController : ApiController
     {
         private readonly IRoboBrailleJob<EBookJob> _repository;
@@ -29,10 +30,22 @@ namespace RoboBraille.WebApi.Controllers
         /// </summary>
         /// <param name="job">The EBookJob class parameter</param>
         /// <returns>A unique job ID</returns>
+        [Authorize]
         [Route("api/ebook")]
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(EBookJob job)
         {
+            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+            job.UserId = userId;
+            if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
+                    ReasonPhrase = "Job already processing"
+                };
+                throw new HttpResponseException(resp);
+            }
             Guid jobId = await _repository.SubmitWorkItem(job);
             return Ok(jobId.ToString("D"));
         }

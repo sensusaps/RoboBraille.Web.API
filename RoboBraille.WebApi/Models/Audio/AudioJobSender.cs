@@ -17,7 +17,7 @@ namespace RoboBraille.WebApi.Models
     /// Example: audio.enUS.none.none or audio.daDK.female.sara
     ///          daisy.dtbook.none or daisy.epub3.none
     /// </summary>
-    public class AudioJobSender //: IDisposable
+    public class AudioJobSender : IAudioJobSender
     {
       
 
@@ -26,7 +26,7 @@ namespace RoboBraille.WebApi.Models
          
         }
 
-        public static byte[] SendAudioJobToQueue(AudioJob auJob)
+        public byte[] SendAudioJobToQueue(AudioJob auJob)
         {
             AudioReplyQueue rq = new AudioReplyQueue();
             var props = rq.Start(auJob.Id.ToString());
@@ -43,16 +43,15 @@ namespace RoboBraille.WebApi.Models
             props.Headers.Add("inputLanguage",(int) auJob.AudioLanguage);
             props.Headers.Add("voiceSpeed", (int) auJob.SpeedOptions);
             props.Headers.Add("format", (int) auJob.FormatOptions);
-            AudioJobSender c = new AudioJobSender();
-            string key = c.GetRoutingKey(auJob);
-            Thread pubTrhead = new Thread(() => c.PublishToTopicConsumer(props,auJob.FileContent,key));
+            string key = GetRoutingKey(auJob);
+            Thread pubTrhead = new Thread(() => PublishToTopicConsumer(props,auJob.FileContent,key));
             pubTrhead.Start();
             //c.PublishToTopicConsumer(props, auJob.FileContent, key);
             byte[] response = rq.getReply();
             return response;
         }
 
-        public void PublishToTopicConsumer(IBasicProperties props, byte[] messageBody, string routingKey)
+        public static void PublishToTopicConsumer(IBasicProperties props, byte[] messageBody, string routingKey)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
@@ -69,7 +68,7 @@ namespace RoboBraille.WebApi.Models
             }
         }
 
-        private string GetRoutingKey(AudioJob auJob)
+        private static string GetRoutingKey(AudioJob auJob)
         {
             var routingKey = "audio.";
             switch (auJob.AudioLanguage)

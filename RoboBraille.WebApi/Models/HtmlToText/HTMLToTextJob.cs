@@ -7,5 +7,11 @@ namespace RoboBraille.WebApi.Models
 {
     public class HTMLToTextJob : Job
     {
+        public HTMLToTextJob()
+        {
+            SubmitTime = DateTime.UtcNow;
+            FinishTime = DateTime.UtcNow;
+            DownloadCounter = 0;
+        }
     }
 }

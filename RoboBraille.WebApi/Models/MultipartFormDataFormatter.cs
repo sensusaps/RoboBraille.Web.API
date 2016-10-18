@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using iTextSharp.text;
 using RoboBraille.WebApi.ABBYY;
 using System.Collections.Generic;
+using System.Text;
+using System.Net;
+using RoboBraille.WebApi.Models.LanguageTranslation;
 
 
 
@@ -39,7 +42,9 @@ namespace RoboBraille.WebApi.Models
                 type == typeof(DaisyJob) ||
                 type == typeof(MSOfficeJob) ||
                 type == typeof(BrailleJob) ||
-                type == typeof(HTMLToTextJob))
+                type == typeof(HTMLToTextJob) ||
+                type == typeof(RoboVideo.VideoJob) ||
+                type == typeof(TranslationJob))
             {
                 return true;
             }
@@ -168,39 +173,103 @@ namespace RoboBraille.WebApi.Models
             {
                 job = new HTMLToTextJob();
             }
-            if (job == null)
-                return null;
-
-            if (msp.FileData.Count > 0)
+            else if (type == typeof(RoboVideo.VideoJob))
             {
-                job.FileContent = File.ReadAllBytes(msp.FileData[0].LocalFileName);
-                string fileName = msp.FileData[0].Headers.ContentDisposition.FileName.Replace("\"", "").ToString();
-                job.FileName = fileName.Substring(0, fileName.LastIndexOf("."));
-                job.FileExtension = fileName.Substring(fileName.LastIndexOf(".")+1);
-                job.MimeType = msp.FileData[0].Headers.ContentType.MediaType;
-            }
-            else {
-                //1) check if a guid is present and exists in the database. 2) get the byte content from the database and use it in the new job
-                Guid previousJobId = Guid.Parse(msp.FormData["guid"]);
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                Job previousJob = rbp.CheckForJobInDatabase(previousJobId);
-                if (previousJob != null)
+                job = new RoboVideo.VideoJob()
                 {
-                    job.FileContent = previousJob.ResultContent;
-                    job.FileName = previousJob.FileName;
-                    job.FileExtension = previousJob.ResultFileExtension;
-                    job.MimeType = previousJob.ResultMimeType;
+                    SubtitleLangauge = msp.FormData["language"],
+                    SubtitleFormat = msp.FormData["format"]
+                };
+                if (msp.FormData.AllKeys.Contains("videourl"))
+                {
+                    ((RoboVideo.VideoJob)job).VideoUrl = msp.FormData["videourl"];
+                }
+            }
+            else //if (type == typeof(TranslationJob))
+            {
+                job = new TranslationJob()
+                {
+                    SourceLanguage = msp.FormData["sourcelanguage"],
+                    TargetLanguage = msp.FormData["targetlanguage"]
+                };
+            }
+
+            if (job == null)
+            {
+                Console.WriteLine("cum pula mea");
+                return null;
+            }
+            else
+            {
+                if (msp.FileData.Count > 0)
+                {
+                    job.FileContent = File.ReadAllBytes(msp.FileData[0].LocalFileName);
+                    string fileName = msp.FileData[0].Headers.ContentDisposition.FileName.Replace("\"", "").ToString();
+                    job.FileName = fileName.Substring(0, fileName.LastIndexOf("."));
+                    job.FileExtension = fileName.Substring(fileName.LastIndexOf(".") + 1);
+                    job.MimeType = msp.FileData[0].Headers.ContentType.MediaType;
+                }
+                else if (msp.FormData["lastjobid"] != null)
+                {
+                    //1) check if a guid is present and exists in the database. 2) get the byte content from the database and use it in the new job
+                    Guid previousJobId = Guid.Parse(msp.FormData["lastjobid"]);
+                    RoboBrailleDataContext _context = new RoboBrailleDataContext();
+                    Job previousJob = RoboBrailleProcessor.CheckForJobInDatabase(previousJobId, _context);
+                    if (previousJob != null)
+                    {
+                        job.FileContent = previousJob.ResultContent;
+                        job.FileName = previousJob.FileName;
+                        job.FileExtension = previousJob.ResultFileExtension;
+                        job.MimeType = previousJob.ResultMimeType;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
-                }
-            }
+                    //if not assume it is a URL
+                    if (!String.IsNullOrWhiteSpace(msp.FormData["FileContent"]))
+                    {
+                        string sorh = msp.FormData["FileContent"];
+                        Uri uriResult;
+                        bool result = Uri.TryCreate(sorh, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                        if (result)
+                        {
+                            var webRequest = WebRequest.Create(uriResult);
 
-            job.InputFileHash = RoboBrailleProcessor.GetInputFileHash(job.FileContent);
-            job.Status = JobStatus.Started;
-            job.SubmitTime = DateTime.UtcNow.Date;
-            return job;
+                            using (var response = webRequest.GetResponse())
+                            using (var httpcontent = response.GetResponseStream())
+                            using (var reader = new StreamReader(httpcontent))
+                            {
+                                job.FileContent = Encoding.UTF8.GetBytes(reader.ReadToEnd());
+                                job.FileName = DateTime.Now.Ticks + "-RoboFile";
+                                job.FileExtension = ".html";
+                                job.MimeType = "text/html";
+                            }
+                        }
+                        else //else it must be a file
+                        {
+                            job.FileContent = Encoding.UTF8.GetBytes(sorh);
+                            job.FileName = DateTime.Now.Ticks + "-RoboFile";
+                            job.FileExtension = ".txt";
+                            job.MimeType = "text/plain";
+                        }
+                    }
+                    else
+                    {
+                        //it's a video job
+                    }
+                }
+                if (type != typeof(RoboVideo.VideoJob))
+                {
+                    job.InputFileHash = RoboBrailleProcessor.GetInputFileHash(job.FileContent);
+                }
+                job.Status = JobStatus.Started;
+                job.SubmitTime = DateTime.UtcNow.Date;
+                return job;
+            }
         }
     }
 }

@@ -26,5 +26,6 @@ namespace RoboBraille.WebApi.Models
         /// <returns>An integer representing the status.</returns>
         int GetWorkStatus(Guid guid);
         FileResult GetResultContents(Guid guid);
+        RoboBrailleDataContext GetDataContext();
     }
 }

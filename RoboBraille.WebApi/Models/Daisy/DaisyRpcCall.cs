@@ -7,7 +7,7 @@ using System.Web;
 
 namespace RoboBraille.WebApi.Models
 {
-    public class DaisyRpcCall : IDisposable
+    public class DaisyRpcCall : IDisposable, IDaisyRpcCall
     {
         private IConnection connection;
         private IModel channel;
@@ -52,7 +52,7 @@ namespace RoboBraille.WebApi.Models
             }
         }
         /// <summary>
-        /// Must be called in order to close the connection once the result has been recieved.
+        /// Must be called in order to close the connection once the result has been received.
         /// </summary>
         public void Dispose()
         {

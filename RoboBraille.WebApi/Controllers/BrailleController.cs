@@ -35,15 +35,34 @@ namespace RoboBraille.WebApi.Controllers
             return LouisFacade.GetTranslationTables();
         }
 
+        [AllowAnonymous]
+        [Route("api/braille/getcontractions")]
+        public IEnumerable<string> GetContractions()
+        {
+            return Enum.GetNames(typeof(BrailleContraction));
+        }
+
         /// <summary>
         /// POST a new BrailleJob.
         /// </summary>
         /// <param name="job">The BrailleJob class parameter</param>
         /// <returns>A unique job ID</returns>
+        [Authorize]
         [Route("api/braille")]
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(BrailleJob job)
         {
+            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+            job.UserId = userId;
+            if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                {
+                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
+                    ReasonPhrase = "Job already processing"
+                };
+                throw new HttpResponseException(resp);
+            }
             Guid jobId = await _repository.SubmitWorkItem(job);
             return Ok(jobId.ToString("D"));
         }

@@ -28,19 +28,40 @@ namespace RoboBraille.WebApi.Models
         private static readonly string TempImageFolder = FileDirectory + @"Images\";
 
         //result lists based on types mapped according to the PlaceholderID
-        private Dictionary<string, string> PlainTextList = new Dictionary<string, string>();
-        private Dictionary<string, string> MathList = new Dictionary<string, string>();
-        private Dictionary<string, WordTable> TableList = new Dictionary<string, WordTable>();
-        private Dictionary<string, string> ImageList = new Dictionary<string, string>();
+        private static Dictionary<string, string> PlainTextList = new Dictionary<string, string>();
+        private static Dictionary<string, string> MathList = new Dictionary<string, string>();
+        private static Dictionary<string, WordTable> TableList = new Dictionary<string, WordTable>();
+        private static Dictionary<string, string> ImageList = new Dictionary<string, string>();
 
         //sorted list of the placeholders for the actual content according to the real document structure
         private List<String> PlaceholderIDList = new List<String>();
 
         //indexes for used for creating the placeholder ids
-        private int tableIndex, mathIndex, textIndex, imageIndex;
+        private static int tableIndex, mathIndex, textIndex, imageIndex;
 
         //A string builder for creating the text parts when iterating through the document
-        private StringBuilder textBuilder = new StringBuilder();
+        private static StringBuilder textBuilder = new StringBuilder();
+
+        public string ProcessDocument(string sourceFilePath)
+        {
+            ProcessWordDocument(sourceFilePath);
+            Dictionary<string, Object> result = GetProcessedDocument();
+            string text = null;
+            foreach (KeyValuePair<string, Object> val in result)
+            {
+                switch (val.Key.Substring(0, 4))
+                {
+                    case "MATH":
+                    case "IMAG":
+                    case "TABL":
+                        break;
+                    default:
+                        text = text + val.Value + Environment.NewLine;
+                        break;
+                }
+            }
+            return text;
+        }
 
         public Dictionary<string, Object> GetProcessedDocument()
         {
@@ -143,7 +164,7 @@ namespace RoboBraille.WebApi.Models
                         formula.Remove();
                         if (mmlFormula != null)
                         {
-                            this.MathList.Add(IDplaceholder, mmlFormula);
+                            MathList.Add(IDplaceholder, mmlFormula);
                         }
 
                     }
@@ -165,9 +186,22 @@ namespace RoboBraille.WebApi.Models
                     run.AppendChild(new Text(IDplaceholder));
                     imageIndex++;
                     ImageList.Add(IDplaceholder, imagePath);
-                    
                 }
+                try
+                {
+                    foreach (var video in doc.MainDocumentPart.Document.Descendants<DocumentFormat.OpenXml.Drawing.VideoFromFile>())
+                    {
+                        string localName = video.LocalName;
+                        string innerXml = video.InnerXml;
+                    }
+                    foreach (var video in doc.MainDocumentPart.EmbeddedObjectParts)
+                    {
+                        string vct = video.ContentType;
+                    }
+                } catch
+                {
 
+                }
                 foreach (var element in doc.MainDocumentPart.Document.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
                 {
                     try
@@ -213,7 +247,7 @@ namespace RoboBraille.WebApi.Models
         }
 
         //used by the method above
-        private List<String> ExtractTextAndCreatePlaceholderList(WordprocessingDocument package)
+        private static List<String> ExtractTextAndCreatePlaceholderList(WordprocessingDocument package)
         {
             OpenXmlElement docBody = package.MainDocumentPart.Document.Body;
             if (docBody == null)
@@ -224,7 +258,7 @@ namespace RoboBraille.WebApi.Models
         }
 
         //used by the method above
-        private List<String> ExtractTextFromWordDocument(OpenXmlElement element)
+        private static List<String> ExtractTextFromWordDocument(OpenXmlElement element)
         {
             List<String> DocumentStructureList = new List<String>();
             foreach (OpenXmlElement section in element.Elements())
@@ -286,7 +320,7 @@ namespace RoboBraille.WebApi.Models
         /// Gets the text from the stringbuilder and initializes it with a new string builder, used in the method ExtractTextFromWordDocument
         /// </summary>
         /// <returns></returns>
-        private string AddTextToTextList()
+        private static string AddTextToTextList()
         {
             string ret = null;
             string src = textBuilder.ToString();
@@ -433,7 +467,7 @@ namespace RoboBraille.WebApi.Models
         /// </summary>
         /// <param name="documentPath"></param>
         /// <returns></returns>
-        public static string DocWithListsToXML(string documentPath)
+        private static string DocWithListsToXML(string documentPath)
         {
             using (WordprocessingDocument wDoc = WordprocessingDocument.Open(documentPath, false))
             {

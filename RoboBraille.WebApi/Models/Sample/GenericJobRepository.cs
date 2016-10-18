@@ -14,17 +14,12 @@ namespace RoboBraille.WebApi.Models.Sample
 {
     public class GenericJobRepository : IRoboBrailleJob<GenericJob>
     {
-
+        private RoboBrailleDataContext _context;
         public System.Threading.Tasks.Task<Guid> SubmitWorkItem(GenericJob job)
         {
             if (job == null)
                 return null;
-
-            // TODO : REMOVE and use authenticated user id
-            Guid uid;
-            Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-            job.UserId = uid;
-
+            
             try
             {
                 using (var context = new RoboBrailleDataContext())
@@ -116,10 +111,17 @@ namespace RoboBraille.WebApi.Models.Sample
                 /*
                  * TODO process the final output if necessary
                  * TODO define the best MIME type for your result content
+                 * TODO register that the job has been downloaded
                  */
                 result = new FileResult(job.ResultContent, "text/plain","SampleResponse.txt");
                 return result;
             }
+        }
+
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            throw new NotImplementedException();
         }
     }
 }

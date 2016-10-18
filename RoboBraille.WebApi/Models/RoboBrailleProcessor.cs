@@ -16,6 +16,19 @@ namespace RoboBraille.WebApi.Models
     /// </summary>
     public class RoboBrailleProcessor
     {
+        private static readonly Dictionary<int, char> SixDotNumberMapping = new Dictionary<int, char> {
+            {0, (char)0x281A},
+            {1, (char)0x2801},
+            {2, (char)0x2803},
+            {3, (char)0x2809},
+            {4, (char)0x2819},
+            {5, (char)0x2811},
+            {6, (char)0x280B},
+            {7, (char)0x281B},
+            {8, (char)0x2813},
+            {9, (char)0x280A},
+            {-1, (char)0x283C}
+    };
         public static byte[] GetInputFileHash(byte[] file)
         {
             using (var md5 = MD5.Create())
@@ -23,20 +36,20 @@ namespace RoboBraille.WebApi.Models
                 return md5.ComputeHash(file);
             }
         }
-        public static bool IsSameJobProcessing(Job job)
+        public static bool IsSameJobProcessing(Job job,RoboBrailleDataContext context)
         {
             byte[] fileHash = null;
             using (var md5 = MD5.Create())
             {
                 fileHash = md5.ComputeHash(job.FileContent);
             }
-            using (var context = new RoboBrailleDataContext())
-            {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 List<Job> sameJobs = (from j in context.Jobs where j.Status==JobStatus.Started && j.FileName==job.FileName && j.MimeType==job.MimeType && j.FileExtension==job.FileExtension && j.InputFileHash==fileHash select j).ToList();
                 if (sameJobs.Count > 0)
                     return true;
                 else return false;
-            }
+            //}
         }
 
         public static Guid getUserIdFromJob(string jobParameter)
@@ -50,12 +63,12 @@ namespace RoboBraille.WebApi.Models
             Guid.TryParse(userId, out resultGuid);
             return resultGuid;
         }
-        public void UpdateDownloadCounterInDb(Guid jobId)
+        public static void UpdateDownloadCounterInDb(Guid jobId,RoboBrailleDataContext context)
         {
             var task = Task.Factory.StartNew(j =>
             {
-                using (var context = new RoboBrailleDataContext())
-                {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     try
                     {
                         Job job = context.Jobs.Find(jobId);
@@ -72,13 +85,13 @@ namespace RoboBraille.WebApi.Models
                     {
                         // ignored
                     }
-                }
+                //}
             }, jobId);
         }
-        public Job CheckForJobInDatabase(Guid jobId)
+        public static Job CheckForJobInDatabase(Guid jobId,RoboBrailleDataContext context)
         {
-            using (var context = new RoboBrailleDataContext())
-            {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 try
                 {
                     Job existingJob = context.Jobs.Find(jobId);
@@ -93,12 +106,12 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                     return null;
                 }
-            }
+            //}
         }
-        public static void SetJobFaulted(Job job)
+        public static void SetJobFaulted(Job job,RoboBrailleDataContext context)
         {
-            using (var context = new RoboBrailleDataContext())
-            {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 try
                 {
                     job.Status = JobStatus.Error;
@@ -110,36 +123,7 @@ namespace RoboBraille.WebApi.Models
                 {
                     // ignored
                 }
-            }
-        }
-
-        private static readonly Dictionary<int, char> SixDotNumberMapping = new Dictionary<int, char> {
-            {0, (char)0x281A},
-            {1, (char)0x2801},
-            {2, (char)0x2803},
-            {3, (char)0x2809},
-            {4, (char)0x2819},
-            {5, (char)0x2811},
-            {6, (char)0x280B},
-            {7, (char)0x281B},
-            {8, (char)0x2813},
-            {9, (char)0x280A},
-            {-1, (char)0x283C}
-    };
-        /// <summary>
-        /// Tries to determine the basic Encoding of a text file byte array
-        /// </summary>
-        /// <param name="bom">the btye array of the text file</param>
-        /// <returns>The encoding object</returns>
-        public static Encoding GetEncoding(byte[] bom)
-        {
-            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
-            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
-            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
-            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
-            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
-            //extend for language and code page mapping 
-            return Encoding.ASCII;
+            //}
         }
 
         public static Encoding GetEncoding(byte[] bom, Language lang)
@@ -192,7 +176,7 @@ namespace RoboBraille.WebApi.Models
                     res = Encoding.GetEncoding(1257);
                     break;
                 default:
-                    res = Encoding.GetEncoding(1252);
+                    res = Encoding.ASCII;
                     break;
             }
             return res;
@@ -237,7 +221,7 @@ namespace RoboBraille.WebApi.Models
                         case OutputFormat.NACB:
                             {
                                 result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
-                                result = enc.GetString(RoboBrailleProcessor.ConvertUnicodetoNACB(result)).ToLowerInvariant();
+                                result = enc.GetString(RoboBrailleProcessor.ConvertUnicodeToNACB(result)).ToLowerInvariant();
                                 result = RoboBrailleProcessor.CreatePagination(result, cols);
                                 result = RoboBrailleProcessor.CreateNewLine(result, rows);
                                 break;
@@ -308,66 +292,52 @@ namespace RoboBraille.WebApi.Models
         /// <returns>The formatted text</returns>
         public static string CreatePagination(string source, int CharPerLine)
         {
-            string sourceCopy = source;
             try
             {
-                List<string> result = new List<string>();
-                if (!String.IsNullOrWhiteSpace(source) && CharPerLine > 10)
+                string result = "";
+                string[] words = source.Split(new char[] { ' ', '\u2800', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i <= words.Length - 1; i++)
                 {
-                    while (source.Length > CharPerLine)
+                    string oneLine = "";
+                    if (words[i].Length <= CharPerLine)
                     {
-                        if (source[CharPerLine].Equals('\u2800') || source[CharPerLine].Equals(' '))
+                        int lineLength = oneLine.Length + words[i].Length;
+                        while (lineLength <= CharPerLine)
                         {
-                            result.Add(source.Substring(0, CharPerLine) + Environment.NewLine);
-                            if (source.Length > CharPerLine + 1)
-                                source = source.Substring(CharPerLine + 1);
+                            oneLine += words[i] + " ";
+                            i++;
+                            if (i >= words.Length - 1)
+                            {
+                                i--;
+                                break;
+                            }
+                            lineLength = oneLine.Length + words[i].Length;
                         }
-                        else
+                        if (lineLength > CharPerLine)
                         {
-                            string line = source.Substring(0, CharPerLine);
-                            if (line.Contains(Environment.NewLine) || line.Contains("\r\n"))
-                            {
-                                int idx = line.IndexOf(Environment.NewLine);
-                                string[] lines = line.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                                result.Add(lines[0] + Environment.NewLine);
-                                if (source.Length > lines[0].Length)
-                                    source = source.Substring(lines[0].Length);
-                                if (source.Length > CharPerLine)
-                                    line = source.Substring(0, CharPerLine);
-                            }
-                            bool run = true;
-                            int i = CharPerLine - 1;
-                            while (run)
-                            {
-                                char c = line[i];
-                                if (c.Equals('\u2800') || c.Equals(' ') || c.Equals('\r') || c.Equals('\n'))
-                                {
-                                    result.Add(source.Substring(0, i) + Environment.NewLine);
-                                    if (source.Length > i + 1)
-                                        source = source.Substring(i + 1);
-                                    run = false;
-                                }
-                                i = i - 1;
-                            }
+                            i--;
                         }
                     }
-                    result.Add(source);
-                    string finalString = null;
-                    foreach (string s in result)
+                    else
                     {
-                        finalString += s;
+                        string longWord = words[i];
+                        while (longWord.Length > CharPerLine)
+                        {
+                            result += longWord.Substring(0, CharPerLine) + Environment.NewLine;
+                            longWord = longWord.Substring(CharPerLine + 1);
+                        }
                     }
-                    for (int i = 0; i <= 2; i++)
-                        finalString = finalString.Replace("\r\n\r\n\r\n", "\r\n\r\n");
-                    return finalString;
+                    oneLine = oneLine.Trim();
+                    result += oneLine + Environment.NewLine;
                 }
-                else return sourceCopy;
+                return result;
             }
             catch (Exception e)
             {
-                return sourceCopy;
+                return source;
             }
         }
+
         /// <summary>
         /// Creates a pef document
         /// </summary>
@@ -566,7 +536,7 @@ namespace RoboBraille.WebApi.Models
         /// </summary>
         /// <param name="source">Input text</param>
         /// <returns>a byte array with containing the converted text</returns>
-        public static byte[] ConvertUnicodetoNACB(string source)
+        public static byte[] ConvertUnicodeToNACB(string source)
         {
             byte[] nacbbraille = 
             {
@@ -589,21 +559,24 @@ namespace RoboBraille.WebApi.Models
             32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32//--> invalid mapppings outside of the 6 dot range
         };
 
-            byte[] bsource = Encoding.Unicode.GetBytes(source); //UTF-16 little eadian
-            byte[] data = new byte[bsource.Length / 2];
-            int k = 0;
-            for (int i = 0; i < bsource.Length; i = i + 2)
+            string result = null;
+            foreach (string s1 in source.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
             {
-                data[k] = bsource[i];
-                k++;
+                byte[] bsource = Encoding.Unicode.GetBytes(s1); //UTF-16 little eadian
+                byte[] data = new byte[bsource.Length / 2];
+                int k = 0;
+                for (int i = 0; i < bsource.Length; i = i + 2)
+                {
+                    data[k] = bsource[i];
+                    k++;
+                }
+                for (int i = 0; i < data.Length; i++)
+                {
+                    data[i] = nacbbraille[data[i]];
+                }
+                result += Encoding.GetEncoding(1252).GetString(data) + Environment.NewLine;
             }
-
-            //data now contains bytes with values between 0 and 255 but only range 0 to 63 can be converted to nacb
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = nacbbraille[data[i]];
-            }
-            return data;
+            return Encoding.GetEncoding(1252).GetBytes(result);
         }
 
         /// <summary>
@@ -611,7 +584,7 @@ namespace RoboBraille.WebApi.Models
         /// </summary>
         /// <param name="source">input string</param>
         /// <returns>byte array with unicode text</returns>
-        public static byte[] ConvertUnicodeToBraille(string source)
+        public static byte[] ConvertUnicodeToOctoBraille(string source2)
         {
             byte[] octobraille =
             {
@@ -642,19 +615,24 @@ namespace RoboBraille.WebApi.Models
             170, 30, 136, 204, 36, 218, 93, 26, 31, 193,
             28, 213, 137, 209, 125, 208, 159, 127 
             };
-            byte[] bsource = Encoding.Unicode.GetBytes(source); //UTF-16 little eadian
-            byte[] data = new byte[bsource.Length / 2];
-            int k = 0;
-            for (int i = 0; i < bsource.Length; i = i + 2)
+            string result = null;
+            foreach (string source in source2.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
             {
-                data[k] = bsource[i];
-                k++;
+                byte[] bsource = Encoding.Unicode.GetBytes(source); //UTF-16 little eadian
+                byte[] data = new byte[bsource.Length / 2];
+                int k = 0;
+                for (int i = 0; i < bsource.Length; i = i + 2)
+                {
+                    data[k] = bsource[i];
+                    k++;
+                }
+                for (int i = 0; i < data.Length; i++)
+                {
+                    data[i] = octobraille[data[i]];
+                }
+                result += Encoding.GetEncoding(1252).GetString(data) + Environment.NewLine;
             }
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = octobraille[data[i]];
-            }
-            return data;//Get the string from the data byte[] by using the country specific code page for encoding
+            return Encoding.GetEncoding(1252).GetBytes(result);
         }
 
         /// <summary>

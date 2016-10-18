@@ -9,54 +9,56 @@ using System.Web.Http;
 using RoboBraille.WebApi.ABBYY;
 using System.Data.Entity.Validation;
 using System.Text;
+using Newtonsoft.Json;
+using System.Xml;
+using System.IO;
+using System.Web.Script.Serialization;
+using System.Collections.Generic;
+using System.IO.Compression;
+using System.Configuration;
 
 namespace RoboBraille.WebApi.Models
 {
     public class AccessibleConversionRepository : IRoboBrailleJob<AccessibleConversionJob>
     {
+        private RoboBrailleDataContext _context;
+        //private RSSoapServiceSoapClient _wsClient;
+        public AccessibleConversionRepository()
+        {
+            _context = new RoboBrailleDataContext();
+            //_wsClient = new RSSoapServiceSoapClient();
+        }
+
+        public AccessibleConversionRepository(RoboBrailleDataContext context/*, RSSoapServiceSoapClient wsClient*/)
+        {
+            _context = context;
+            //_wsClient = (RSSoapServiceSoapClient)wsClient;
+        }
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            return _context;
+        }
         public static string[] GetDestinationFormats()
         {
             return Enum.GetNames(typeof(OutputFileFormatEnum));
         }
         public async Task<Guid> SubmitWorkItem(AccessibleConversionJob accessibleJob)
         {
-            using (var context = new RoboBrailleDataContext())
-            {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 try
                 {
-                    /*
-                    var serviceUser = await context.ServiceUsers.FirstOrDefaultAsync(e => e.UserName.Equals(User.Identity.Name));
-                    if (serviceUser != null)
-                    {
-                        acm.UserId = serviceUser.UserId;
-                    }
-                    else
-                    {
-                        throw new HttpResponseException(HttpStatusCode.Forbidden);
-                    }
-                    */
-                    // TODO : REMOVE
-                    Guid uid;
-                    Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                    accessibleJob.UserId = uid;
-
-                    context.Jobs.Add(accessibleJob);
-                    context.SaveChanges();
+                    _context.Jobs.Add(accessibleJob);
+                    _context.SaveChanges();
                 }
-                /*catch (Exception ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                    Trace.WriteLine(ex.InnerException);
-                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
-                }*/
                 catch (DbEntityValidationException ex)
                 {
                     string errorMessages = string.Join("; ", ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage));
                     throw new DbEntityValidationException(errorMessages);
                 }
-            }
+            //}
 
-            // send the job to OCR server
             // send the job to OCR server
             var task = Task.Factory.StartNew(j =>
             {
@@ -88,8 +90,8 @@ namespace RoboBraille.WebApi.Models
                 var infile = new InputFile { FileData = fileContainer };
 
                 var fileformat = (OutputFileFormatEnum)Enum.Parse(typeof(OutputFileFormatEnum), Convert.ToString(job.TargetDocumentFormat));
-                //var fileformat = (OutputFileFormatEnum) job.TargetDocumentFormat;
 
+                #region init ocr settings
                 OutputFormatSettings ofs;
 
                 switch (fileformat)
@@ -249,7 +251,12 @@ namespace RoboBraille.WebApi.Models
                             FileFormat = OutputFileFormatEnum.OFF_JPG
                         };
                         break;
-
+                    case OutputFileFormatEnum.OFF_InternalFormat:
+                        ofs = new InternalFormatSettings
+                        {
+                            FileFormat = OutputFileFormatEnum.OFF_InternalFormat
+                        };
+                        break;
                     default:
                         ofs = new TextExportSettings
                         {
@@ -258,6 +265,7 @@ namespace RoboBraille.WebApi.Models
                         };
                         break;
                 }
+                #endregion
 
                 var formatset = new[] { ofs };
                 var inputFiles = new[] { infile };
@@ -285,6 +293,7 @@ namespace RoboBraille.WebApi.Models
                 }
 
                 byte[] contents = null;
+                List<byte[]> contents2 = new List<byte[]>();
                 foreach (var ifile in result.InputFiles)
                 {
                     foreach (var odoc in ifile.OutputDocuments)
@@ -292,8 +301,27 @@ namespace RoboBraille.WebApi.Models
                         foreach (var ofile in odoc.Files)
                         {
                             contents = ofile.FileContents;
+                            if (ofs.FileFormat == OutputFileFormatEnum.OFF_InternalFormat)
+                            {
+                                contents2.Add(ofile.FileContents);
+                            }
                         }
                     }
+                }
+                if (ofs.FileFormat == OutputFileFormatEnum.OFF_InternalFormat)
+                {
+                    int i = 0;
+                    string filePath = ConfigurationManager.AppSettings.Get("FileDirectory") + @"Temp\" + job.Id;
+                    Directory.CreateDirectory(filePath);
+                    foreach (var f in contents2)
+                    {
+                        File.WriteAllBytes(filePath + @"\ocrData" + i, f);
+                        i++;
+                    }
+                    ZipFile.CreateFromDirectory(filePath, filePath + ".zip");
+                    contents = File.ReadAllBytes(filePath + ".zip");
+                    Directory.Delete(filePath);
+                    File.Delete(filePath + ".zip");
                 }
 
                 if (contents == null)
@@ -372,15 +400,18 @@ namespace RoboBraille.WebApi.Models
                         mime = "image/tiff";
                         fileExtension = ".tiff";
                         break;
-
+                    case OutputFileFormatEnum.OFF_InternalFormat:
+                        mime = "application/zip";
+                        fileExtension = ".zip";
+                        break;
                     default:
                         mime = "text/plain";
                         fileExtension = ".txt";
                         break;
                 }
 
-                using (var context = new RoboBrailleDataContext())
-                {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     try
                     {
                         job.DownloadCounter = 0;
@@ -388,15 +419,15 @@ namespace RoboBraille.WebApi.Models
                         job.ResultMimeType = mime;
                         job.ResultContent = contents;
                         job.Status = JobStatus.Done;
-                        context.Jobs.Attach(job);
-                        context.Entry(job).State = EntityState.Modified;
-                        context.SaveChanges();
+                        _context.Jobs.Attach(job);
+                        _context.Entry(job).State = EntityState.Modified;
+                        _context.SaveChanges();
                     }
                     catch (Exception)
                     {
                         SetOCRTaskFaulted(job);
                     }
-                }
+                //}
 
             }, accessibleJob);
 
@@ -411,12 +442,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            }
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -425,13 +456,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
-                RoboBrailleProcessor rbp = new RoboBrailleProcessor();
-                rbp.UpdateDownloadCounterInDb(job.Id);
+                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
                 FileResult result = null;
                 try
                 {
@@ -442,25 +472,25 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
-            }
+            //}
         }
 
         private void SetOCRTaskFaulted(AccessibleConversionJob job)
         {
-            using (var context = new RoboBrailleDataContext())
-            {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 try
                 {
                     job.Status = JobStatus.Error;
-                    context.Jobs.Attach(job);
-                    context.Entry(job).State = EntityState.Modified;
-                    context.SaveChanges();
+                    _context.Jobs.Attach(job);
+                    _context.Entry(job).State = EntityState.Modified;
+                    _context.SaveChanges();
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
-            }
+            //}
         }
     }
 }
