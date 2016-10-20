@@ -35,7 +35,7 @@ Otherwise inaccessible documents such as image files in gif, tiff, jpg, bmp, pcx
 
 ## Beta V2
 
-V2 is the latest release and changes may occur, functionality may be added or removed, and the installation guide will be improved after more use of the application, and better feedback.
+V2 is the latest release. The external REST API interface is stable and final. Changes may occur on the underlying functionality. Current input parameters will stay the same.
 
 V2 Changes:
 -improved testing, by adding dependency injection to Controller and Repository classes
@@ -48,6 +48,10 @@ V2 Changes:
 ## Beta V1
 
 V1 was the original public Beta release.
+
+# System Architecture
+
+The RESTful API is the entry point. Each of the above mentioned service is represented by its own API Controller, some to a finer granularity. The architecture is layered Controller->Repository->Component for each service. The Controller classes are responsible for quality. The repository classes in the models uses other classes in support of doing the actual work and saving the information to the database. The model classes use custom algorithms or underlying third party software components/web services to provide the necessary conversions.
 
 # Installation
 
