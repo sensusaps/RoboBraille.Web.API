@@ -137,14 +137,14 @@ The RoboBraille service was invented by Lars Ballieu Christensen and Svend Thoug
 The Web API solution is a reimplementation of the existing robobraille functionality as an open source project. Therefore not all components can be used out of the box, for some third party components (such as ABBY), licenses must be bought.
 
 # Acknowledgements
-The solution was developed at Sensus by a team of developers (Vlad Paul Cosma, Milad Ruben Soro and Saju Sathyan), led by Lars Ballieu Christensen. The solution has been tested by: Yannis Syrimpeis and Tsakou Gianna.
+The solution was developed at Sensus by a team of developers (Vlad Paul Cosma, Martin Utzon, Milad Ruben Soro and Saju Sathyan), led by Lars Ballieu Christensen. The solution has been tested by: Yannis Syrimpeis and Tsakou Gianna.
 For any questions regarding the implementation and development of the solution please send an email to: paul(at)sensus.dk.
 
 # Donate
 You can help improve the RoboBraille Web Api by making a donation to RoboBraille. We appreciate your support.http://robobraille.org/donate.
 
 # License
-Copyright 2016 Sensus ApS (http://www.sensus.dk/)
+Copyright 2017-2016 Sensus ApS (http://www.sensus.dk/)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
