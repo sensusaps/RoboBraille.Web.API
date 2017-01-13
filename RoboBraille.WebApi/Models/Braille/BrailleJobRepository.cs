@@ -35,11 +35,11 @@ namespace RoboBraille.WebApi.Models
         {
             if (job == null)
                 return null;
-            
+
             try
             {
-                    _context.Jobs.Add(job);
-                    _context.SaveChanges();
+                _context.Jobs.Add(job);
+                _context.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
@@ -49,7 +49,6 @@ namespace RoboBraille.WebApi.Models
 
             var task = Task.Factory.StartNew(t =>
             {
-                bool success = true;
                 try
                 {
                     string strBraille = null;
@@ -61,13 +60,13 @@ namespace RoboBraille.WebApi.Models
                         switch (job.BrailleLanguage)
                         {
                             case Language.daDK:
-                            case Language.enUS:
+                            //case Language.enUS:
                             case Language.enGB:
                             case Language.nnNO:
                             case Language.isIS:
                             case Language.svSE:
-                            //strBraille = this.SensusBrailleConvert(job);
-                            //break;
+                                //strBraille = this.SensusBrailleConvert(job);
+                                //break;
                             default:
                                 strBraille = this.LouisBrailleConvert(job);
                                 break;
@@ -76,11 +75,35 @@ namespace RoboBraille.WebApi.Models
                     if (strBraille != null)
                     {
                         strBraille = RoboBrailleProcessor.FormatBraille(strBraille, job);
-                        job.ResultContent = Encoding.UTF8.GetBytes(strBraille);
+                        Encoding enc = RoboBrailleProcessor.GetEncodingByCountryCode(job.BrailleLanguage);
+                        switch (job.OutputFormat)
+                        {
+                            case OutputFormat.Pef:
+                                {
+                                    job.ResultContent = Encoding.UTF8.GetBytes(strBraille);
+                                    break;
+                                }
+                            case OutputFormat.Unicode:
+                                {
+                                    job.ResultContent = Encoding.Unicode.GetBytes(strBraille);
+                                    break;
+                                }
+                            case OutputFormat.NACB:
+                                {
+                                    job.ResultContent = enc.GetBytes(strBraille);
+                                    break;
+                                }
+                            default:
+                                {
+                                    job.ResultContent = enc.GetBytes(strBraille);
+                                    break;
+                                }
+                        }
                     }
                     else
                     {
-                        this.SetBrailleTaskFaulted(job);
+                        RoboBrailleProcessor.SetJobFaulted(job, _context);
+                        throw new Exception("Braille conversion result is null!");
                     }
                     string fileExtension = ".txt";
                     string mime = "text/plain";
@@ -99,36 +122,19 @@ namespace RoboBraille.WebApi.Models
                             break;
 
                     }
-                    
-                        job.DownloadCounter = 0;
-                        job.ResultFileExtension = fileExtension;
-                        job.MimeType = mime;
-                        job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.UtcNow.Date;
-                        _context.Entry(job).State = EntityState.Modified;
-                        _context.SaveChanges();
-                    
+                    job.DownloadCounter = 0;
+                    job.ResultFileExtension = fileExtension;
+                    job.ResultMimeType = mime;
+                    job.Status = JobStatus.Done;
+                    job.FinishTime = DateTime.Now;
+                    _context.Entry(job).State = EntityState.Modified;
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    success = false;
                     Trace.WriteLine(ex.Message);
-                }
-
-                if (!success)
-                {
-                    try
-                    {
-                            job.Status = JobStatus.Error;
-                            job.FinishTime = DateTime.UtcNow.Date;
-                            _context.Entry(job).State = EntityState.Modified;
-                            _context.SaveChanges();
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex.Message);
-                    }
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    //throw ex;
                 }
 
             }, job);
@@ -139,11 +145,18 @@ namespace RoboBraille.WebApi.Models
         private string DecodeBrailleString(BrailleJob job)
         {
             Encoding enc = RoboBrailleProcessor.GetEncoding(job.FileContent, job.BrailleLanguage);
-            return enc.GetString(job.FileContent);
+            string res = enc.GetString(job.FileContent);
+            res = res.Replace('\t', ' ');
+            if (job.BrailleFormat.Equals(BrailleFormat.sixdot))
+            {
+                res = res.ToLowerInvariant();
+            }
+            return res;
         }
 
         private string LouisBrailleConvert(BrailleJob job)
         {
+            //1=‘noContractions’, 2=‘compbrlAtCursor’, 4=‘dotsIO’, 8=‘comp8Dots’, 16=‘pass1Only’, 32=‘compbrlLeftCursor’, 64=‘otherTrans’or 128=‘ucBrl’.
             //int[] translationModeValues = { 1, 2, 4, 8, 16, 32, 64, 128 };
             int mode = 0;
             if (job.BrailleFormat.Equals(BrailleFormat.eightdot))
@@ -157,7 +170,8 @@ namespace RoboBraille.WebApi.Models
             {
                 string louTable = null;
                 if (string.IsNullOrWhiteSpace(job.TranslationTable))
-                    louTable = louFacade.getTranslationTable(job.BrailleLanguage, job.Contraction,job.BrailleFormat);
+                    //12.01.2017 only grade1 conversions supported for liblouis for now
+                    louTable = louFacade.getGrade1TranslationTable(job.BrailleLanguage);//louFacade.getTranslationTable(job.BrailleLanguage, job.Contraction,job.BrailleFormat);
                 else louTable = job.TranslationTable;
                 if (job.ConversionPath.Equals(ConversionPath.brailletotext))
                 {
@@ -171,63 +185,48 @@ namespace RoboBraille.WebApi.Models
             return result;
         }
         //Uncomment this part for implementing Sensus Braille conversions with SB4
-        /*
-        private string SensusBrailleConvert(BrailleJob job)
-        {
-            string result = null;
-            try
-            {
-                string holder = Environment.CurrentDirectory;
-                Environment.CurrentDirectory = ConfigurationManager.AppSettings.Get("bindirectory");
-                SensusWrapper contractor = new SensusWrapper(job.Language, job.Contraction, job.BrailleFormat);
-                string str = DecodeBrailleString(job);
-                result = contractor.ConvertText(str);
-                Environment.CurrentDirectory = holder;
-            }
-            catch (Exception ex)
-            {
-                result = null;
-            }
-            return result;
-        }
-        */
-        private void SetBrailleTaskFaulted(BrailleJob job)
-        {
-                try
-                {
-                    job.Status = JobStatus.Error;
-                    _context.Jobs.Attach(job);
-                    _context.Entry(job).State = EntityState.Modified;
-                    _context.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            
-        }
+
+        //private string SensusBrailleConvert(BrailleJob job)
+        //{
+        //    string result = null;
+        //    //try
+        //    //{
+        //    string holder = Environment.CurrentDirectory;
+        //    Environment.CurrentDirectory = ConfigurationManager.AppSettings.Get("bindirectory");
+        //    SensusWrapper contractor = new SensusWrapper(job.BrailleLanguage, job.Contraction, job.BrailleFormat);
+        //    string str = DecodeBrailleString(job);
+        //    result = contractor.ConvertText(str);
+        //    Environment.CurrentDirectory = holder;
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    result = null;
+        //    //}
+        //    return result;
+        //}
+
         public FileResult GetResultContents(Guid jobId)
         {
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-            if (job == null || job.ResultContent == null)
-                return null;
-            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-            FileResult result = null;
-            try
+            using (var context = new RoboBrailleDataContext())
             {
-                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                if (job == null || job.ResultContent == null)
+                    return null;
+                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+                FileResult result = null;
+                try
+                {
+                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                return result;
             }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return result;
-            //}
         }
 
         public int GetWorkStatus(Guid jobId)
@@ -235,12 +234,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-            if (job != null)
-                return (int)job.Status;
-            //}
+            using (var context = new RoboBrailleDataContext())
+            {
+                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                if (job != null)
+                    return (int)job.Status;
+            }
             return (int)JobStatus.Error;
         }
 

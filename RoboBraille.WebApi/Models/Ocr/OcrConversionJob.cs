@@ -25,8 +25,8 @@ namespace RoboBraille.WebApi.Models
         private void Init()
         {
             DownloadCounter = 0;
-            SubmitTime = DateTime.UtcNow;
-            FinishTime = DateTime.UtcNow;
+            SubmitTime = DateTime.Now;
+            FinishTime = DateTime.Now;
         }
     }
 }

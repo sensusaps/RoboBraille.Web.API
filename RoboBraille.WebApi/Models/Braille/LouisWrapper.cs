@@ -10,7 +10,7 @@ namespace RoboBraille.WebApi.Models
 {
     public class LouisWrapper
     {
-        private static string inputString="";
+        private static string inputString = "";
 
         #region Public Methods
         public static unsafe String CallTranslateString(String source, String translationTables, int translationMode)
@@ -49,9 +49,9 @@ namespace RoboBraille.WebApi.Models
                 int code = LouisWrapper.lou_translateString(inputTables, inputString, ref inputLength, outBuffer, ref r_outputLength, null, null, mode);
                 if (code == 1)
                 {
-                    string uniString = Marshal.PtrToStringUni((IntPtr)outBuffer);
+                    string uniString = Marshal.PtrToStringAuto((IntPtr)outBuffer);
                     Marshal.FreeHGlobal((IntPtr)outBuffer);
-                    if (uniString.Length>r_outputLength)
+                    if (uniString.Length > r_outputLength)
                         uniString = uniString.Substring(0, r_outputLength);
                     return uniString;
                 }
@@ -59,8 +59,8 @@ namespace RoboBraille.WebApi.Models
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return null;
+                throw e;
+                //return null;
             }
         }
 
@@ -106,8 +106,9 @@ namespace RoboBraille.WebApi.Models
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return null;
+                //Console.WriteLine(e.Message);
+                //return null;
+                throw e;
             }
         }
 

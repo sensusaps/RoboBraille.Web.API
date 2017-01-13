@@ -47,7 +47,7 @@ namespace RoboBraille.WebApi.Models.Sample
                     using (var context = new RoboBrailleDataContext())
                     {
                         job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.UtcNow.Date;
+                        job.FinishTime = DateTime.Now;
                         context.Entry(job).State = EntityState.Modified;
                         context.SaveChanges();
                     }
@@ -65,7 +65,7 @@ namespace RoboBraille.WebApi.Models.Sample
                         using (var context = new RoboBrailleDataContext())
                         {
                             job.Status = JobStatus.Error;
-                            job.FinishTime = DateTime.UtcNow.Date;
+                            job.FinishTime = DateTime.UtcNow;
                             context.Entry(job).State = EntityState.Modified;
                             context.SaveChanges();
                         }

@@ -9,8 +9,8 @@ namespace RoboBraille.WebApi.Models
     {
         public HTMLToTextJob()
         {
-            SubmitTime = DateTime.UtcNow;
-            FinishTime = DateTime.UtcNow;
+            SubmitTime = DateTime.Now;
+            FinishTime = DateTime.Now;
             DownloadCounter = 0;
         }
     }

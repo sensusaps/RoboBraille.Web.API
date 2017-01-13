@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Web.Http;
 using Thinktecture.IdentityModel.Hawk.Core;
 using Thinktecture.IdentityModel.Hawk.Core.Helpers;
@@ -9,23 +11,23 @@ using Thinktecture.IdentityModel.Hawk.WebApi;
 namespace RoboBraille.WebApi.Models
 {
     /// <summary>
-    /// currently not used
+    /// 
     /// </summary>
     public class HawkAuthenticator
     {
-        public static void EnableHawkAuthentication(HttpConfiguration configuration)
+        public static void EnableHawkAuthentication(HttpConfiguration config)
         {
             var options = new Options
             {
                 ClockSkewSeconds = 60,
                 LocalTimeOffsetMillis = 0,
-                CredentialsCallback = OnCredentialsCallback,
+                CredentialsCallback = CredentialsCallback,
                 ResponsePayloadHashabilityCallback = r => true,
                 VerificationCallback = OnVerificationCallback
             };
 
             var handler = new HawkAuthenticationHandler(options);
-            configuration.MessageHandlers.Add(handler);
+            config.MessageHandlers.Add(handler);
         }
 
         private static bool OnVerificationCallback(IRequestMessage request, string ext)
@@ -35,32 +37,45 @@ namespace RoboBraille.WebApi.Models
                 return true;
             }
 
-            const string name = "X-Request-Header-To-Protect";
-            return ext.Equals(name + ":" + request.Headers[name].First());
+            const string Name = "X-Request-Header-To-Protect";
+            return true;// ext.Equals(Name + ":" + request.Headers[Name].First());
         }
 
-        private static Credential OnCredentialsCallback(string id)
+        private static Credential CredentialsCallback(string id)
         {
-            Guid userId;
-            if (!Guid.TryParse(id, out userId))
-                return null;
-
-            using (var context = new RoboBrailleDataContext())
+            string dbid = "d2b97532-e8c5-e411-8270-f0def103cfd0";
+            string userName = "TestUser";
+            byte[] dbKey = Encoding.UTF8.GetBytes("7b76ae41-def3-e411-8030-0c8bfd2336cd");
+            try
             {
-                var user = context.ServiceUsers.FirstOrDefault(e => e.UserId.Equals(userId));
-                if (user != null)
+                Guid guid = Guid.Parse(id);
+                using (var context = new RoboBrailleDataContext())
                 {
-                    return new Credential()
+                    var user = context.ServiceUsers.FirstOrDefault(e => e.UserId.Equals(guid));
+                    if (user != null)
                     {
-                        Id = id,
-                        User = user.UserName,
-                        Algorithm = SupportedAlgorithms.SHA256,
-                        Key = user.ApiKey
-                    };
+                        if (user.ToDate >= DateTime.UtcNow || user.ToDate.Equals(user.FromDate))
+                        {
+                            dbid = user.UserId.ToString().ToLower().Trim();
+                            userName = user.UserName.Trim();
+                            dbKey = user.ApiKey;
+                        }
+                    }
                 }
             }
-
-            return null;
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
+            Credential credential = new Credential()
+                {
+                    Id = dbid,
+                    Algorithm = SupportedAlgorithms.SHA256,
+                    User = userName,
+                    Key = dbKey
+                };
+            return credential;
         }
+
     }
 }

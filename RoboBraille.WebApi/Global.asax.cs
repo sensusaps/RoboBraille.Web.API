@@ -17,6 +17,7 @@ namespace RoboBraille.WebApi
     {
         protected void Application_Start()
         {
+            
             string pp = Assembly.GetExecutingAssembly().Location;
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);

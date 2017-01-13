@@ -19,7 +19,7 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                 string tempVideoName = vj.Id + vj.FileExtension;
                 string distPath = System.Web.HttpContext.Current.Server.MapPath("~") + "\\Dist\\" + tempVideoName;
                 File.WriteAllBytes(distPath, vj.FileContent);
-                string linkUrl = @"http://2.109.50.18:5150/Dist/" + tempVideoName;
+                string linkUrl = @"http://localhost:5150/Dist/" + tempVideoName;
                 return linkUrl;
             }
             catch (Exception e)

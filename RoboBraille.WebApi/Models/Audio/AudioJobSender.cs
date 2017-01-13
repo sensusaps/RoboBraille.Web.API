@@ -43,6 +43,7 @@ namespace RoboBraille.WebApi.Models
             props.Headers.Add("inputLanguage",(int) auJob.AudioLanguage);
             props.Headers.Add("voiceSpeed", (int) auJob.SpeedOptions);
             props.Headers.Add("format", (int) auJob.FormatOptions);
+            //AudioJobSender c = new AudioJobSender();
             string key = GetRoutingKey(auJob);
             Thread pubTrhead = new Thread(() => PublishToTopicConsumer(props,auJob.FileContent,key));
             pubTrhead.Start();
@@ -51,7 +52,7 @@ namespace RoboBraille.WebApi.Models
             return response;
         }
 
-        public static void PublishToTopicConsumer(IBasicProperties props, byte[] messageBody, string routingKey)
+        private static void PublishToTopicConsumer(IBasicProperties props, byte[] messageBody, string routingKey)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())

@@ -267,7 +267,7 @@ namespace RoboBraille.WebApi.Models
                     job.InputFileHash = RoboBrailleProcessor.GetInputFileHash(job.FileContent);
                 }
                 job.Status = JobStatus.Started;
-                job.SubmitTime = DateTime.UtcNow.Date;
+                job.SubmitTime = DateTime.Now;
                 return job;
             }
         }

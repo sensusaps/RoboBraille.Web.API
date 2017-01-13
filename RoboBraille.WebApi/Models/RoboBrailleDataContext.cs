@@ -8,8 +8,7 @@ namespace RoboBraille.WebApi.Models
     /// </summary>
     public class RoboBrailleDataContext : DbContext
     {
-        public RoboBrailleDataContext()
-            : base("RoboBrailleJobDB")
+        public RoboBrailleDataContext() : base("RoboBrailleJobDB")
         {
             try
             {
@@ -19,7 +18,9 @@ namespace RoboBraille.WebApi.Models
                 throw new Exception(e.Message + " - " + e.InnerException);
             }
         }
-        public DbSet<Job> Jobs { get; set; }
-        public DbSet<ServiceUser> ServiceUsers { get; set; }
+        //21.09.2016 added virtual
+        public virtual DbSet<Job> Jobs { get; set; }
+        public virtual DbSet<ServiceUser> ServiceUsers { get; set; }
     }
+
 }

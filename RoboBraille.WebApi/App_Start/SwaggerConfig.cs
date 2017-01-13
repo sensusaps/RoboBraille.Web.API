@@ -35,13 +35,13 @@ namespace RoboBraille.WebApi
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("Beta", "RoboBraille WebApi")
-                            .Description("Beta version notice : The interface to api is subject to change as new functionalities are being added and current ones are being refined.")
+                        c.SingleApiVersion("Realease 1.0", "RoboBraille WebApi")
+                            .Description("P4All - RoboBraille API using a RESTful Web Service")
                             .TermsOfService("Terms")
                             .Contact(cc => cc
                                 .Name("Sensus ApS")
                                 .Url("http://sensus.dk")
-                                .Email("paul@sensus.dk"))
+                                .Email("sensus@sensus.dk"))
                             .License(lc => lc
                                 .Name("License")
                                 .Url("https://github.com/sensusaps/RoboBraille.Web.API/blob/master/LICENSE"));

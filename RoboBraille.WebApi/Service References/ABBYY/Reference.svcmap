@@ -22,8 +22,8 @@
     <MetadataSource Address="http://127.0.0.1/Recognition3WS/RSSoapService.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="RSSoapService.disco" MetadataType="Disco" ID="2d3805ba-2cf4-4bf9-a5fc-d0f6eb6e4401" SourceId="1" SourceUrl="http://127.0.0.1/Recognition3WS/RSSoapService.asmx?disco" />
-    <MetadataFile FileName="RSSoapService.wsdl" MetadataType="Wsdl" ID="f5c27961-1243-4b92-aa29-73e3da88fe3d" SourceId="1" SourceUrl="http://127.0.0.1/Recognition3WS/RSSoapService.asmx?wsdl" />
+    <MetadataFile FileName="RSSoapService.disco" MetadataType="Disco" ID="2d3805ba-2cf4-4bf9-a5fc-d0f6eb6e4401" SourceId="1" SourceUrl="http://192.168.1.75/Recognition3WS/RSSoapService.asmx?disco" />
+    <MetadataFile FileName="RSSoapService.wsdl" MetadataType="Wsdl" ID="f5c27961-1243-4b92-aa29-73e3da88fe3d" SourceId="1" SourceUrl="http://192.168.1.75/Recognition3WS/RSSoapService.asmx?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

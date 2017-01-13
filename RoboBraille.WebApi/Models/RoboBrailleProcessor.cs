@@ -36,7 +36,7 @@ namespace RoboBraille.WebApi.Models
                 return md5.ComputeHash(file);
             }
         }
-        public static bool IsSameJobProcessing(Job job,RoboBrailleDataContext context)
+        public static bool IsSameJobProcessing(Job job, RoboBrailleDataContext context)
         {
             byte[] fileHash = null;
             using (var md5 = MD5.Create())
@@ -45,10 +45,10 @@ namespace RoboBraille.WebApi.Models
             }
             //using (var context = new RoboBrailleDataContext())
             //{
-                List<Job> sameJobs = (from j in context.Jobs where j.Status==JobStatus.Started && j.FileName==job.FileName && j.MimeType==job.MimeType && j.FileExtension==job.FileExtension && j.InputFileHash==fileHash select j).ToList();
-                if (sameJobs.Count > 0)
-                    return true;
-                else return false;
+            List<Job> sameJobs = (from j in context.Jobs where j.Status == JobStatus.Started && j.FileName == job.FileName && j.MimeType == job.MimeType && j.FileExtension == job.FileExtension && j.InputFileHash == fileHash select j).ToList();
+            if (sameJobs.Count > 0)
+                return true;
+            else return false;
             //}
         }
 
@@ -63,66 +63,67 @@ namespace RoboBraille.WebApi.Models
             Guid.TryParse(userId, out resultGuid);
             return resultGuid;
         }
-        public static void UpdateDownloadCounterInDb(Guid jobId,RoboBrailleDataContext context)
+        public static void UpdateDownloadCounterInDb(Guid jobId, RoboBrailleDataContext context)
         {
             var task = Task.Factory.StartNew(j =>
             {
                 //using (var context = new RoboBrailleDataContext())
                 //{
-                    try
-                    {
-                        Job job = context.Jobs.Find(jobId);
-                        if (job != null)
-                            if (job.Status.Equals(JobStatus.Done))
-                            {
-                                job.DownloadCounter = job.DownloadCounter + 1;
-                                context.Jobs.Attach(job);
-                                context.Entry(job).State = EntityState.Modified;
-                                context.SaveChanges();
-                            }
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
+                try
+                {
+                    Job job = context.Jobs.Find(jobId);
+                    if (job != null)
+                        if (job.Status.Equals(JobStatus.Done))
+                        {
+                            job.DownloadCounter = job.DownloadCounter + 1;
+                            context.Jobs.Attach(job);
+                            context.Entry(job).State = EntityState.Modified;
+                            context.SaveChanges();
+                        }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
                 //}
             }, jobId);
         }
-        public static Job CheckForJobInDatabase(Guid jobId,RoboBrailleDataContext context)
+        public static Job CheckForJobInDatabase(Guid jobId, RoboBrailleDataContext context)
         {
             //using (var context = new RoboBrailleDataContext())
             //{
-                try
-                {
-                    Job existingJob = context.Jobs.Find(jobId);
-                    if (existingJob != null)
-                        if (existingJob.Status.Equals(JobStatus.Done))
-                            return existingJob;
-                        else return null;
+            try
+            {
+                Job existingJob = context.Jobs.Find(jobId);
+                if (existingJob != null)
+                    if (existingJob.Status.Equals(JobStatus.Done))
+                        return existingJob;
                     else return null;
-                }
-                catch (Exception)
-                {
-                    // ignored
-                    return null;
-                }
+                else return null;
+            }
+            catch (Exception)
+            {
+                // ignored
+                return null;
+            }
             //}
         }
-        public static void SetJobFaulted(Job job,RoboBrailleDataContext context)
+        public static void SetJobFaulted(Job job, RoboBrailleDataContext context)
         {
             //using (var context = new RoboBrailleDataContext())
             //{
-                try
-                {
-                    job.Status = JobStatus.Error;
-                    context.Jobs.Attach(job);
-                    context.Entry(job).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+            try
+            {
+                job.Status = JobStatus.Error;
+                job.FinishTime = DateTime.Now;
+                context.Jobs.Attach(job);
+                context.Entry(job).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
             //}
         }
 
@@ -162,6 +163,7 @@ namespace RoboBraille.WebApi.Models
                 case Language.ptPT:
                 case Language.daDK:
                 case Language.nnNO:
+                case Language.nbNO:
                 case Language.isIS:
                 case Language.svSE:
                     res = Encoding.GetEncoding(1252);
@@ -192,55 +194,68 @@ namespace RoboBraille.WebApi.Models
         {
             int cols = job.CharactersPerLine;
             int rows = job.LinesPerPage;
-            bool isPef = OutputFormat.Pef.Equals(job.OutputFormat);
-            bool isUni = OutputFormat.Unicode.Equals(job.OutputFormat);
+            //bool isPef = OutputFormat.Pef.Equals(job.OutputFormat);
+            //bool isUni = OutputFormat.Unicode.Equals(job.OutputFormat);
             string result = source;
-            if (cols > 10 || rows > 2 || !String.IsNullOrWhiteSpace(source))
-                try
+            try
+            {
+                Encoding enc = RoboBrailleProcessor.GetEncodingByCountryCode(job.BrailleLanguage);
+                switch (job.OutputFormat)
                 {
-                    Encoding enc = RoboBrailleProcessor.GetEncodingByCountryCode(job.BrailleLanguage);
-                    switch (job.OutputFormat)
-                    {
-                        case OutputFormat.Pef:
+                    case OutputFormat.Pef:
+                        {
+                            result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
+
+                            if (cols > 10 && rows > 2 && !String.IsNullOrWhiteSpace(result))
                             {
-                                result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
                                 result = RoboBrailleProcessor.CreatePagination(result, cols);
                                 if (PageNumbering.none.Equals(job.PageNumbering))
                                     result = RoboBrailleProcessor.CreatePefFromUnicode(result, cols, rows, 0, true);
                                 else
                                     result = RoboBrailleProcessor.CreatePefFromUnicodeWithPageNumber(result, cols, rows, 0, true, PageNumbering.right.Equals(job.PageNumbering));
-                                break;
                             }
-                        case OutputFormat.Unicode:
-                            {
-                                result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
-                                result = RoboBrailleProcessor.CreatePagination(result, cols);
-                                result = RoboBrailleProcessor.CreateNewLine(result, rows);
-                                break;
-                            }
-                        case OutputFormat.NACB:
-                            {
-                                result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
-                                result = enc.GetString(RoboBrailleProcessor.ConvertUnicodeToNACB(result)).ToLowerInvariant();
-                                result = RoboBrailleProcessor.CreatePagination(result, cols);
-                                result = RoboBrailleProcessor.CreateNewLine(result, rows);
-                                break;
-                            }
-                        default:
+                            break;
+                        }
+                    case OutputFormat.Unicode:
+                        {
+                            result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
+
+                            if (cols > 10 && rows > 2 && !String.IsNullOrWhiteSpace(result))
                             {
                                 result = RoboBrailleProcessor.CreatePagination(result, cols);
                                 result = RoboBrailleProcessor.CreateNewLine(result, rows);
-                                break;
                             }
-                    }
-                    return result;
+                            break;
+                        }
+                    case OutputFormat.NACB:
+                        {
+                            result = RoboBrailleProcessor.ConvertBrailleToUnicode(enc.GetBytes(result));
+                            result = enc.GetString(RoboBrailleProcessor.ConvertUnicodeToNACB(result)).ToLowerInvariant();
+
+                            if (cols > 10 && rows > 2 && !String.IsNullOrWhiteSpace(result))
+                            {
+                                result = RoboBrailleProcessor.CreatePagination(result, cols);
+                                result = RoboBrailleProcessor.CreateNewLine(result, rows);
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            if (cols > 10 && rows > 2 && !String.IsNullOrWhiteSpace(result))
+                            {
+                                result = RoboBrailleProcessor.CreatePagination(result, cols);
+                                result = RoboBrailleProcessor.CreateNewLine(result, rows);
+                            }
+                            break;
+                        }
                 }
-                catch (Exception e)
-                {
-                    Trace.WriteLine(e.Message);
-                    return source;
-                }
-            else return source;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.Message);
+                return source;
+            }
         }
 
         /// <summary>
@@ -538,7 +553,7 @@ namespace RoboBraille.WebApi.Models
         /// <returns>a byte array with containing the converted text</returns>
         public static byte[] ConvertUnicodeToNACB(string source)
         {
-            byte[] nacbbraille = 
+            byte[] nacbbraille =
             {
             32, 65, 49, 66, 39, 75, 50, 76, 64, 67, 73, 70, 47, 77, 83, 80,
             34, 69, 51, 72, 57, 79, 54, 82, 94, 68, 74, 71, 62, 78, 84, 81,
@@ -592,7 +607,7 @@ namespace RoboBraille.WebApi.Models
             105, 102, 191, 109, 115, 112, 96, 101, 58,
             104, 42, 111, 33, 114, 129, 100, 106, 103,
             230, 110, 116, 113, 133, 229, 63, 234, 150,
-            117, 181, 118, 152, 238, 248, 235, 158, 120, 
+            117, 181, 118, 152, 238, 248, 235, 158, 120,
             232, 231, 168, 251, 161, 252, 176, 122, 34,
             224, 139, 244, 119, 239, 190, 121, 249, 233,
             186, 65, 143, 66, 149, 75, 147, 76, 145, 67,
@@ -613,7 +628,7 @@ namespace RoboBraille.WebApi.Models
             37, 7, 196, 14, 153, 17, 10, 194, 27, 205,
             95, 21, 91, 123, 184, 195, 214, 210, 211, 169,
             170, 30, 136, 204, 36, 218, 93, 26, 31, 193,
-            28, 213, 137, 209, 125, 208, 159, 127 
+            28, 213, 137, 209, 125, 208, 159, 127
             };
             string result = null;
             foreach (string source in source2.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
@@ -642,35 +657,35 @@ namespace RoboBraille.WebApi.Models
         /// <returns>the string in unicode braille</returns>
         public static string ConvertBrailleToUnicode(byte[] data)
         {
-            byte[] unibraille = 
-					{
-						128, 193, 195, 201, 217, 186, 203, 219, 211, 202,
-						224, 165, 199, 82, 221, 151, 207, 223, 181, 216,
-						162, 229, 194, 212, 192, 160, 245, 226, 248, 167, 
-						239, 246, 0, 22, 54, 188, 242, 218, 175, 8, 
-						166, 180, 20, 150, 2, 164, 4, 140, 154, 129,
-						131, 137, 153, 145, 139, 155, 147, 138, 18, 6,
-						148, 182, 98, 34, 200, 65, 67, 73, 89, 81,
-						75, 91, 83, 74, 90, 69, 71, 77, 93, 85, 
-						79, 95, 87, 78, 94, 101, 103, 122, 109, 125,
-						117, 230, 76, 244, 143, 228, 16, 1, 3, 9,
-						25, 17, 11, 27, 19, 10, 26, 5, 7, 13, 
-						29, 21, 15, 31, 23, 14, 30, 37, 39, 58,
-						45, 61, 53, 231, 184, 252, 104, 255, 209, 24,
-						88, 144, 198, 32, 86, 214, 240, 250, 206, 56,
-						213, 116, 108, 66, 84, 72, 136, 70, 176, 68, 
-						36, 100, 40, 222, 142, 120, 149, 114, 44, 254, 
-						158, 50, 210, 135, 102, 96, 204, 208, 48, 237,
-						238, 80, 124, 196, 215, 118, 52, 159,134, 146, 
-						168, 38, 191, 132, 232, 130, 64, 112, 157, 152,
-						60, 12, 119, 247, 225, 233, 220, 97, 92, 111,
-						110, 127, 99, 107, 241, 227, 105, 123, 253, 251,
-						235, 236, 121, 249, 234, 173, 106, 126, 243, 113,
-						115, 205, 197, 174, 55, 183, 161, 169, 156, 33,
-						28, 47, 46, 63, 35, 43, 177, 163, 41, 59,
-						189, 187, 171, 172, 57, 185, 170, 178, 42, 62, 
-						179, 49, 51, 141, 133, 190
-					};
+            byte[] unibraille =
+                    {
+                        128, 193, 195, 201, 217, 186, 203, 219, 211, 202,
+                        224, 165, 199, 82, 221, 151, 207, 223, 181, 216,
+                        162, 229, 194, 212, 192, 160, 245, 226, 248, 167,
+                        239, 246, 0, 22, 54, 188, 242, 218, 175, 8,
+                        166, 180, 20, 150, 2, 164, 4, 140, 154, 129,
+                        131, 137, 153, 145, 139, 155, 147, 138, 18, 6,
+                        148, 182, 98, 34, 200, 65, 67, 73, 89, 81,
+                        75, 91, 83, 74, 90, 69, 71, 77, 93, 85,
+                        79, 95, 87, 78, 94, 101, 103, 122, 109, 125,
+                        117, 230, 76, 244, 143, 228, 16, 1, 3, 9,
+                        25, 17, 11, 27, 19, 10, 26, 5, 7, 13,
+                        29, 21, 15, 31, 23, 14, 30, 37, 39, 58,
+                        45, 61, 53, 231, 184, 252, 104, 255, 209, 24,
+                        88, 144, 198, 32, 86, 214, 240, 250, 206, 56,
+                        213, 116, 108, 66, 84, 72, 136, 70, 176, 68,
+                        36, 100, 40, 222, 142, 120, 149, 114, 44, 254,
+                        158, 50, 210, 135, 102, 96, 204, 208, 48, 237,
+                        238, 80, 124, 196, 215, 118, 52, 159,134, 146,
+                        168, 38, 191, 132, 232, 130, 64, 112, 157, 152,
+                        60, 12, 119, 247, 225, 233, 220, 97, 92, 111,
+                        110, 127, 99, 107, 241, 227, 105, 123, 253, 251,
+                        235, 236, 121, 249, 234, 173, 106, 126, 243, 113,
+                        115, 205, 197, 174, 55, 183, 161, 169, 156, 33,
+                        28, 47, 46, 63, 35, 43, 177, 163, 41, 59,
+                        189, 187, 171, 172, 57, 185, 170, 178, 42, 62,
+                        179, 49, 51, 141, 133, 190
+                    };
             for (int i = 0; i < data.Length; i++)
             {
                 data[i] = unibraille[data[i]];

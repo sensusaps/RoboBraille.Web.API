@@ -50,13 +50,6 @@ namespace RoboBraille.WebApi.Models
 
             try
             {
-                // TODO : REMOVE and use authenticated user id
-                //Guid uid;
-                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                //job.UserId = uid;
-
-                //using (var context = new RoboBrailleDataContext())
-                //{
                     try
                     {
                         _context.Jobs.Add(job);
@@ -72,17 +65,11 @@ namespace RoboBraille.WebApi.Models
                             }
                         }
                     }
-
-                //}
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-
-
-
-
 
             var task = Task.Factory.StartNew(t =>
             {
@@ -133,19 +120,17 @@ namespace RoboBraille.WebApi.Models
                                 break;
                         }
 
-                        //using (var context = new RoboBrailleDataContext())
-                        //{
                             ebJob.ResultContent = File.ReadAllBytes(tempfile + outputFormat);
                             ebJob.DownloadCounter = 0;
                             ebJob.ResultMimeType = mime;
                             ebJob.ResultFileExtension = fileExtension;
                             ebJob.Status = JobStatus.Done;
+                            ebJob.FinishTime = DateTime.Now;
                             _context.Jobs.Attach(ebJob);
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
                             File.Delete(tempfile + ".pdf");
                             File.Delete(tempfile + outputFormat);
-                        //}
                     }
                     catch (Exception ex)
                     {
@@ -170,12 +155,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            //}
             return (int)JobStatus.Error;
         }
 
@@ -185,8 +167,6 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
@@ -201,7 +181,6 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
-            //}
         }
 
 

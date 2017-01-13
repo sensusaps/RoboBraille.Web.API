@@ -13,6 +13,13 @@ namespace RoboBraille.WebApi
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            //routes.MapRoute(
+            //    name: "API Default",
+            //    url: "api/{controller}/{id}",
+            //    defaults: new { id = UrlParameter.Optional }
+            //);
+
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

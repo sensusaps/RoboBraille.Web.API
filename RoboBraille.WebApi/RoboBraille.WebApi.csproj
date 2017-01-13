@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\RoboBraille.WebApi.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <RegisterForComInterop>false</RegisterForComInterop>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,35 +47,47 @@
     <RegisterForComInterop>false</RegisterForComInterop>
     <DocumentationFile>bin\RoboBraille.WebApi.XML</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="DocumentFormat.OpenXml, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenXMLSDK-MOT.2.6.1.0\lib\DocumentFormat.OpenXml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="itextsharp">
-      <HintPath>..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.10\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="itextsharp.pdfa">
-      <HintPath>..\packages\itextsharp.pdfa.5.5.5\lib\itextsharp.pdfa.dll</HintPath>
+    <Reference Include="itextsharp.pdfa, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.pdfa.5.5.10\lib\itextsharp.pdfa.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="itextsharp.xmlworker">
-      <HintPath>..\packages\itextsharp.xmlworker.5.5.5\lib\itextsharp.xmlworker.dll</HintPath>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.10\lib\itextsharp.xmlworker.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MarkupConverter">
       <HintPath>..\Libs\MarkupConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
@@ -90,29 +102,43 @@
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenXmlPowerTools">
-      <HintPath>..\Libs\OpenXmlPowerTools.dll</HintPath>
+    <Reference Include="OpenXmlPowerTools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenXmlPowerTools.4.1.3\lib\OpenXmlPowerTools.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="RabbitMQ.Client, Version=3.5.4.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\packages\RabbitMQ.Client.3.5.4\lib\net40\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="RabbitMQ.Client, Version=3.5.6.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Swashbuckle.Core">
@@ -121,6 +147,8 @@
     <Reference Include="System.Data.DataSetExtensions">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Services" />
     <Reference Include="System.IO.Compression.FileSystem">
       <Private>True</Private>
     </Reference>
@@ -169,8 +197,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http.Owin">
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -228,8 +257,9 @@
       <HintPath>..\packages\Tesseract.2.4.0.0\lib\net45\Tesseract.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Thinktecture.IdentityModel.Hawk">
+    <Reference Include="Thinktecture.IdentityModel.Hawk, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Thinktecture.IdentityModel.Hawk.2.1.2\lib\net45\Thinktecture.IdentityModel.Hawk.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WebActivatorEx">
       <HintPath>..\packages\WebActivatorEx.2.0.6\lib\net40\WebActivatorEx.dll</HintPath>
@@ -244,17 +274,123 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Css\default.css" />
-    <Content Include="bin\liblouis.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="App_Data\webrobo_logo.jpg" />
+    <Content Include="Content\bootstrap-fileinput\css\fileinput.css" />
+    <Content Include="Content\bootstrap-fileinput\css\fileinput.min.css" />
+    <Content Include="Content\bootstrap-fileinput\img\loading-sm.gif" />
+    <Content Include="Content\bootstrap-fileinput\img\loading.gif" />
+    <Content Include="Content\bootstrap-fileinput\themes\fa\theme.js" />
+    <Content Include="Content\bootstrap-fileinput\themes\gly\theme.js" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\fileinput.css" />
+    <Content Include="Content\fileinput.min.css" />
+    <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Icon.png" />
     <Content Include="packages.config" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-poller.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\app\app.js" />
+    <Content Include="Scripts\app\appController.js" />
+    <Content Include="Scripts\app\appFactories.js" />
+    <Content Include="Scripts\app\indexApp.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\browser.js" />
+    <Content Include="Scripts\fileinput.js" />
+    <Content Include="Scripts\fileinput.min.js" />
+    <Content Include="Scripts\fileinput\fileinput.js" />
+    <Content Include="Scripts\fileinput\fileinput.min.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_ar.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_bg.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_ca.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_cr.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_cz.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_da.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_de.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_el.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_es.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_fa.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_fr.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_hu.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_id.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_it.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_ja.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_LANG.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_nl.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_pl.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_pt-BR.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_pt.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_ro.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_ru.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_sk.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_th.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_tr.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_uk.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_zh-TW.js" />
+    <Content Include="Scripts\fileinput\fileinput_locale_zh.js" />
+    <Content Include="Scripts\fileinput\plugins\canvas-to-blob.js" />
+    <Content Include="Scripts\fileinput\plugins\canvas-to-blob.min.js" />
+    <Content Include="Scripts\FileSaver.js" />
+    <Content Include="Scripts\FileSaver.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Content\bootstrap-fileinput\sass\fileinput.scss" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\locales\ar.js" />
+    <Content Include="Scripts\locales\bg.js" />
+    <Content Include="Scripts\locales\ca.js" />
+    <Content Include="Scripts\locales\cr.js" />
+    <Content Include="Scripts\locales\cz.js" />
+    <Content Include="Scripts\locales\da.js" />
+    <Content Include="Scripts\locales\de.js" />
+    <Content Include="Scripts\locales\el.js" />
+    <Content Include="Scripts\locales\es.js" />
+    <Content Include="Scripts\locales\fa.js" />
+    <Content Include="Scripts\locales\fi.js" />
+    <Content Include="Scripts\locales\fr.js" />
+    <Content Include="Scripts\locales\hu.js" />
+    <Content Include="Scripts\locales\id.js" />
+    <Content Include="Scripts\locales\it.js" />
+    <Content Include="Scripts\locales\ja.js" />
+    <Content Include="Scripts\locales\LANG.js" />
+    <Content Include="Scripts\locales\nl.js" />
+    <Content Include="Scripts\locales\pl.js" />
+    <Content Include="Scripts\locales\pt-BR.js" />
+    <Content Include="Scripts\locales\pt.js" />
+    <Content Include="Scripts\locales\ro.js" />
+    <Content Include="Scripts\locales\ru.js" />
+    <Content Include="Scripts\locales\sk.js" />
+    <Content Include="Scripts\locales\th.js" />
+    <Content Include="Scripts\locales\tr.js" />
+    <Content Include="Scripts\locales\uk.js" />
+    <Content Include="Scripts\locales\zh-TW.js" />
+    <Content Include="Scripts\locales\zh.js" />
+    <Content Include="Scripts\plugins\canvas-to-blob.js" />
+    <Content Include="Scripts\plugins\canvas-to-blob.min.js" />
+    <Content Include="Scripts\plugins\purify.js" />
+    <Content Include="Scripts\plugins\purify.min.js" />
+    <Content Include="Scripts\plugins\sortable.js" />
+    <Content Include="Scripts\plugins\sortable.min.js" />
     <Content Include="x64\liblept168.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -267,285 +403,14 @@
     <Content Include="x86\libtesseract302.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="bin\tables\afr-za-g1.ctb" />
-    <Content Include="bin\tables\ar-ar-g1.utb" />
-    <Content Include="bin\tables\ar-fa.utb" />
-    <Content Include="bin\tables\as-in-g1.utb" />
-    <Content Include="bin\tables\aw-in-g1.utb" />
-    <Content Include="bin\tables\be-in-g1.utb" />
-    <Content Include="bin\tables\bengali.cti" />
-    <Content Include="bin\tables\bg.ctb" />
-    <Content Include="bin\tables\bh.ctb" />
-    <Content Include="bin\tables\bo.ctb" />
-    <Content Include="bin\tables\boxes.ctb" />
-    <Content Include="bin\tables\br-in-g1.utb" />
-    <Content Include="bin\tables\braille-patterns.cti" />
-    <Content Include="bin\tables\ca-chardefs.cti" />
-    <Content Include="bin\tables\ca-g1.ctb" />
-    <Content Include="bin\tables\chardefs.cti" />
-    <Content Include="bin\tables\chr-us-g1.ctb" />
-    <Content Include="bin\tables\ckb-chardefs.cti" />
-    <Content Include="bin\tables\ckb-g1.ctb" />
-    <Content Include="bin\tables\ckb-translation.cti" />
-    <Content Include="bin\tables\compress.cti" />
-    <Content Include="bin\tables\controlchars.cti" />
-    <Content Include="bin\tables\corrections.cti" />
-    <Content Include="bin\tables\countries.cti" />
-    <Content Include="bin\tables\cs-chardefs.cti" />
-    <Content Include="bin\tables\cs-g1.ctb" />
-    <Content Include="bin\tables\cs-translation.cti" />
-    <Content Include="bin\tables\cy-cy-g1.utb" />
-    <Content Include="bin\tables\cy-cy-g2.ctb" />
-    <Content Include="bin\tables\Cz-Cz-g1.utb" />
-    <Content Include="bin\tables\da-ansi8.dis" />
-    <Content Include="bin\tables\da-chardefs6.cti" />
-    <Content Include="bin\tables\da-chardefs8.cti" />
-    <Content Include="bin\tables\da-dk-common6.uti" />
-    <Content Include="bin\tables\da-dk-g16.utb" />
-    <Content Include="bin\tables\da-dk-g18.utb" />
-    <Content Include="bin\tables\da-dk-g26-patches.cti" />
-    <Content Include="bin\tables\da-dk-g26.ctb" />
-    <Content Include="bin\tables\da-dk-g28-patches.cti" />
-    <Content Include="bin\tables\da-dk-g28.ctb" />
-    <Content Include="bin\tables\da-dk-g28caps.cti" />
-    <Content Include="bin\tables\da-dk-g2core.cti" />
-    <Content Include="bin\tables\da-dk-nocaps.uti" />
-    <Content Include="bin\tables\da-dk.dis" />
-    <Content Include="bin\tables\da-lt.ctb" />
-    <Content Include="bin\tables\de-ch-accents.cti" />
-    <Content Include="bin\tables\de-ch-g0.utb" />
-    <Content Include="bin\tables\de-ch-g1.ctb" />
-    <Content Include="bin\tables\de-ch-g2.ctb" />
-    <Content Include="bin\tables\de-chardefs6.cti" />
-    <Content Include="bin\tables\de-chardefs8.cti" />
-    <Content Include="bin\tables\de-chess.ctb" />
-    <Content Include="bin\tables\de-de-accents.cti" />
-    <Content Include="bin\tables\de-de-comp8.ctb" />
-    <Content Include="bin\tables\de-de-g0.utb" />
-    <Content Include="bin\tables\de-de-g1.ctb" />
-    <Content Include="bin\tables\de-de-g2.ctb" />
-    <Content Include="bin\tables\de-de.dis" />
-    <Content Include="bin\tables\de-eurobrl6.dis" />
-    <Content Include="bin\tables\de-eurobrl6u.dis" />
-    <Content Include="bin\tables\de-g0-core.uti" />
-    <Content Include="bin\tables\de-g1-core.cti" />
-    <Content Include="bin\tables\de-g2-core.cti" />
-    <Content Include="bin\tables\devanagari.cti" />
-    <Content Include="bin\tables\digits6Dots.uti" />
-    <Content Include="bin\tables\digits6DotsPlusDot6.uti" />
-    <Content Include="bin\tables\digits8Dots.uti" />
-    <Content Include="bin\tables\dra.ctb" />
-    <Content Include="bin\tables\en-chess.ctb" />
-    <Content Include="bin\tables\en-gb-comp8.ctb" />
-    <Content Include="bin\tables\en-gb-g1.utb" />
-    <Content Include="bin\tables\en-GB-g2.ctb" />
-    <Content Include="bin\tables\en-in-g1.ctb" />
-    <Content Include="bin\tables\en-ueb-chardefs.uti" />
-    <Content Include="bin\tables\en-ueb-g1.ctb" />
-    <Content Include="bin\tables\en-ueb-g2.ctb" />
-    <Content Include="bin\tables\en-us-brf.dis" />
-    <Content Include="bin\tables\en-us-comp6.ctb" />
-    <Content Include="bin\tables\en-us-comp8.ctb" />
-    <Content Include="bin\tables\en-us-compbrl.ctb" />
-    <Content Include="bin\tables\en-us-g1.ctb" />
-    <Content Include="bin\tables\en-us-g2.ctb" />
-    <Content Include="bin\tables\en-us-interline.ctb" />
-    <Content Include="bin\tables\en-us-mathtext.ctb" />
-    <Content Include="bin\tables\en_CA.ctb" />
-    <Content Include="bin\tables\eo-g1-x-system.ctb" />
-    <Content Include="bin\tables\eo-g1.ctb" />
-    <Content Include="bin\tables\es-chardefs.cti" />
-    <Content Include="bin\tables\Es-Es-G0.utb" />
-    <Content Include="bin\tables\Es-Es-g1.utb" />
-    <Content Include="bin\tables\es-g1.ctb" />
-    <Content Include="bin\tables\es-new.dis" />
-    <Content Include="bin\tables\es-old.dis" />
-    <Content Include="bin\tables\es-translation.cti" />
-    <Content Include="bin\tables\et-g0.utb" />
-    <Content Include="bin\tables\et.ctb" />
-    <Content Include="bin\tables\ethio-g1.ctb" />
-    <Content Include="bin\tables\eurodefs.cti" />
-    <Content Include="bin\tables\fi-fi-8dot.ctb" />
-    <Content Include="bin\tables\fi-fi.ctb" />
-    <Content Include="bin\tables\fi.utb" />
-    <Content Include="bin\tables\fi1.ctb" />
-    <Content Include="bin\tables\fi2.ctb" />
-    <Content Include="bin\tables\fr-2007.ctb" />
-    <Content Include="bin\tables\fr-bfu-comp6.utb" />
-    <Content Include="bin\tables\fr-bfu-comp8.utb" />
-    <Content Include="bin\tables\fr-bfu-g2.ctb" />
-    <Content Include="bin\tables\fr-ca-g1.utb" />
-    <Content Include="bin\tables\Fr-Ca-g2.ctb" />
-    <Content Include="bin\tables\fr-fr-g1.utb" />
-    <Content Include="bin\tables\Fr-Fr-g2.ctb" />
-    <Content Include="bin\tables\ga-g1.utb" />
-    <Content Include="bin\tables\ga-g2.ctb" />
-    <Content Include="bin\tables\gd.ctb" />
-    <Content Include="bin\tables\gon.ctb" />
-    <Content Include="bin\tables\gr-bb.ctb" />
-    <Content Include="bin\tables\gr-gr-g1.utb" />
-    <Content Include="bin\tables\gu-in-g1.utb" />
-    <Content Include="bin\tables\gujarati.cti" />
-    <Content Include="bin\tables\gurumuki.cti" />
-    <Content Include="bin\tables\haw-us-g1.ctb" />
-    <Content Include="bin\tables\he.ctb" />
-    <Content Include="bin\tables\hi-in-g1.utb" />
-    <Content Include="bin\tables\hr.ctb" />
-    <Content Include="bin\tables\hu-backtranslate-correction.dis" />
-    <Content Include="bin\tables\hu-chardefs.cti" />
-    <Content Include="bin\tables\hu-exceptionwords.cti" />
-    <Content Include="bin\tables\hu-hu-comp8.ctb" />
-    <Content Include="bin\tables\hu-hu-g1.ctb" />
-    <Content Include="bin\tables\hy.ctb" />
-    <Content Include="bin\tables\hyph_cs_CZ.dic" />
-    <Content Include="bin\tables\hyph_da_DK.dic" />
-    <Content Include="bin\tables\hyph_de_DE.dic" />
-    <Content Include="bin\tables\hyph_en_US.dic" />
-    <Content Include="bin\tables\hyph_eo.dic" />
-    <Content Include="bin\tables\hyph_es_ES.dic" />
-    <Content Include="bin\tables\hyph_fr_FR.dic" />
-    <Content Include="bin\tables\hyph_hu_HU.dic" />
-    <Content Include="bin\tables\hyph_it_IT.dic" />
-    <Content Include="bin\tables\hyph_nb_NO.dic" />
-    <Content Include="bin\tables\hyph_nl_NL.dic" />
-    <Content Include="bin\tables\hyph_nn_NO.dic" />
-    <Content Include="bin\tables\hyph_pl_PL.dic" />
-    <Content Include="bin\tables\hyph_pt_PT.dic" />
-    <Content Include="bin\tables\hyph_ru.dic" />
-    <Content Include="bin\tables\hyph_sv_SE.dic" />
-    <Content Include="bin\tables\is-chardefs6.cti" />
-    <Content Include="bin\tables\is-chardefs8.cti" />
-    <Content Include="bin\tables\is.ctb" />
-    <Content Include="bin\tables\it-it-comp6.utb" />
-    <Content Include="bin\tables\it-it-comp8.utb" />
-    <Content Include="bin\tables\iu-ca-g1.ctb" />
-    <Content Include="bin\tables\ka-in-g1.utb" />
-    <Content Include="bin\tables\kannada.cti" />
-    <Content Include="bin\tables\kh-in-g1.utb" />
-    <Content Include="bin\tables\ko-2006-g1.ctb" />
-    <Content Include="bin\tables\ko-2006-g2.ctb" />
-    <Content Include="bin\tables\ko-2006.cti" />
-    <Content Include="bin\tables\ko-chars.cti" />
-    <Content Include="bin\tables\ko-g1-rules.cti" />
-    <Content Include="bin\tables\ko-g1.ctb" />
-    <Content Include="bin\tables\ko-g2-rules.cti" />
-    <Content Include="bin\tables\ko-g2.ctb" />
-    <Content Include="bin\tables\ko.cti" />
-    <Content Include="bin\tables\kok.ctb" />
-    <Content Include="bin\tables\kru.ctb" />
-    <Content Include="bin\tables\ks-in-g1.utb" />
-    <Content Include="bin\tables\latinLetterDef6Dots.uti" />
-    <Content Include="bin\tables\latinLetterDef8Dots.uti" />
-    <Content Include="bin\tables\litdigits6Dots.uti" />
-    <Content Include="bin\tables\loweredDigits6Dots.uti" />
-    <Content Include="bin\tables\loweredDigits8Dots.uti" />
-    <Content Include="bin\tables\lt.ctb" />
-    <Content Include="bin\tables\Lv-Lv-g1.utb" />
-    <Content Include="bin\tables\malayalam.cti" />
-    <Content Include="bin\tables\mao-nz-g1.ctb" />
-    <Content Include="bin\tables\marburg.ctb" />
-    <Content Include="bin\tables\marburg_edit.ctb" />
-    <Content Include="bin\tables\marburg_single_cell_defs.cti" />
-    <Content Include="bin\tables\marburg_unicode_defs.cti" />
-    <Content Include="bin\tables\ml-in-g1.utb" />
-    <Content Include="bin\tables\mn-in-g1.utb" />
-    <Content Include="bin\tables\mr-in-g1.utb" />
-    <Content Include="bin\tables\mt.ctb" />
-    <Content Include="bin\tables\mun.ctb" />
-    <Content Include="bin\tables\mwr.ctb" />
-    <Content Include="bin\tables\ne.ctb" />
-    <Content Include="bin\tables\nemeth.ctb" />
-    <Content Include="bin\tables\nemethdefs.cti" />
-    <Content Include="bin\tables\nemeth_edit.ctb" />
-    <Content Include="bin\tables\nl-BE-chardefs.cti" />
-    <Content Include="bin\tables\nl-BE-g1.ctb" />
-    <Content Include="bin\tables\nl-BE.dis" />
-    <Content Include="bin\tables\nl-NL-chardefs.cti" />
-    <Content Include="bin\tables\nl-NL-g1.ctb" />
-    <Content Include="bin\tables\no-no-g0.utb" />
-    <Content Include="bin\tables\no-no-g1.ctb" />
-    <Content Include="bin\tables\no-no-g2.ctb" />
-    <Content Include="bin\tables\no-no-g3.ctb" />
-    <Content Include="bin\tables\no-no-generic.ctb" />
-    <Content Include="bin\tables\no-no-generic.dis" />
-    <Content Include="bin\tables\no-no.ctb" />
-    <Content Include="bin\tables\no-no.dis" />
-    <Content Include="bin\tables\np-in-g1.utb" />
-    <Content Include="bin\tables\or-in-g1.utb" />
-    <Content Include="bin\tables\oriya.cti" />
-    <Content Include="bin\tables\pi.ctb" />
-    <Content Include="bin\tables\pl-pl-comp8.ctb" />
-    <Content Include="bin\tables\Pl-Pl-g1.utb" />
-    <Content Include="bin\tables\printables.cti" />
-    <Content Include="bin\tables\pt-pt-comp8.ctb" />
-    <Content Include="bin\tables\pt-pt-g1.utb" />
-    <Content Include="bin\tables\pt-pt-g2.ctb" />
-    <Content Include="bin\tables\pu-in-g1.utb" />
-    <Content Include="bin\tables\ro.ctb" />
-    <Content Include="bin\tables\ru-chardefs.cti" />
-    <Content Include="bin\tables\ru-compbrl.ctb" />
-    <Content Include="bin\tables\ru-letters.dis" />
-    <Content Include="bin\tables\ru-litbrl.ctb" />
-    <Content Include="bin\tables\ru-ru-g1.utb" />
-    <Content Include="bin\tables\ru-ru.dis" />
-    <Content Include="bin\tables\ru.ctb" />
-    <Content Include="bin\tables\sa-in-g1.utb" />
-    <Content Include="bin\tables\Se-Se-g1.utb" />
-    <Content Include="bin\tables\se-se.ctb" />
-    <Content Include="bin\tables\se-se.dis" />
-    <Content Include="bin\tables\si-in-g1.utb" />
-    <Content Include="bin\tables\sk-sk-g1.utb" />
-    <Content Include="bin\tables\sk-sk.utb" />
-    <Content Include="bin\tables\sl-si-comp8.ctb" />
-    <Content Include="bin\tables\sl-si-g1.utb" />
-    <Content Include="bin\tables\sot-za-g1.ctb" />
-    <Content Include="bin\tables\spaces.ctb" />
-    <Content Include="bin\tables\sr-chardefs.cti" />
-    <Content Include="bin\tables\sr-g1.ctb" />
-    <Content Include="bin\tables\sr-translation.cti" />
-    <Content Include="bin\tables\sv-1989.ctb" />
-    <Content Include="bin\tables\sv-1996.ctb" />
-    <Content Include="bin\tables\ta-ta-g1.ctb" />
-    <Content Include="bin\tables\ta.ctb" />
-    <Content Include="bin\tables\tamil.cti" />
-    <Content Include="bin\tables\te-in-g1.utb" />
-    <Content Include="bin\tables\telugu.cti" />
-    <Content Include="bin\tables\text_nabcc.dis" />
-    <Content Include="bin\tables\tr.ctb" />
-    <Content Include="bin\tables\tsn-za-g1.ctb" />
-    <Content Include="bin\tables\UEBC-g1.utb" />
-    <Content Include="bin\tables\UEBC-g2.ctb" />
-    <Content Include="bin\tables\ukchardefs.cti" />
-    <Content Include="bin\tables\ukmaths.ctb" />
-    <Content Include="bin\tables\ukmaths_edit.ctb" />
-    <Content Include="bin\tables\ukmaths_single_cell_defs.cti" />
-    <Content Include="bin\tables\ukmaths_unicode_defs.cti" />
-    <Content Include="bin\tables\uni-text.dis" />
-    <Content Include="bin\tables\unicode.dis" />
-    <Content Include="bin\tables\unicodedefs.cti" />
-    <Content Include="bin\tables\us-table.dis" />
-    <Content Include="bin\tables\vi-g1.ctb" />
-    <Content Include="bin\tables\vi.ctb" />
-    <Content Include="bin\tables\wiskunde-chardefs.cti" />
-    <Content Include="bin\tables\wiskunde-translation.cti" />
-    <Content Include="bin\tables\wiskunde.ctb" />
-    <Content Include="bin\tables\zh-hk.ctb" />
-    <Content Include="bin\tables\zh-tw.ctb" />
-    <None Include="Scripts\jquery-2.1.3.intellisense.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\jquery-2.1.3.js" />
-    <Content Include="Scripts\jquery-2.1.3.min.js" />
-    <Content Include="Scripts\jquery-2.1.3.min.map" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\npm.js" />
     <Content Include="Service References\ABBYY\RoboBraille.WebApi.ABBYY.XmlResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Service References\ABBYY\RoboBraille.WebApi.ABBYY.XmlTicket.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -553,10 +418,9 @@
     <Content Include="App_Data\Colors\sRGB.profile" />
     <None Include="Properties\PublishProfiles\ServiceDeploy.pubxml" />
     <None Include="Service References\ABBYY\RSSoapService.wsdl" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\web.config" />
+    <Content Include="Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="tessdata\eng.cube.bigrams">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -590,17 +454,29 @@
     <Content Include="tessdata\dan.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\RoboBrailleSPA\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\UserManagement\Index.cshtml" />
+    <Content Include="Views\ServiceUsers\Create.cshtml" />
+    <Content Include="Views\ServiceUsers\Delete.cshtml" />
+    <Content Include="Views\ServiceUsers\Details.cshtml" />
+    <Content Include="Views\ServiceUsers\Edit.cshtml" />
+    <Content Include="Views\ServiceUsers\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ABBYY\RSSoapService.disco" />
     <None Include="Service References\ABBYY\configuration91.svcinfo" />
-    <None Include="Service References\ABBYY\configuration.svcinfo" />
+    <None Include="Service References\ABBYY\configuration.svcinfo">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ABBYY\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -620,21 +496,27 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controllers\DaisyController.cs" />
+    <Compile Include="Controllers\DocumentStructureController.cs" />
     <Compile Include="Controllers\EBookController.cs" />
     <Compile Include="Controllers\GenericController.cs" />
-    <Compile Include="Controllers\HtmlToPdfController.cs" />
+    <Compile Include="Controllers\HTMLtoPDFController.cs" />
     <Compile Include="Controllers\HTMLToTextController.cs" />
     <Compile Include="Controllers\MSOfficeConversionController.cs" />
     <Compile Include="Controllers\OcrConversionController.cs" />
     <Compile Include="Controllers\BrailleController.cs" />
     <Compile Include="Controllers\RoboBrailleJobController.cs" />
+    <Compile Include="Controllers\RoboBrailleSPAController.cs" />
+    <Compile Include="Controllers\ServiceUsersController.cs" />
     <Compile Include="Controllers\TranslationController.cs" />
+    <Compile Include="Controllers\UserManagementController.cs" />
     <Compile Include="Controllers\VideoConversionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201601081129386_RBJobDB.cs" />
-    <Compile Include="Migrations\201601081129386_RBJobDB.Designer.cs" />
+    <Compile Include="Migrations\201607291157420_RBJobDb.cs" />
+    <Compile Include="Migrations\201607291157420_RBJobDb.Designer.cs">
+      <DependentUpon>201607291157420_RBJobDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionOptions.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionRepository.cs" />
@@ -657,6 +539,15 @@
     <Compile Include="Models\DocumentAccessibility\DacChecker.cs" />
     <Compile Include="Models\DocumentAccessibility\DacReport.cs" />
     <Compile Include="Models\DocumentAccessibility\DacReportProcessor.cs" />
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureJob.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureOptions.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureRepository.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Models\EBook\EBookConversionOptions.cs" />
     <Compile Include="Models\EBook\EBookJob.cs" />
     <Compile Include="Models\EBook\EBookRepository.cs" />
@@ -671,14 +562,16 @@
     <Compile Include="Models\HtmlToText\HTMLToTextProcessor.cs" />
     <Compile Include="Models\HtmlToText\HTMLToTextRepository.cs" />
     <Compile Include="Models\IRoboBrailleJob.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationJob.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationOptions.cs" />
+    <Compile Include="Models\LanguageTranslation\TranslationRepository.cs" />
+    <Compile Include="Models\MSOfficeConversion\IOfficeProcessor.cs" />
+    <Compile Include="Models\RoboBrailleJob\IRoboBrailleJobRepository.cs" />
     <Compile Include="Models\Job.cs" />
     <Compile Include="Models\JobOptions.cs" />
     <Compile Include="Models\JobStatus.cs" />
     <Compile Include="Models\Braille\LouisFacade.cs" />
     <Compile Include="Models\Braille\LouisWrapper.cs" />
-    <Compile Include="Models\LanguageTranslation\TranslationJob.cs" />
-    <Compile Include="Models\LanguageTranslation\TranslationOptions.cs" />
-    <Compile Include="Models\LanguageTranslation\TranslationRepository.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeJob.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeOptions.cs" />
     <Compile Include="Models\MSOfficeConversion\MSOfficeRepository.cs" />
@@ -687,23 +580,26 @@
     <Compile Include="Models\MSOfficeConversion\RtfHTMLProcessor.cs" />
     <Compile Include="Models\MSOfficeConversion\WordTable.cs" />
     <Compile Include="Models\MultipartFormDataFormatter.cs" />
-    <Compile Include="Models\RoboBrailleDataContext.cs" />
-    <Compile Include="Models\RoboBrailleJob\IRoboBrailleJobRepository.cs" />
     <Compile Include="Models\RoboBrailleJob\RoboBrailleJobRepository.cs" />
     <Compile Include="Models\RoboBrailleProcessor.cs" />
-    <Compile Include="Models\RoboVideo\VideoConversionRepository.cs" />
-    <Compile Include="Models\RoboVideo\VideoJob.cs" />
-    <Compile Include="Models\RoboVideo\VideoJobProcessor.cs" />
+    <Compile Include="Models\RoboBrailleDataContext.cs" />
     <Compile Include="Models\Sample\GenericJob.cs" />
     <Compile Include="Models\Sample\GenericJobOptions.cs" />
     <Compile Include="Models\Sample\GenericJobRepository.cs" />
     <Compile Include="Models\Braille\SensusWrapper.cs" />
-    <Compile Include="Models\ServiceUser.cs" />
+    <Compile Include="Models\UserManagement\Decrypt.cs" />
+    <Compile Include="Models\UserManagement\Encrypt.cs" />
+    <Compile Include="Models\UserManagement\ServiceUser.cs" />
     <Compile Include="Models\HtmlToPDF\TableTagProcessor.cs" />
     <Compile Include="Models\Ocr\OcrConversionJob.cs" />
     <Compile Include="Models\Ocr\OcrConversionOptions.cs" />
     <Compile Include="Models\Ocr\OcrConversionRepository.cs" />
     <Compile Include="Models\HtmlToPDF\THTagProcessor.cs" />
+    <Compile Include="Models\UserManagement\ServiceUserSummary.cs" />
+    <Compile Include="Models\UserManagement\UserManagementRepository.cs" />
+    <Compile Include="Models\RoboVideo\VideoConversionRepository.cs" />
+    <Compile Include="Models\RoboVideo\VideoJob.cs" />
+    <Compile Include="Models\RoboVideo\VideoJobProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -724,34 +620,25 @@
     <WCFMetadataStorage Include="Service References\ABBYY\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201601081129386_RBJobDB.resx" />
+    <EmbeddedResource Include="Migrations\201607291157420_RBJobDb.resx">
+      <DependentUpon>201607291157420_RBJobDb.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\x64\" />
-    <Folder Include="bin\x86\" />
-    <Folder Include="Models\DocumentStructureRecognition\" />
-    <Folder Include="Views\testtest\" />
+    <Folder Include="Dist\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaraVideoClient\AmaraVideoClient.csproj">
       <Project>{cce5537e-cd65-4ce5-88e7-ea6eacf56f18}</Project>
       <Name>AmaraVideoClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DocumentStructureRecognition\DocumentStructureRecognition.csproj">
-      <Project>{961fb6b2-25ee-485f-a1ac-d88cdf69b964}</Project>
-      <Name>DocumentStructureRecognition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OfficeToPdf\OfficeToPDF.csproj">
       <Project>{13f3bab7-27ff-4391-a0fa-b56e84a12a20}</Project>
       <Name>OfficeToPDF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TranslationService\TranslationService.csproj">
-      <Project>{39dd5cf0-0138-48ce-a544-43bde93c789a}</Project>
-      <Name>TranslationService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
@@ -764,12 +651,12 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\RoboBraille.WebApi.XML</DocumentationFile>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
-    <RegisterForComInterop>true</RegisterForComInterop>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\</OutputPath>
@@ -782,6 +669,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
     <IncludeIisSettings>false</IncludeIisSettings>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />

@@ -31,19 +31,10 @@ namespace RoboBraille.WebApi.Models
         {
             if (job == null)
                 return null;
-
-            // TODO : REMOVE and use authenticated user id
-            //Guid uid;
-            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-            //job.UserId = uid;
-
             try
             {
-                //using (var context = new RoboBrailleDataContext())
-                //{
                     _context.Jobs.Add(job);
                     _context.SaveChanges();
-                //}
             }
             catch (DbEntityValidationException ex)
             {
@@ -57,12 +48,7 @@ namespace RoboBraille.WebApi.Models
                 try
                 {
                     byte[] res = null;
-                    //using (DaisyRpcCall drp = new DaisyRpcCall())
-                    //{
-                        res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
-                    //}
-                    //DaisyPipelineConverter dpc = new DaisyPipelineConverter(job.Id.ToString());
-                    //res = dpc.ManageDaisyConversion(job.FileContent,DaisyOutput.Epub3WMO.Equals(job.DaisyOutput));
+                    res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
                     if (res != null && res.Length>0)
                         job.ResultContent = res;
                     else success = false;
@@ -75,14 +61,9 @@ namespace RoboBraille.WebApi.Models
                         mime = "application/epub+zip";
                         fileExtension = ".epub";
                     }
-                    //using (var context = new RoboBrailleDataContext())
-                    //{
                         if (!success)
                         {
-                            job.Status = JobStatus.Error;
-                            job.FinishTime = DateTime.UtcNow.Date;
-                            _context.Entry(job).State = EntityState.Modified;
-                            _context.SaveChanges();
+                            RoboBrailleProcessor.SetJobFaulted(job, _context);
                         }
                         else
                         {
@@ -90,11 +71,10 @@ namespace RoboBraille.WebApi.Models
                             job.ResultMimeType = mime;
                             job.DownloadCounter = 0;
                             job.Status = JobStatus.Done;
-                            job.FinishTime = DateTime.UtcNow.Date;
+                            job.FinishTime = DateTime.Now;
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
                         }
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -111,12 +91,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            //}
             return (int)JobStatus.Error;
         }
 

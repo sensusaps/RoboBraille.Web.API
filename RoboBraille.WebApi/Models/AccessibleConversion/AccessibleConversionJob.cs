@@ -12,8 +12,9 @@ namespace RoboBraille.WebApi.Models
     {
         public AccessibleConversionJob()
         {
-            SubmitTime = DateTime.UtcNow;
-            FinishTime = DateTime.UtcNow;
+            DownloadCounter = 0;
+            SubmitTime = DateTime.Now;
+            FinishTime = DateTime.Now;
         }
 
 
@@ -24,6 +25,7 @@ namespace RoboBraille.WebApi.Models
         /// <remarks>TESTSETSET</remarks>
         [Required]
         [JsonIgnore]
+        [NotMapped]
         public SourceFormat SourceDocumnetFormat { get; set; }
         
         /// <summary>

@@ -8,6 +8,15 @@ namespace RoboBraille.WebApi
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
+                "~/Scripts/angular.min.js",
+                "~/Scripts/angular-poller.js",
+                "~/Scripts/fileinput/fileinput.min.js",
+                "~/Scripts/browser.js",
+                "~/Scripts/app/app.js",
+                "~/Scripts/app/appFactories.js",
+                "~/Scripts/app/appController.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -24,8 +33,9 @@ namespace RoboBraille.WebApi
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css",
-                      "~/Content/bootstrap-responsive.css"));
+                      "~/Content/Site.css",
+                      "~/Content/fileinput.css",
+                      "~/Content/bootstrap-theme.min.css"));
         }
     }
 }

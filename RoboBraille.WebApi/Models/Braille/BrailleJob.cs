@@ -12,14 +12,18 @@ namespace RoboBraille.WebApi.Models
 {
     public class BrailleJob : Job
     {
-        public BrailleJob() {
+        public BrailleJob()
+        {
+            DownloadCounter = 0;
             LinesPerPage = 0;
             CharactersPerLine = 0;
             ConversionPath = ConversionPath.texttobraille;
             PageNumbering = PageNumbering.none;
         }
-                
+
+        [NotMapped]
         public BrailleFormat BrailleFormat { get; set; }
+        [NotMapped]
         public BrailleContraction Contraction { get; set; }
         public Language BrailleLanguage { get; set; }
         public OutputFormat OutputFormat { get; set; }
@@ -35,10 +39,10 @@ namespace RoboBraille.WebApi.Models
 
         [JsonIgnore]
         [NotMapped]
-        internal string TranslationTable { get; set; }
+        public string TranslationTable { get; set; }
 
         [JsonIgnore]
         [NotMapped]
-        internal PageNumbering PageNumbering { get; set; }
+        public PageNumbering PageNumbering { get; set; }
     }
 }

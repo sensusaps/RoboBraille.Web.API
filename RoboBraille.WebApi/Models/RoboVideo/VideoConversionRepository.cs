@@ -126,7 +126,7 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                         viJob.DownloadCounter = 0;
                                         viJob.ResultFileExtension = fileExtension;
                                         viJob.ResultMimeType = mime;
-                                        viJob.FinishTime = DateTime.UtcNow;
+                                        viJob.FinishTime = DateTime.Now;
                                         viJob.Status = JobStatus.Queued;
                                         context.Jobs.Attach(viJob);
                                         context.Entry(viJob).State = EntityState.Modified;
@@ -192,7 +192,7 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                         viJob.DownloadCounter = 0;
                                         viJob.ResultFileExtension = fileExtension;
                                         viJob.ResultMimeType = mime;
-                                        viJob.FinishTime = DateTime.UtcNow;
+                                        viJob.FinishTime = DateTime.Now;
                                         viJob.Status = JobStatus.Done;
                                         context.Jobs.Attach(viJob);
                                         context.Entry(viJob).State = EntityState.Modified;
@@ -214,7 +214,7 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                         viJob.DownloadCounter = 0;
                                         viJob.ResultFileExtension = fileExtension;
                                         viJob.ResultMimeType = mime;
-                                        viJob.FinishTime = DateTime.UtcNow;
+                                        viJob.FinishTime = DateTime.Now;
                                         viJob.Status = JobStatus.Processing;
                                         context.Jobs.Attach(viJob);
                                         context.Entry(viJob).State = EntityState.Modified;
@@ -238,7 +238,7 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                         viJob.DownloadCounter = 0;
                                         viJob.ResultFileExtension = fileExtension;
                                         viJob.ResultMimeType = mime;
-                                        viJob.FinishTime = DateTime.UtcNow;
+                                        viJob.FinishTime = DateTime.Now;
                                         viJob.Status = JobStatus.Processing;
                                         context.Jobs.Attach(viJob);
                                         context.Entry(viJob).State = EntityState.Modified;

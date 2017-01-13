@@ -35,19 +35,31 @@ namespace RoboBraille.WebApi.Controllers
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(EBookJob job)
         {
-            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
-            job.UserId = userId;
-            if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
+            try
             {
-                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                job.UserId = userId;
+                if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
                 {
-                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
-                    ReasonPhrase = "Job already processing"
+                    var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                    {
+                        Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
+                        ReasonPhrase = "Job already processing"
+                    };
+                    throw new HttpResponseException(resp);
+                }
+                Guid jobId = await _repository.SubmitWorkItem(job);
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = "Job already processing or " + e.Message
                 };
                 throw new HttpResponseException(resp);
             }
-            Guid jobId = await _repository.SubmitWorkItem(job);
-            return Ok(jobId.ToString("D"));
         }
 
         /// <summary>

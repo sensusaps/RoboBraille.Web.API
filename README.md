@@ -32,12 +32,13 @@ Documents can be converted into both EPUB and Mobi Pocket (Amazon Kindle) e-book
 Otherwise inaccessible documents such as image files in gif, tiff, jpg, bmp, pcx, dcx, j2k, jp2, jpx, djv and image-only pdf, as well as all types of pdf files can be converted to more accessible formats including tagged pdf, doc, docx, Word xml, xls, xlsx, csv, text, rtf and html. The service furthermore supports conversion of Microsoft Office documents into tagged pdf and Microsoft PowerPoint presentations into rtf files and web-projects.
 
 # Versioning
+## Release V1
+
+The Release V1 is the first stable version release of the project. The project has been tested. 
 
 ## Beta V2
 
-V2 is the latest release and changes may occur, functionality may be added or removed, and the installation guide will be improved after more use of the application, and better feedback.
-
-V2 Changes:
+Beta V2 Changes:
 -improved testing, by adding dependency injection to Controller and Repository classes
 -new features:
     --added frameworks for uploading videos to Amara and downloading subtitles
@@ -47,7 +48,7 @@ V2 Changes:
 
 ## Beta V1
 
-V1 was the original public Beta release.
+Beta V1 was the original public Beta release.
 
 # Installation
 

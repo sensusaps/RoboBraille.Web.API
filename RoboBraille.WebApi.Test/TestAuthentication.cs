@@ -7,7 +7,7 @@ namespace RoboBraille.WebApi.Test
     public class TestAuthentication
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestHawk()
         {
         }
     }

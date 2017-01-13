@@ -58,7 +58,7 @@ namespace RoboBraille.WebApi.Models
         /// <summary>
         /// File to be uploaded
         /// </summary>
-        
+
         //[Required]
         [NotMapped]
         [DataType(DataType.Upload)]
@@ -69,14 +69,14 @@ namespace RoboBraille.WebApi.Models
 
         [JsonIgnore]
         public byte[] ResultContent { get; set; }
-        
+
         [JsonIgnore]
         public virtual ServiceUser User { get; set; }
 
         //added 03.12.2015
         [JsonIgnore]
         public int DownloadCounter { get; set; }
-        
+
         [JsonIgnore]
         public string ResultFileExtension { get; set; }
 
@@ -85,8 +85,8 @@ namespace RoboBraille.WebApi.Models
 
         public Job()
         {
-            SubmitTime = DateTime.UtcNow;
-            FinishTime = DateTime.UtcNow;
+            SubmitTime = DateTime.Now;
+            FinishTime = DateTime.Now;
             DownloadCounter = 0;
         }
     }

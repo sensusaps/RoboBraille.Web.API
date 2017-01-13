@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoboBraille.WebApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -11,9 +12,12 @@ namespace RoboBraille.WebApi
         {
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{action}",
+                defaults: new { action = RouteParameter.Optional }
             );
+
+            HawkAuthenticator.EnableHawkAuthentication(config);
+            config.Formatters.Add(new MultipartFormDataFormatter());
 
             // Uncomment the following line of code to enable query support for actions with an IQueryable or IQueryable<T> return type.
             // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.

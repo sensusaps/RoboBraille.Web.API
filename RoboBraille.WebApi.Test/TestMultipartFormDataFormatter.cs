@@ -7,7 +7,7 @@ namespace RoboBraille.WebApi.Test
     public class TestMultipartFormDataFormatter
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestMultiPartFormatter()
         {
         }
     }

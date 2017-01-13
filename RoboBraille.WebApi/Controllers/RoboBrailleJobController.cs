@@ -26,7 +26,7 @@ namespace RoboBraille.WebApi.Controllers
         }
 
         /// <summary>
-        /// GET audio job status
+        /// GET the job status
         /// </summary>
         /// <param name="jobId">The GUID job ID</param>
         /// <returns>A status code representing the job's state</returns>

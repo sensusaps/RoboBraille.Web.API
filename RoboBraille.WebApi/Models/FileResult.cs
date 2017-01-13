@@ -32,6 +32,11 @@ namespace RoboBraille.WebApi.Models
             _fileName = fileName;
         }
 
+        public byte[] getFileContents()
+        {
+            return _fileContents;
+        }
+
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
             return Task.Run(() =>
@@ -46,6 +51,7 @@ namespace RoboBraille.WebApi.Models
                     FileName = _fileName
                 };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue(_contentType);
+                response.Content.Headers.Add("File-Name", _fileName);
                 response.Content.Headers.ContentEncoding.Add("UTF-8");
                 return response;
 

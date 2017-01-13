@@ -9,8 +9,8 @@ namespace RoboBraille.WebApi.Models
         public AudioJob()
         {
             DownloadCounter = 0;
-            SubmitTime = DateTime.UtcNow;
-            FinishTime = DateTime.UtcNow;
+            SubmitTime = DateTime.Now;
+            FinishTime = DateTime.Now;
         }
         /// <summary>
         /// [enUS,enGB]

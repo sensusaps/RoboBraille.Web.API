@@ -10,7 +10,7 @@ namespace RoboBraille.WebApi.Models
     public class LouisFacade : IDisposable
     {
         private string holder = null;
-        private Dictionary<Language, string[]> tableMapping = new Dictionary<Language, string[]>();
+        private static readonly Dictionary<Language, string[]> tableMapping = new Dictionary<Language, string[]>();
 
         public LouisFacade()
         {
@@ -32,6 +32,7 @@ namespace RoboBraille.WebApi.Models
             tableMapping.Add(Language.nnNO, new string[] { "no-no-g1.ctb", "no-no-g2.ctb", "no-no-g3.ctb", "no-no-g0.utb" });
             tableMapping.Add(Language.isIS, new string[] { "is.ctb" });
             tableMapping.Add(Language.enGB, new string[] { "en-gb-g1.utb", "en-GB-g2.ctb", "en-gb-comp8.ctb" });
+            //add slSL
             holder = Environment.CurrentDirectory;
             Environment.CurrentDirectory = ConfigurationManager.AppSettings.Get("bindirectory");
         }
@@ -86,6 +87,11 @@ namespace RoboBraille.WebApi.Models
             holder = null;
         }
 
+        internal string getGrade1TranslationTable(Language brailleLanguage)
+        {
+            return tableMapping[brailleLanguage][0];
+        }
+
         internal string getTranslationTable(Language brailleLanguage, BrailleContraction brailleContraction, BrailleFormat dots)
         {
             List<String> tables = GetTranslationTables();
@@ -98,7 +104,7 @@ namespace RoboBraille.WebApi.Models
                 case BrailleContraction.grade2: searchContraction = "g2"; break;
                 default: break;
             }
-            string[] langTables = this.tableMapping[brailleLanguage];
+            string[] langTables = tableMapping[brailleLanguage];
             if (langTables.Length == 1)
                 contractionTable = langTables[0];
             else
