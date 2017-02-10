@@ -80,7 +80,7 @@ namespace AmaraVideoClient
             //step 1) check if subtitle has been made for video
             //step 2) if no return else check if complete
             //step 3) if yes return complete else say it is not complete
-            return AmaraApiController.GetVideoInfo(videoId).Result;
+            return AmaraApiController.GetVideoInfo(videoId);
         }
 
         public VideoLanguageDetail GetLanguageDetails(string vlUri)

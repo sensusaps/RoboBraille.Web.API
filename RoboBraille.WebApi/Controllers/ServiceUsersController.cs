@@ -13,6 +13,7 @@ using RoboBraille.WebApi.Models.UserManagement;
 
 namespace RoboBraille.WebApi.Controllers
 {
+    //TODO add form based authorization with your user id and api key (look at forkbra, maybe do it mvc style)
     public class ServiceUsersController : Controller
     {
         private RoboBrailleDataContext db = new RoboBrailleDataContext();

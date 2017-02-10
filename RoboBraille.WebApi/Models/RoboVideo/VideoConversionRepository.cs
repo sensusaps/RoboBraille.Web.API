@@ -24,47 +24,9 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                 return null;
             try
             {
-                // TODO : REMOVE and use authenticated user id
-                //Guid uid;
-                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                //job.UserId = uid;
-                job.FileName = "video";
-
-                var fmtOptions = job.SubtitleFormat;
-
-                switch (fmtOptions)
+                if (job.FileContent != null)
                 {
-                    case "srt":
-                        job.MimeType = "text/srt";
-                        job.FileExtension = ".srt";
-                        break;
-
-                    case "txt":
-                        job.MimeType = "text/plain";
-                        job.FileExtension = ".txt";
-                        break;
-
-                    case "dfxp":
-                        job.MimeType = "application/ttml+xml";
-                        job.FileExtension = ".dfxp";
-                        break;
-
-                    case "sbv":
-                        job.MimeType = "text/sbv";
-                        job.FileExtension = ".sbv";
-                        break;
-                    case "ssa":
-                        job.MimeType = "text/ssa";
-                        job.FileExtension = ".ssa";
-                        break;
-                    case "vtt":
-                        job.MimeType = "text/vtt";
-                        job.FileExtension = ".vtt";
-                        break;
-                    default:
-                        job.MimeType = "text/srt";
-                        job.FileExtension = ".srt";
-                        break;
+                    job.VideoUrl = vjp.CreateVideoUrl(job);
                 }
                 job.DownloadCounter = 0;
                 job.Status = JobStatus.Started;
@@ -99,15 +61,6 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                 try
                 {
                     byte[] result = null;
-                    if (viJob.FileContent != null)
-                    {
-                        viJob.VideoUrl = vjp.CreateVideoUrl(viJob);
-                    }
-                    else
-                    {
-
-                    }
-
                     if (!String.IsNullOrWhiteSpace(viJob.VideoUrl))
                     {
                         SubtitleInfo si = vjp.PostVideo(viJob);
@@ -117,7 +70,10 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                         switch (si.Status)
                         {
                             case VideoSubtitleStatus.SubtitleRequested:
-                                result = Encoding.UTF8.GetBytes("Video exists, but subtitle does not. Contact amara.org to request a subtitle!");
+                                result = Encoding.UTF8.GetBytes("Video exists but subtitle does not. Contact amara.org to request a subtitle!"+Environment.NewLine+
+                                    "Amara video id: "+viJob.AmaraVideoId+Environment.NewLine+
+                                    "RoboBraille job id: "+viJob.Id
+                                    );
                                 viJob.ResultContent = result;
                                 try
                                 {
@@ -139,70 +95,72 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                 }
                                 break;
                             case VideoSubtitleStatus.Error:
+                                viJob.ResultContent = Encoding.UTF8.GetBytes("Subtitle could not be created. Error!");
                                 RoboBrailleProcessor.SetJobFaulted(viJob,_context);
                                 break;
                             case VideoSubtitleStatus.Exists:
-                                result = vjp.DownloadSubtitle(viJob);
-                                if (result == null)
-                                {
-                                    RoboBrailleProcessor.SetJobFaulted(viJob,_context);
-                                    return;
-                                }
-                                else viJob.ResultContent = result;
-                                var fmtOptions = viJob.SubtitleFormat;
+                                SubtitleDownloadAndSave(viJob);
+                                //result = vjp.DownloadSubtitle(viJob);
+                                //if (result == null)
+                                //{
+                                //    RoboBrailleProcessor.SetJobFaulted(viJob,_context);
+                                //    return;
+                                //}
+                                //else viJob.ResultContent = result;
+                                //var fmtOptions = viJob.SubtitleFormat;
 
-                                switch (fmtOptions)
-                                {
-                                    case "srt":
-                                        mime = "text/srt";
-                                        fileExtension = ".srt";
-                                        break;
+                                //switch (fmtOptions)
+                                //{
+                                //    case "srt":
+                                //        mime = "text/srt";
+                                //        fileExtension = ".srt";
+                                //        break;
 
-                                    case "txt":
-                                        mime = "text/plain";
-                                        fileExtension = ".txt";
-                                        break;
+                                //    case "txt":
+                                //        mime = "text/plain";
+                                //        fileExtension = ".txt";
+                                //        break;
 
-                                    case "dfxp":
-                                        mime = "application/ttml+xml";
-                                        fileExtension = ".dfxp";
-                                        break;
+                                //    case "dfxp":
+                                //        mime = "application/ttml+xml";
+                                //        fileExtension = ".dfxp";
+                                //        break;
 
-                                    case "sbv":
-                                        mime = "text/sbv";
-                                        fileExtension = ".sbv";
-                                        break;
-                                    case "ssa":
-                                        mime = "text/ssa";
-                                        fileExtension = ".ssa";
-                                        break;
-                                    case "vtt":
-                                        mime = "text/vtt";
-                                        fileExtension = ".vtt";
-                                        break;
-                                    default:
-                                        mime = "text/srt";
-                                        fileExtension = ".srt";
-                                        break;
-                                }
-                                try
-                                {
-                                    using (var context = new RoboBrailleDataContext())
-                                    {
-                                        viJob.DownloadCounter = 0;
-                                        viJob.ResultFileExtension = fileExtension;
-                                        viJob.ResultMimeType = mime;
-                                        viJob.FinishTime = DateTime.Now;
-                                        viJob.Status = JobStatus.Done;
-                                        context.Jobs.Attach(viJob);
-                                        context.Entry(viJob).State = EntityState.Modified;
-                                        context.SaveChanges();
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Trace.WriteLine(ex.Message);
-                                }
+                                //    case "sbv":
+                                //        mime = "text/sbv";
+                                //        fileExtension = ".sbv";
+                                //        break;
+                                //    case "ssa":
+                                //        mime = "text/ssa";
+                                //        fileExtension = ".ssa";
+                                //        break;
+                                //    case "vtt":
+                                //        mime = "text/vtt";
+                                //        fileExtension = ".vtt";
+                                //        break;
+                                //    default:
+                                //        mime = "text/srt";
+                                //        fileExtension = ".srt";
+                                //        break;
+                                //}
+                                //try
+                                //{
+                                //    using (var context = new RoboBrailleDataContext())
+                                //    {
+                                //        viJob.DownloadCounter = 0;
+                                //        viJob.ResultFileExtension = fileExtension;
+                                //        viJob.ResultMimeType = mime;
+                                //        viJob.FinishTime = DateTime.Now;
+                                //        viJob.Status = JobStatus.Done;
+                                //        context.Jobs.Attach(viJob);
+                                //        context.Entry(viJob).State = EntityState.Modified;
+                                //        context.SaveChanges();
+                                //    }
+                                //}
+                                //catch (Exception ex)
+                                //{
+                                //    Trace.WriteLine(ex.Message);
+                                //}
                                 break;
                             case VideoSubtitleStatus.Submitted:
                                 result = Encoding.UTF8.GetBytes("Video with id " + si.VideoId + " has been submitted for manual subtitling. Make sure to check when it's ready!");
@@ -227,7 +185,9 @@ namespace RoboBraille.WebApi.Models.RoboVideo
                                 }
                                 break;
 
-                            case VideoSubtitleStatus.Complete: break;
+                            case VideoSubtitleStatus.Complete:
+                                viJob.ResultContent = Encoding.UTF8.GetBytes("Subtitle is complete.");
+                                break; //not handled yet
                             case VideoSubtitleStatus.NotComplete: 
                                 result = Encoding.UTF8.GetBytes("Video with id " + si.VideoId + " already exists but the subtitle is not complete. Make sure to check when it's complete!");
                                 viJob.ResultContent = result;
@@ -280,11 +240,92 @@ namespace RoboBraille.WebApi.Models.RoboVideo
 
             using (var context = new RoboBrailleDataContext())
             {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                var job = (VideoJob) context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+                if (job.Status != JobStatus.Processing && !String.IsNullOrWhiteSpace(job.AmaraVideoId) && !String.IsNullOrWhiteSpace(job.SubtitleLangauge))
+                {
+                    VideoLanguageDetail vld = vjp.GetVideoInfo(job.AmaraVideoId, job.SubtitleLangauge);
+                    if (vld!=null && vld.AreSubsComplete && vld.SubtitleCount > 0)
+                    {
+                        job.Status = JobStatus.Done;
+                        //can begin downloading the new subtitle and saving it to the database in a new task
+                        var task = Task.Factory.StartNew(vj =>
+                        {
+                            SubtitleDownloadAndSave(job);
+                        }, job);
+                    }
+                }
                 if (job != null)
                     return (int)job.Status;
             }
             return (int)JobStatus.Error;
+        }
+
+        private bool SubtitleDownloadAndSave(VideoJob viJob)
+        {
+            string mime = "text/plain";
+            string fileExtension = ".txt";
+            byte[] result = vjp.DownloadSubtitle(viJob);
+            if (result == null)
+            {
+                RoboBrailleProcessor.SetJobFaulted(viJob, _context);
+                return false;
+            }
+            else viJob.ResultContent = result;
+            var fmtOptions = viJob.SubtitleFormat;
+
+            switch (fmtOptions)
+            {
+                case "srt":
+                    mime = "text/srt";
+                    fileExtension = ".srt";
+                    break;
+
+                case "txt":
+                    mime = "text/plain";
+                    fileExtension = ".txt";
+                    break;
+
+                case "dfxp":
+                    mime = "application/ttml+xml";
+                    fileExtension = ".dfxp";
+                    break;
+
+                case "sbv":
+                    mime = "text/sbv";
+                    fileExtension = ".sbv";
+                    break;
+                case "ssa":
+                    mime = "text/ssa";
+                    fileExtension = ".ssa";
+                    break;
+                case "vtt":
+                    mime = "text/vtt";
+                    fileExtension = ".vtt";
+                    break;
+                default:
+                    mime = "text/srt";
+                    fileExtension = ".srt";
+                    break;
+            }
+            try
+            {
+                using (var context = new RoboBrailleDataContext())
+                {
+                    viJob.DownloadCounter = 0;
+                    viJob.ResultFileExtension = fileExtension;
+                    viJob.ResultMimeType = mime;
+                    viJob.FinishTime = DateTime.Now;
+                    viJob.Status = JobStatus.Done;
+                    context.Jobs.Attach(viJob);
+                    context.Entry(viJob).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public FileResult GetResultContents(Guid jobId)

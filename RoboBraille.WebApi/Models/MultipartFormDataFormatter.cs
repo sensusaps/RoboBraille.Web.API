@@ -44,6 +44,7 @@ namespace RoboBraille.WebApi.Models
                 type == typeof(BrailleJob) ||
                 type == typeof(HTMLToTextJob) ||
                 type == typeof(RoboVideo.VideoJob) ||
+                type == typeof(DocumentStructureRecognition.DocumentStructureJob) ||
                 type == typeof(TranslationJob))
             {
                 return true;
@@ -79,7 +80,6 @@ namespace RoboBraille.WebApi.Models
             {
                 job = new AccessibleConversionJob
                 {
-                    //SourceDocumnetFormat = (SourceFormat)Enum.Parse(typeof(SourceFormat), msp.FormData["sourceformat"]),//Convert.ToInt32(msp.FormData["sourceformat"]),
                     TargetDocumentFormat = (OutputFileFormatEnum)Enum.Parse(typeof(OutputFileFormatEnum), msp.FormData["targetdocumentformat"])//Convert.ToInt32(msp.FormData["targetformat"]),
                 };
 
@@ -161,6 +161,11 @@ namespace RoboBraille.WebApi.Models
                 {
                     MSOfficeOutput = (MSOfficeOutput)Enum.Parse(typeof(MSOfficeOutput), msp.FormData["msofficeoutput"])
                 };
+                if (msp.FormData.AllKeys.Contains("subtitlelangauge") && msp.FormData.AllKeys.Contains("subtitleformat"))
+                {
+                    ((MSOfficeJob)job).SubtitleLangauge = msp.FormData["subtitlelangauge"];
+                    ((MSOfficeJob)job).SubtitleFormat = msp.FormData["subtitleformat"];
+                }
             }
             else if (type == typeof(OcrConversionJob))
             {
@@ -185,6 +190,13 @@ namespace RoboBraille.WebApi.Models
                     ((RoboVideo.VideoJob)job).VideoUrl = msp.FormData["videourl"];
                 }
             }
+            else if (type == typeof(DocumentStructureRecognition.DocumentStructureJob))
+            {
+                job = new DocumentStructureRecognition.DocumentStructureJob()
+                {
+
+                };
+            }
             else //if (type == typeof(TranslationJob))
             {
                 job = new TranslationJob()
@@ -196,7 +208,6 @@ namespace RoboBraille.WebApi.Models
 
             if (job == null)
             {
-                Console.WriteLine("cum pula mea");
                 return null;
             }
             else

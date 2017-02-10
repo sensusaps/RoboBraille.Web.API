@@ -33,10 +33,18 @@ namespace RoboBraille.WebApi.Models
             if (job == null)
                 return null;
 
+            // TODO : REMOVE and use authenticated user id
+            //Guid uid;
+            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+            //job.UserId = uid;
+
             try
             {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     _context.Jobs.Add(job);
                     _context.SaveChanges();
+                //}
             }
             catch (DbEntityValidationException ex)
             {
@@ -85,9 +93,9 @@ namespace RoboBraille.WebApi.Models
                             else if (job.MimeType.Equals("application/vnd.openxmlformats-officedocument.presentationml.presentation", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 OfficePresentationProcessor opp = new OfficePresentationProcessor();
-                                string text = opp.ProcessDocument(sourceFilePath, MSOfficeOutput.txt, job.Id.ToString());
-                                if (text != null)
-                                    job.ResultContent = Encoding.UTF8.GetBytes(text);
+                                byte[] result = opp.ProcessDocument(sourceFilePath, job);
+                                if (result != null)
+                                    job.ResultContent = result;
                                 else success = false;
                             }
                             else success = false;
@@ -109,7 +117,7 @@ namespace RoboBraille.WebApi.Models
                                     html = OfficeWordProcessor.ConvertToHtml(job.FileContent);
                                     break;
                                 case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                                    html = (new OfficePresentationProcessor()).ProcessDocument(sourceFilePath, job.MSOfficeOutput,job.Id.ToString());
+                                    html = Encoding.UTF8.GetString((new OfficePresentationProcessor()).ProcessDocument(sourceFilePath, job));
                                     break;
                                 default:
                                     success = false;
@@ -128,7 +136,7 @@ namespace RoboBraille.WebApi.Models
                                     rtf = rhp.ConvertHtmlToRtf(Encoding.UTF8.GetString(job.FileContent));
                                     break;
                                 case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-                                    rtf = (new OfficePresentationProcessor()).ProcessDocument(sourceFilePath, job.MSOfficeOutput, job.Id.ToString());
+                                    rtf = Encoding.UTF8.GetString((new OfficePresentationProcessor()).ProcessDocument(sourceFilePath, job));
                                     break;
                                 case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                                     rtf = OfficeWordProcessor.ConvertWordToRtf(sourceFilePath, job.Id.ToString());
@@ -165,9 +173,20 @@ namespace RoboBraille.WebApi.Models
                                 break;
                             case MSOfficeOutput.txt:
                             default:
-                                fileExtension = ".txt";
+                                if (job.SubtitleFormat == null && job.SubtitleLangauge == null)
+                                {
+                                    mime = "text/plain";
+                                    fileExtension = ".txt";
+                                }
+                                else
+                                {
+                                    mime = "application/zip";
+                                    fileExtension = ".zip";
+                                }
                                 break;
                         }
+                        //using (var context = new RoboBrailleDataContext())
+                        //{
                             job.DownloadCounter = 0;
                             job.ResultFileExtension = fileExtension;
                             job.ResultMimeType = mime;
@@ -175,6 +194,7 @@ namespace RoboBraille.WebApi.Models
                             job.FinishTime = DateTime.Now;
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
+                        //}
                     }
                 }
                 catch (Exception ex)
@@ -192,6 +212,13 @@ namespace RoboBraille.WebApi.Models
                     try
                     {
                         RoboBrailleProcessor.SetJobFaulted(job, _context);
+                        //using (var context = new RoboBrailleDataContext())
+                        //{
+                            //job.Status = JobStatus.Error;
+                            //job.FinishTime = DateTime.UtcNow;
+                            //_context.Entry(job).State = EntityState.Modified;
+                            //_context.SaveChanges();
+                        //}
                     }
                     catch (Exception ex)
                     {
@@ -209,9 +236,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -220,6 +250,8 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
@@ -234,6 +266,7 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
+            //}
         }
 
 

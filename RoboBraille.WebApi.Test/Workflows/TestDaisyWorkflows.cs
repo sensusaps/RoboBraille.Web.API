@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RoboBraille.WebApi.Models;
+using RoboBraille.WebApi.Test.RoboBrailleFTP;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,11 +56,49 @@ namespace RoboBraille.WebApi.Test.Workflows
             };
 
             string destFile = Guid.NewGuid().ToString() + ".txt";
+            SensusRequest sr = new SensusRequest()
+            {
+                Process = "DAISY",
+                SubProcess = format,
+                Option = "", 
+                Language = "",
+                Gender = "",
+                Age = "",
+                Prefix = "",
+                RequesterID = "sensus-test",
+                FTPServer = "2.109.50.19",
+                FTPUser = "sensustest",
+                FTPPassword = "M1cr0c0mputer",
+                SourcePath = daisyTest,
+                DestinationFile = destFile
+            };
             //act
             var apiTask = Task.Run(() => WebAPICall(daisyj));
+            //var ftpTask = Task.Run(() => FTPCall(sr));
+
+            //Task.WaitAll(new Task[] { apiTask, ftpTask });
             byte[] apiRes = apiTask.Result;
+            //byte[] ftpRes = ftpTask.Result;
+
             //assert
+            //NUnit.Framework.Assert.IsNotNull(ftpRes);
             NUnit.Framework.Assert.IsNotNull(apiRes);
+            //string expected = RoboBrailleProcessor.GetEncodingByCountryCode((Language)Enum.Parse(typeof(Language), language, true)).GetString(ftpRes).Trim();
+            //string result = Encoding.UTF8.GetString(apiRes).Trim();
+            //byte assertion fails because the files are not the same encoding
+
+            File.WriteAllBytes(resultPath + @"\api.zip", apiRes);
+            //File.WriteAllBytes(resultPath + @"\ftp.txt", ftpRes);
+
+            //NUnit.Framework.Assert.AreEqual(ftpRes, apiRes);
+            //NUnit.Framework.Assert.AreEqual(expected, result);
+        }
+
+        public async Task<byte[]> FTPCall(SensusRequest sr)
+        {
+            //return Encoding.ASCII.GetBytes("test");
+            return RbFTPRepository.ProcessRoboBrailleFTP(sr);
+
         }
         public async Task<byte[]> WebAPICall(DaisyJob dj)
         {

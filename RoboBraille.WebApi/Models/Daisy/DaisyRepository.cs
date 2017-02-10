@@ -31,10 +31,19 @@ namespace RoboBraille.WebApi.Models
         {
             if (job == null)
                 return null;
+
+            // TODO : REMOVE and use authenticated user id
+            //Guid uid;
+            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+            //job.UserId = uid;
+
             try
             {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     _context.Jobs.Add(job);
                     _context.SaveChanges();
+                //}
             }
             catch (DbEntityValidationException ex)
             {
@@ -48,22 +57,33 @@ namespace RoboBraille.WebApi.Models
                 try
                 {
                     byte[] res = null;
-                    res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
+                    //using (DaisyRpcCall drp = new DaisyRpcCall())
+                    //{
+                        res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
+                    //}
+                    //DaisyPipelineConverter dpc = new DaisyPipelineConverter(job.Id.ToString());
+                    //res = dpc.ManageDaisyConversion(job.FileContent,DaisyOutput.Epub3WMO.Equals(job.DaisyOutput));
                     if (res != null && res.Length>0)
                         job.ResultContent = res;
                     else success = false;
 
                     string mime = "application/zip";
-                    string fileName = job.FileName;
                     string fileExtension = ".zip";
+                    string fileName = job.FileName;
                     if (DaisyOutput.Epub3WMO.Equals(job.DaisyOutput))
                     {
                         mime = "application/epub+zip";
                         fileExtension = ".epub";
                     }
+                    //using (var context = new RoboBrailleDataContext())
+                    //{
                         if (!success)
                         {
                             RoboBrailleProcessor.SetJobFaulted(job, _context);
+                            //job.Status = JobStatus.Error;
+                            //job.FinishTime = DateTime.UtcNow;
+                            //_context.Entry(job).State = EntityState.Modified;
+                            //_context.SaveChanges();
                         }
                         else
                         {
@@ -75,6 +95,7 @@ namespace RoboBraille.WebApi.Models
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
                         }
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -91,9 +112,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
+            //}
             return (int)JobStatus.Error;
         }
 

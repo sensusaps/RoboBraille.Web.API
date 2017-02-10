@@ -168,9 +168,12 @@ namespace RoboBraille.WebApi.Models
             //}
             try
             {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                         _context.Jobs.Add(job);
                         _context.SaveChanges();
 
+                //}
             }
             catch (Exception ex)
             {
@@ -233,9 +236,13 @@ namespace RoboBraille.WebApi.Models
                     //send job to rabbitmq cluster
                     byte[] result = _auSender.SendAudioJobToQueue(auJob);
 
-                    //get file from \Temp file . this is where the AudioAgent placed the result
+                    //get file from WEBSERVER2\Temp file system. this is where RBA16 placed the result
                     string outputPath = Encoding.UTF8.GetString(result);
 
+                    //TODO uncomment this line when publishing to the SERVER
+                    //note: it  may be C:\RoboBrailleWebApi\Temp instead of just temp.
+                    outputPath = outputPath.Replace(@"C:\RoboBrailleWebApi", @"\\WEBSERVER2");
+                    //outputPath = outputPath.Replace(@"C:", @"\\WEBSERVER2");
                     if (File.Exists(outputPath))
                     {
                         result = File.ReadAllBytes(outputPath);
@@ -252,6 +259,7 @@ namespace RoboBraille.WebApi.Models
                         return;
                     }
                     else auJob.ResultContent = result;
+                    //}
                 }
                 catch (Exception ex)
                 {

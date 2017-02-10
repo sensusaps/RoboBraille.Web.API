@@ -197,9 +197,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Http.Owin">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -348,6 +347,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Content\bootstrap-fileinput\sass\fileinput.scss" />
+    <None Include="Properties\PublishProfiles\RoboWebApi.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -457,7 +457,6 @@
     <Content Include="Views\RoboBrailleSPA\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\UserManagement\Index.cshtml" />
     <Content Include="Views\ServiceUsers\Create.cshtml" />
     <Content Include="Views\ServiceUsers\Delete.cshtml" />
     <Content Include="Views\ServiceUsers\Details.cshtml" />
@@ -508,7 +507,6 @@
     <Compile Include="Controllers\RoboBrailleSPAController.cs" />
     <Compile Include="Controllers\ServiceUsersController.cs" />
     <Compile Include="Controllers\TranslationController.cs" />
-    <Compile Include="Controllers\UserManagementController.cs" />
     <Compile Include="Controllers\VideoConversionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -539,15 +537,9 @@
     <Compile Include="Models\DocumentAccessibility\DacChecker.cs" />
     <Compile Include="Models\DocumentAccessibility\DacReport.cs" />
     <Compile Include="Models\DocumentAccessibility\DacReportProcessor.cs" />
-    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureJob.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureOptions.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureRepository.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureJob.cs" />
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureOptions.cs" />
+    <Compile Include="Models\DocumentStructureRecognition\DocumentStructureRepository.cs" />
     <Compile Include="Models\EBook\EBookConversionOptions.cs" />
     <Compile Include="Models\EBook\EBookJob.cs" />
     <Compile Include="Models\EBook\EBookRepository.cs" />
@@ -629,7 +621,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Dist\" />
+    <Folder Include="dist\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaraVideoClient\AmaraVideoClient.csproj">

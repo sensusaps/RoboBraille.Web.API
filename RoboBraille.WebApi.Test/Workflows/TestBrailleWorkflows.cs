@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Collections;
+using RoboBraille.WebApi.Test.RoboBrailleFTP;
 
 namespace RoboBraille.WebApi.Test
 {
@@ -109,12 +110,45 @@ namespace RoboBraille.WebApi.Test
                 language = "nbNO";
             }
             string destFile = Guid.NewGuid().ToString() + ".txt";
+            SensusRequest sr = new SensusRequest()
+            {
+                Process = "Braille",
+                SubProcess = contraction,
+                Option = format,
+                Language = language.ToLowerInvariant().Insert(2,"-"),
+                Prefix = "",
+                RequesterID = "sensus-test",
+                FTPServer = "2.109.50.19",
+                FTPUser = "sensustest",
+                FTPPassword = "M1cr0c0mputer",
+                SourcePath = brailleTest,
+                DestinationFile = destFile
+            };
 
             //act
             var apiTask = Task.Run(() => WebAPICall(brj));
+            //var ftpTask = Task.Run(() => FTPCall(sr));
+            //Task.WaitAll(new Task[] { apiTask, ftpTask });
             byte[] apiRes = apiTask.Result;
+            //byte[] ftpRes =  ftpTask.Result;
+
             //assert
+            //NUnit.Framework.Assert.IsNotNull(ftpRes);
+            //string expected = enc.GetString(ftpRes).Trim();
             NUnit.Framework.Assert.IsNotNull(apiRes);
+            string result = enc.GetString(apiRes).Trim();
+            //byte assertion fails because the files are not the same encoding
+
+            //NUnit.Framework.Assert.AreEqual(ftpRes, apiRes);
+            //NUnit.Framework.Assert.AreEqual(expected,result);
+        }
+        static async Task<byte[]> FTPCall(SensusRequest sr)
+        {
+            //return Encoding.ASCII.GetBytes("test");
+            byte[] ftpRes =  RbFTPRepository.ProcessRoboBrailleFTP(sr);
+            File.WriteAllBytes(resultPath + @"\ftp.txt", ftpRes);
+            return ftpRes;
+
         }
 
         static async Task<byte[]> WebAPICall(BrailleJob brj)

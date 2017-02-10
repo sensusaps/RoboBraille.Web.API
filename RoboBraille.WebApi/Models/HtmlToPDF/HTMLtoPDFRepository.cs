@@ -87,6 +87,13 @@ namespace RoboBraille.WebApi.Models
 
             try
             {
+                // TODO : REMOVE and use authenticated user id
+                //Guid uid;
+                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
+                //job.UserId = uid;
+
+                //using (var context = new RoboBrailleDataContext())
+                //{
                 try
                 {
                     _context.Jobs.Add(job);
@@ -103,6 +110,8 @@ namespace RoboBraille.WebApi.Models
                     }
                     throw dbEx;
                 }
+
+                //}
             }
             catch (Exception ex)
             {
@@ -193,10 +202,17 @@ namespace RoboBraille.WebApi.Models
                         //Data as byte array
                         byte[] fileData = fsOut.ToArray();
 
+                        //For Test. Save file to temp
+                        //BinaryWriter Writer = new BinaryWriter(File.OpenWrite(tempfile + ".pdf"));             
+                        //Writer.Write(fileData);
+                        //Writer.Flush();
+                        //Writer.Close();
+
                         try
                         {
                             string mime = "application/pdf";
                             string fileExtension = ".pdf";
+                            //using (var context = new RoboBrailleDataContext())
                             //{
                             ebJob.DownloadCounter = 0;
                             ebJob.ResultFileExtension = fileExtension;
@@ -207,6 +223,8 @@ namespace RoboBraille.WebApi.Models
                             _context.Jobs.Attach(ebJob);
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
+
+                            //}
                         }
                         catch (Exception ex)
                         {
@@ -264,6 +282,8 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
             var job = (HTMLtoPDFJob)_context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
             if (job == null || job.ResultContent == null)
                 return null;
@@ -302,6 +322,7 @@ namespace RoboBraille.WebApi.Models
                 throw e;
             }
             return result;
+            //}
         }
 
 

@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaisyConversionRPC
@@ -49,20 +50,36 @@ namespace DaisyConversionRPC
 
         public byte[] ManageDaisyConversion(string docFilePath, bool isEpub3)
         {
-            byte[] content = null;
-            this.DeleteDirectories(isEpub3);
-            string result = ConvertDocxToDTBOOK(docFilePath);
-            ConvertDTBOOKToTalkingBook(result);
-            if (isEpub3)
-                content = ConvertTalkingBookToEPUBWMO(BookDirectory);
-            else
-                if (Directory.Exists(BookDirectory))
+            try
+            {
+                byte[] content = null;
+                this.DeleteDirectories(isEpub3);
+                Console.WriteLine("Conversion started docx to dtbook");
+                string result = ConvertDocxToDTBOOK(docFilePath);
+                Thread.Sleep(500);
+                Console.WriteLine("Converting dtbook to talking book");
+                ConvertDTBOOKToTalkingBook(result);
+                if (isEpub3)
                 {
-                    ZipFile.CreateFromDirectory(BookDirectory, ZipFilePath);
-                    content = File.ReadAllBytes(ZipFilePath);
+                    Thread.Sleep(500);
+                    Console.WriteLine("Converting talking book to Epub3");
+                    content = ConvertTalkingBookToEPUBWMO(BookDirectory);
                 }
-            this.DeleteDirectories(isEpub3);
-            return content;
+                else
+                    if (Directory.Exists(BookDirectory))
+                    {
+                        Thread.Sleep(500);
+                        ZipFile.CreateFromDirectory(BookDirectory, ZipFilePath);
+                        content = File.ReadAllBytes(ZipFilePath);
+                    }
+                this.DeleteDirectories(isEpub3);
+                return content;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
         public string ConvertDocxToDTBOOK(string docFilePath)
@@ -103,7 +120,7 @@ namespace DaisyConversionRPC
 
         public void ConvertDTBOOKToTalkingBook(string dtbookFile)
         {
-            LocateJava();
+            //LocateJava();
             string SourceFile = dtbookFile;
             if (Directory.Exists(BookDirectory))
             {
@@ -113,22 +130,25 @@ namespace DaisyConversionRPC
             {
                 File.Delete(ZipFilePath);
             }
-            string CommandLineArgs = @"-classpath """ + Pipeline1Directory + @"\pipeline.jar"";""."" org.daisy.pipeline.ui.CommandLineUI " + Pipeline1Directory + @"\scripts\create_distribute\dtb\Narrator-DtbookToDaisy.taskScript ""--input=" + SourceFile + @""" """ + @"--outputPath=" + BookDirectory + @""" ""--multiLang=true""";
+            //string CommandLineArgs = @"-classpath """ + Pipeline1Directory + @"\pipeline.jar"";""."" org.daisy.pipeline.ui.CommandLineUI " + Pipeline1Directory + @"\scripts\create_distribute\dtb\Narrator-DtbookToDaisy.taskScript ""--input=" + SourceFile + @""" """ + @"--outputPath=" + BookDirectory + @""" ""--multiLang=true""";
+
+            string CommandLineArgs = Pipeline1Directory + @"\scripts\create_distribute\dtb\Narrator-DtbookToDaisy.taskScript  ""--input=" + SourceFile + @""" """ + @"--outputPath=" + BookDirectory + @""" ""--multiLang=true""";
 
             try
             {
                 string temp = Environment.CurrentDirectory;
                 Environment.CurrentDirectory = Pipeline1Directory;
                 ProcessStartInfo start = new ProcessStartInfo();
-                if (!_javadir.Equals(String.Empty))
-                {
-                    start.FileName = this._javadir + "java.exe";
-                }
-                else
-                {
-                    start.FileName = "java.exe";
-                }
-                start.FileName = "java";
+                //if (!_javadir.Equals(String.Empty))
+                //{
+                //    start.FileName = this._javadir + "java.exe";
+                //}
+                //else
+                //{
+                //    start.FileName = "java.exe";
+                //}
+                //start.FileName = Pipeline1Directory + @"java";
+                start.FileName = Pipeline1Directory + @"\pipeline.bat";
                 start.Arguments = CommandLineArgs;
                 start.UseShellExecute = false;
                 start.RedirectStandardInput = false;

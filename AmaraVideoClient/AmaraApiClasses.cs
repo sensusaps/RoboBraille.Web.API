@@ -41,22 +41,22 @@ namespace AmaraVideoClient
     {
         [DataMember(Name = "video_url")]
         public string VideoUrl { get; set; }
-        [DataMember(Name = "title")]
-        public string Title { get; set; }
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-        [DataMember(Name = "duration")]
-        public Int32 Duration { get; set; }
-        [DataMember(Name = "primary_audio_language_code")]
-        public string PrimaryAudioLanguageCode { get; set; }
-        [DataMember(Name = "thumbnail")]
-        public string Thumbnail { get; set; }
-        [DataMember(Name = "metadata")]
-        public Dictionary<string, string> Metadata { get; set; }
-        [DataMember(Name = "team")]
-        public string Team { get; set; }
-        [DataMember(Name = "project")]
-        public string Project { get; set; }
+        //[DataMember(Name = "title")]
+        //public string Title { get; set; }
+        //[DataMember(Name = "description")]
+        //public string Description { get; set; }
+        //[DataMember(Name = "duration")]
+        //public Int32 Duration { get; set; }
+        //[DataMember(Name = "primary_audio_language_code")]
+        //public string PrimaryAudioLanguageCode { get; set; }
+        //[DataMember(Name = "thumbnail")]
+        //public string Thumbnail { get; set; }
+        //[DataMember(Name = "metadata")]
+        //public Dictionary<string, string> Metadata { get; set; }
+        //[DataMember(Name = "team")]
+        //public string Team { get; set; }
+        //[DataMember(Name = "project")]
+        //public string Project { get; set; }
     }
 
     [DataContract]
@@ -217,10 +217,21 @@ namespace AmaraVideoClient
     public class SubtitleVersion
     {
         [DataMember(Name = "author")] // – Subtitle author’s username
-        public string Author { get; set; }
+        public AmaraUser Author { get; set; }
         [DataMember(Name = "version_no")] // – number of the version
         public int VersionNumber { get; set; }
         [DataMember(Name = "published")] // – is this version publicly viewable?
         public bool IsPublished { get; set; }
+    }
+
+    [DataContract]
+    public class AmaraUser
+    {
+        [DataMember(Name = "username")] // – username
+        public string UserName { get; set; }
+        [DataMember(Name = "id")] // – id
+        public string UserId { get; set; }
+        [DataMember(Name = "uri")] // – User API endpoint
+        public string UserAPIEndpoint { get; set; }
     }
 }

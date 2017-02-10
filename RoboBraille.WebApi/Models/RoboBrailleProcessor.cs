@@ -43,9 +43,11 @@ namespace RoboBraille.WebApi.Models
             {
                 fileHash = md5.ComputeHash(job.FileContent);
             }
+            //09.02.2017 added also check for user id
+
             //using (var context = new RoboBrailleDataContext())
             //{
-            List<Job> sameJobs = (from j in context.Jobs where j.Status == JobStatus.Started && j.FileName == job.FileName && j.MimeType == job.MimeType && j.FileExtension == job.FileExtension && j.InputFileHash == fileHash select j).ToList();
+            List<Job> sameJobs = (from j in context.Jobs where j.UserId==job.UserId && j.Status == JobStatus.Started && j.FileName == job.FileName && j.MimeType == job.MimeType && j.FileExtension == job.FileExtension && j.InputFileHash == fileHash select j).ToList();
             if (sameJobs.Count > 0)
                 return true;
             else return false;
@@ -63,6 +65,29 @@ namespace RoboBraille.WebApi.Models
             Guid.TryParse(userId, out resultGuid);
             return resultGuid;
         }
+
+        internal async static Task<Guid> DeleteJobFromDb(Guid jobId, Guid userId, RoboBrailleDataContext context)
+        {
+            var task = Task.Factory.StartNew(j =>
+            {
+                try
+                {
+                    Job job = context.Jobs.Find(jobId);
+                    if (job != null && job.UserId.ToString().Equals(userId.ToString()))
+                        {
+                            context.Jobs.Remove(job);
+                            context.Entry(job).State = EntityState.Deleted;
+                            context.SaveChanges();
+                        }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }, jobId);
+            return jobId;
+        }
+
         public static void UpdateDownloadCounterInDb(Guid jobId, RoboBrailleDataContext context)
         {
             var task = Task.Factory.StartNew(j =>

@@ -38,8 +38,11 @@ namespace RoboBraille.WebApi.Models
 
             try
             {
+                //using (var context = new RoboBrailleDataContext())
+                //{
                 _context.Jobs.Add(job);
                 _context.SaveChanges();
+                //}
             }
             catch (DbEntityValidationException ex)
             {
@@ -122,6 +125,8 @@ namespace RoboBraille.WebApi.Models
                             break;
 
                     }
+                    //using (var context = new RoboBrailleDataContext())
+                    //{
                     job.DownloadCounter = 0;
                     job.ResultFileExtension = fileExtension;
                     job.ResultMimeType = mime;
@@ -129,10 +134,25 @@ namespace RoboBraille.WebApi.Models
                     job.FinishTime = DateTime.Now;
                     _context.Entry(job).State = EntityState.Modified;
                     _context.SaveChanges();
+                    //}
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
+                    //try
+                    //{
+                    //    //using (var context = new RoboBrailleDataContext())
+                    //    //{
+                    //    job.Status = JobStatus.Error;
+                    //    job.FinishTime = DateTime.UtcNow;
+                    //    _context.Entry(job).State = EntityState.Modified;
+                    //    _context.SaveChanges();
+                    //    //}
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    Trace.WriteLine(e.Message);
+                    //}
                     RoboBrailleProcessor.SetJobFaulted(job, _context);
                     //throw ex;
                 }

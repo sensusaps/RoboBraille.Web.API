@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace AmaraVideoClient
 {
@@ -82,11 +84,11 @@ namespace AmaraVideoClient
             {
                 VideoDetail video = null;
                 client.BaseAddress = new Uri(baseAddress);
-                client.DefaultRequestHeaders.Add("X-api-username", userName);
-                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PostAsJsonAsync("videos/", videoPost);
+                client.DefaultRequestHeaders.Add("X-api-username", userName);
+                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
+                HttpResponseMessage response = await client.PostAsJsonAsync("videos/", videoPost);//WriteFromObject<VideoSummary>(videoPost));
                 if (response.IsSuccessStatusCode)
                 {
                     video = await response.Content.ReadAsAsync<VideoDetail>();
@@ -96,6 +98,20 @@ namespace AmaraVideoClient
                 return video;
             }
         }
+
+        public static string WriteFromObject<T>(T toSerialize)
+        {
+            //Create a stream to serialize the object to.  
+            MemoryStream ms = new MemoryStream();
+
+            // Serializer the User object to the stream.  
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+            ser.WriteObject(ms, toSerialize);
+            byte[] json = ms.ToArray();
+            ms.Close();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
+        }
+
 
         /// <summary>
         /// This method may not work or be useful.
@@ -109,15 +125,17 @@ namespace AmaraVideoClient
             {
                 VideoLanguageDetail vld = null;
                 client.BaseAddress = new Uri(baseAddress);
-                client.DefaultRequestHeaders.Add("X-api-username", userName);
-                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("X-api-username", userName);
+                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 SubtitleSummary ss = new SubtitleSummary()
                 {
-                    LanguageCode = languageCode
+                    LanguageCode = languageCode,
+                    //IsPrimaryLanguage = false,
+                    //IsSubComplete = false,
                 };
-                HttpResponseMessage response = await client.PostAsJsonAsync("videos/" + videoId + "/languages/", ss);
+                HttpResponseMessage response = await client.PostAsJsonAsync("videos/" + videoId + "/languages/", WriteFromObject<SubtitleSummary>(ss));
                 if (response.IsSuccessStatusCode)
                 {
                     vld = await response.Content.ReadAsAsync<VideoLanguageDetail>();
@@ -133,10 +151,10 @@ namespace AmaraVideoClient
             {
                 VideoLanguageDetail vld = null;
                 client.BaseAddress = new Uri(baseAddress);
-                client.DefaultRequestHeaders.Add("X-api-username", userName);
-                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("X-api-username", userName);
+                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 HttpResponseMessage response = await client.PostAsJsonAsync("videos/"+videoId+"/languages/"+languageCode+"/subtitles/", "");
                 if (response.IsSuccessStatusCode)
                 {
@@ -158,26 +176,24 @@ namespace AmaraVideoClient
         {
 
         }
-
-        public static async Task<VideoDetail> GetVideoInfo(string videoId)
+        
+        public static VideoDetail GetVideoInfo(string videoId)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    VideoDetail videoResponse = null;
-                    client.BaseAddress = new Uri(baseAddress);
-                    client.DefaultRequestHeaders.Add("X-api-username", userName);
-                    client.DefaultRequestHeaders.Add("X-api-key", apiKey);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage response = await client.GetAsync("videos/" + videoId + "/");
-                    if (response.IsSuccessStatusCode)
+                    VideoDetail videoResponse = new VideoDetail();
+                    client.GetAsync(baseAddress + "videos/"+videoId+"/").ContinueWith((taskwithresponse) =>
                     {
-                        videoResponse = await response.Content.ReadAsAsync<VideoDetail>();
-                        Console.WriteLine("Video: " + videoResponse);
-                    }
-                    else Console.WriteLine("Video failure: " + response.StatusCode);
+                        var response = taskwithresponse.Result;
+                        var jsonString = response.Content.ReadAsStringAsync();
+                        jsonString.Wait();
+                        MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString.Result));
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(videoResponse.GetType());
+                        videoResponse = ser.ReadObject(ms) as VideoDetail;
+                        ms.Close();
+                    }).Wait();
                     return videoResponse;
                 }
             }
@@ -190,7 +206,7 @@ namespace AmaraVideoClient
 
         public static List<Language> ListVideoLanguages(string videoId)
         {
-            return GetVideoInfo(videoId).Result.Languages;
+            return GetVideoInfo(videoId)/*.Result*/.Languages;
         }
 
         public static async Task CreateTaskToTeam(string videoId, string languageCode, TaskType tt, string teamSlug)
@@ -204,10 +220,10 @@ namespace AmaraVideoClient
                     TaskType = Enum.GetName(tt.GetType(), tt)
                 };
                 client.BaseAddress = new Uri(baseAddress);
-                client.DefaultRequestHeaders.Add("X-api-username", userName);
-                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("X-api-username", userName);
+                client.DefaultRequestHeaders.Add("X-api-key", apiKey);
                 HttpResponseMessage response = await client.PostAsJsonAsync("teams/"+teamSlug+"/tasks/", ts);
                 if (response.IsSuccessStatusCode)
                 {
@@ -224,19 +240,19 @@ namespace AmaraVideoClient
             {
                 using (var client = new HttpClient())
                 {
-                    VideoLanguageDetail vLangDetail = null;
-                    client.BaseAddress = new Uri(baseAddress);
+                    VideoLanguageDetail vLangDetail = new VideoLanguageDetail();
                     client.DefaultRequestHeaders.Add("X-api-username", userName);
                     client.DefaultRequestHeaders.Add("X-api-key", apiKey);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage response = await client.GetAsync(resourceUrl);
-                    if (response.IsSuccessStatusCode)
+                    client.GetAsync(resourceUrl).ContinueWith((taskwithresponse) =>
                     {
-                        vLangDetail = await response.Content.ReadAsAsync<VideoLanguageDetail>();
-                        Console.WriteLine("Subtitle detail: " + vLangDetail);
-                    }
-                    else Console.WriteLine("Failed " + response.StatusCode);
+                        var response = taskwithresponse.Result;
+                        var jsonString = response.Content.ReadAsStringAsync();
+                        jsonString.Wait();
+                        MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonString.Result));
+                        DataContractJsonSerializer ser = new DataContractJsonSerializer(vLangDetail.GetType());
+                        vLangDetail = ser.ReadObject(ms) as VideoLanguageDetail;
+                        ms.Close();
+                    }).Wait();
                     return vLangDetail;
                 }
             }

@@ -47,7 +47,7 @@ namespace RoboBraille.WebApi.Models.LanguageTranslation
                      * if at any point it fails change the success flag to false (success=false)
                      */
 
-                    //extract text from document if not already in text form
+                    //get text from txt file
                     string textToTranslate = Encoding.UTF8.GetString(job.FileContent);
                     //submit to translation engine/service/library
                     string result = MockTranslate(textToTranslate, job.SourceLanguage, job.TargetLanguage);

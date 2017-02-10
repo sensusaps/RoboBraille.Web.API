@@ -38,7 +38,7 @@ namespace RoboBraille.WebApi.Models
             }
 
             const string Name = "X-Request-Header-To-Protect";
-            return true;// ext.Equals(Name + ":" + request.Headers[Name].First());
+            return ext.Equals(Name + ":" + request.Headers[Name].First());
         }
 
         private static Credential CredentialsCallback(string id)
@@ -76,6 +76,40 @@ namespace RoboBraille.WebApi.Models
                 };
             return credential;
         }
+
+        //private static Credential CredentialsCallback(string id)
+        //{
+        //    return new Credential
+        //    {
+        //        Id = "123",
+        //        Algorithm = SupportedAlgorithms.SHA256,
+        //        User = "John",
+        //        Key = Encoding.UTF8.GetBytes("secret")
+        //    };
+
+        //}
+
+        //public static void EnableHawkAuthentication(HttpConfiguration config)
+        //{
+        //    var options = new Options()
+        //    {
+        //        ClockSkewSeconds = 60,
+        //        LocalTimeOffsetMillis = 0,
+        //        CredentialsCallback = (id) => CredentialCallback(id),
+        //        ResponsePayloadHashabilityCallback = (r) => true,
+        //        VerificationCallback = (request, ext) =>
+        //        {
+        //            if (String.IsNullOrEmpty(ext))
+        //                return true;
+
+        //            string name = "XRequestHeaderToProtect";
+        //            return ext.Equals(name + ":" + request.Headers[name].First());
+        //        }
+        //    };
+
+        //    var handler = new HawkAuthenticationHandler(options);
+        //    config.MessageHandlers.Add(handler);
+        //}
 
     }
 }

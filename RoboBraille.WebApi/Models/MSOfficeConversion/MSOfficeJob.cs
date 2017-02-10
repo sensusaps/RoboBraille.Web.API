@@ -11,6 +11,14 @@ namespace RoboBraille.WebApi.Models
     {
         public MSOfficeOutput MSOfficeOutput { get; set; }
 
+        [JsonIgnore]
+        [NotMapped]
+        public string SubtitleLangauge { get; set; }
+
+        [JsonIgnore]
+        [NotMapped]
+        public string SubtitleFormat { get; set; }
+
         public MSOfficeJob()
         {
             DownloadCounter = 0;

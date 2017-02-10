@@ -1,10 +1,12 @@
 ﻿using RoboBraille.WebApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -75,6 +77,51 @@ namespace RoboBraille.WebApi.Controllers
             return Task.FromResult(Convert.ToString(status));
         }
 
+        [Route("api/office/getcontainsvideo")]
+        [ResponseType(typeof(bool))]
+        [ActionName("ContainsVideo")]
+        public async Task<IHttpActionResult> PostContainsVideo()
+        {
+            // Check if the request contains multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+            try
+            {
+                bool containsVideo = false;
+                string root = HttpContext.Current.Server.MapPath("~/App_Data");
+                var provider = new MultipartFormDataStreamProvider(root);
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                MultipartFileData file = provider.FileData.First();
+                string name = file.Headers.ContentDisposition.FileName;
+                string path = file.LocalFileName;
+                if (name.EndsWith("pptx"))
+                {
+                    OfficePresentationProcessor opp = new OfficePresentationProcessor();
+                    containsVideo = opp.ContainsVideo(path + name);
+                }
+                else if (name.EndsWith("docx"))
+                {
+                    OfficeWordProcessor owp = new OfficeWordProcessor();
+                    containsVideo = owp.ContainsVideo(path + name);
+                }
+                else
+                {
+                    throw new HttpResponseException(HttpStatusCode.NotImplemented);
+                }
+                File.Delete(path + name);
+                return Ok(containsVideo.ToString());
+            }
+            catch (System.Exception e)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+        }
+
         /// <summary>
         /// GET conversion result
         /// </summary>
@@ -89,6 +136,33 @@ namespace RoboBraille.WebApi.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
 
             return Task.FromResult<IHttpActionResult>(fr);
+        }
+
+        /// <summary>
+        /// Delete a job that you published. You must be the owner of the job.
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [Route("api/office")]
+        [ResponseType(typeof(string))]
+        public async Task<IHttpActionResult> Delete([FromUri] Guid jobId)
+        {
+            try
+            {
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                jobId = await RoboBrailleProcessor.DeleteJobFromDb(jobId, userId, _repository.GetDataContext());
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = "Job already processing or " + e.Message
+                };
+                throw new HttpResponseException(resp);
+            }
         }
     }
 }

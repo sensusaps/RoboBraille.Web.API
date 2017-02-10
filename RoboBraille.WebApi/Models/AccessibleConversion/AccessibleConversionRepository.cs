@@ -51,6 +51,8 @@ namespace RoboBraille.WebApi.Models
         }
         public async Task<Guid> SubmitWorkItem(AccessibleConversionJob accessibleJob)
         {
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 try
                 {
                     _context.Jobs.Add(accessibleJob);
@@ -61,6 +63,7 @@ namespace RoboBraille.WebApi.Models
                     string errorMessages = string.Join("; ", ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage));
                     throw new DbEntityValidationException(errorMessages);
                 }
+            //}
 
             // send the job to OCR server
             var task = Task.Factory.StartNew(j =>
@@ -412,6 +415,9 @@ namespace RoboBraille.WebApi.Models
                         fileExtension = ".txt";
                         break;
                 }
+
+                //using (var context = new RoboBrailleDataContext())
+                //{
                     try
                     {
                         job.DownloadCounter = 0;
@@ -428,6 +434,8 @@ namespace RoboBraille.WebApi.Models
                     {
                         SetOCRTaskFaulted(job);
                     }
+                //}
+
             }, accessibleJob);
 
             await task;
@@ -441,9 +449,12 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
+            //}
             return (int)JobStatus.Error;
         }
 
@@ -452,6 +463,8 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
+            //using (var context = new RoboBrailleDataContext())
+            //{
                 var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
@@ -466,11 +479,26 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
+            //}
         }
 
         private void SetOCRTaskFaulted(AccessibleConversionJob job)
         {
             RoboBrailleProcessor.SetJobFaulted(job, _context);
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                //try
+                //{
+                //    job.Status = JobStatus.Error;
+                //    _context.Jobs.Attach(job);
+                //    _context.Entry(job).State = EntityState.Modified;
+                //    _context.SaveChanges();
+                //}
+                //catch (Exception)
+                //{
+                //    // ignored
+                //}
+            //}
         }
     }
 }

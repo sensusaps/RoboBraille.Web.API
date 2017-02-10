@@ -90,5 +90,32 @@ namespace RoboBraille.WebApi.Controllers
 
             return Task.FromResult<IHttpActionResult>(fr);
         }
+
+        /// <summary>
+        /// Delete a job that you published. You must be the owner of the job.
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [Route("api/daisy")]
+        [ResponseType(typeof(string))]
+        public async Task<IHttpActionResult> Delete([FromUri] Guid jobId)
+        {
+            try
+            {
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                jobId = await RoboBrailleProcessor.DeleteJobFromDb(jobId, userId, _repository.GetDataContext());
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = "Job already processing or " + e.Message
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
     }
 }

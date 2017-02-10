@@ -11,17 +11,27 @@ namespace RoboBraille.WebApi.Models
     public class RoboBrailleJobRepository : IRoboBrailleJobRepository<Job>
     {
         private RoboBrailleDataContext _context;
+
+        public RoboBrailleJobRepository()
+        {
+            _context = new RoboBrailleDataContext();
+        }
+
+        public RoboBrailleJobRepository(RoboBrailleDataContext context)
+        {
+            _context = context;
+        }
         public int GetWorkStatus(Guid jobId)
         {
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job != null)
                     return (int)job.Status;
-            }
+            //}
             return (int)JobStatus.Error;
         }
         public FileResult GetResultContents(Guid jobId)
@@ -29,9 +39,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            //using (var context = new RoboBrailleDataContext())
+            //{
+                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
                 if (job == null || job.ResultContent == null)
                     return null;
                 RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
@@ -45,7 +55,12 @@ namespace RoboBraille.WebApi.Models
                     // ignored
                 }
                 return result;
-            }
+            //}
+        }
+
+        public RoboBrailleDataContext GetDataContext()
+        {
+            return _context;
         }
     }
 }

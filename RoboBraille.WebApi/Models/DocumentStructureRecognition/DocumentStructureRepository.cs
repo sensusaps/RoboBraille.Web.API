@@ -16,9 +16,6 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
     public class DocumentStructurerepository : IRoboBrailleJob<DocumentStructureJob>
     {
         private RoboBrailleDataContext _context;
-        /*
-         Investigate on using Google Translate API and make it into a more general mock-up to support any language to language translations
-         */
         public System.Threading.Tasks.Task<Guid> SubmitWorkItem(DocumentStructureJob job)
         {
             if (job == null)
@@ -48,15 +45,17 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
                      * if at any point it fails change the success flag to false (success=false)
                      */
 
-       
+                    //get the document
+                    byte[] sourceDocument = job.FileContent;
 
-                    //extract text from document if not already in text form
-                    string TextStructureElements = Encoding.UTF8.GetString(job.FileContent);
-                    //submit to translation engine/service/library
-                    string result = MockStructure(TextStructureElements,job);
-                    //required input: source text, source langauge, destination language
-                    //get result and save to database as simple text
+                    //submit to structure recognition engine/service/library
+                    Tuple<DocumentElement, string>[] elements = MockRecognizeStructure(sourceDocument);
 
+                    //get result and save to database
+                    string result = null;
+                    foreach(Tuple<DocumentElement,string> tuple in elements) {
+                        result += tuple.Item1.ToString() + " = " + tuple.Item2 + Environment.NewLine;
+                    }
                     job.ResultContent = Encoding.UTF8.GetBytes(result);
                     using (var context = new RoboBrailleDataContext())
                     {
@@ -95,118 +94,52 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
             return Task.FromResult(job.Id);
         }
 
-        public string MockStructure(string TextStructureElements, DocumentStructureJob job)
+        /// <summary>
+        /// A mock example of how a structure recognition job might be processed. SplitDocumentInParts and IsAccurateMatch could be combined to work in one single method.
+        /// </summary>
+        /// <param name="scannedDocument"></param>
+        /// <returns></returns>
+        public Tuple<DocumentElement,string>[] MockRecognizeStructure(byte[] scannedDocument)
         {
-
-            var Element = job.DocumentElement;
-            string result = null;
-            string [] processing =TextStructureElements.ToLower().Split(';');
-            foreach (string  word in processing)
+            Dictionary<int, string> parts = SplitDocumentInParts(scannedDocument);
+            Tuple<DocumentElement, string>[] result = new Tuple<DocumentElement, string>[parts.Count];
+            foreach (KeyValuePair<int, string> part in parts)
             {
-                switch (Element){
-                    case DocumentElement.Title:
-                        result += "title ";
-                        break;
-                    case DocumentElement.Subtitle:
-                        result += "subtitle ";
-                        break;
-                    case DocumentElement.paragraph:
-                        result += "paragraph ";
-                        break;
-                    case DocumentElement.quote:
-                        result += "quote ";
-                        break;
-                    case DocumentElement.Preface:
-                        result += "preface ";
-                        break;
-                    case DocumentElement.Appendix:
-                        result += "appendix ";
-                        break;
-                    case DocumentElement.Bulleted_List:
-                        result += "bulletedlist ";
-                        break;
-                    case DocumentElement.Numbered_List:
-                        result += "numberedlist ";
-                        break;
-                    case DocumentElement.Email:
-                        result += "email ";
-                        break;
-                    case DocumentElement.Commentary:
-                        result += "commentary ";
-                        break;
-                    case DocumentElement.Link:
-                        result += "link ";
-                        break;
-                    case DocumentElement.Reference:
-                        result += "reference ";
-                        break;
-                    case DocumentElement.TableOfContent:
-                        result += "tableofcontent ";
-                        break;
-                    case DocumentElement.Bookmark:
-                        result += "bookmark ";
-                        break;
-                    case DocumentElement.Footer:
-                        result += "footer ";
-                        break;
-                    case DocumentElement.Header:
-                        result += "header ";
-                        break;
-                    case DocumentElement.Page_Number:
-                        result += "pagenumber ";
-                        break;
-                    case DocumentElement.Column:
-                        result += "column ";
-                        break;
-                    case DocumentElement.Symbol:
-                        result += "symbol ";
-                        break;
-                    case DocumentElement.Object:
-                        result += "object ";
-                        break;
-                    case DocumentElement.Image:
-                        result += "image ";
-                        break;
-                    case DocumentElement.Video:
-                        result += "video ";
-                        break;
-                    case DocumentElement.Presentation:
-                        result += "presentation ";
-                        break;
-                    case DocumentElement.PowerPoint:
-                        result += "powerpoint ";
-                        break;
-                    case DocumentElement.Calendar:
-                        result += "calendar ";
-                        break;
-                    case DocumentElement.Figures:
-                        result += "figures ";
-                        break;
-                    case DocumentElement.SmartArt:
-                        result += "smartart ";
-                        break;
-                    case DocumentElement.Diagram:
-                        result += "diagram ";
-                        break;
-                    case DocumentElement.Equation:
-                        result += "eguation ";
-                        break;
-                    case DocumentElement.Spreadsheet:
-                        result += "spreadsheet ";
-                        break;
-                    case DocumentElement.Table:
-                        result += "table ";
-                        break;
-                    default:
-                        result += "Unknown ";
-                        break;
-
+                foreach (DocumentElement de in Enum.GetValues(typeof(DocumentElement)))
+                {
+                    if (IsAccurateMatch(part, de))
+                    {
+                        result[part.Key] = new Tuple<DocumentElement, string>(de, part.Value);
+                    }
                 }
-          
             }
-            return result;
+            return result.ToArray();
 
         }
+
+        /// <summary>
+        /// Use a solution to determine with some degree of accuract if the selected part is that type of document element.
+        /// This is an unkown factor of the conversion
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="de"></param>
+        /// <returns></returns>
+        private bool IsAccurateMatch(KeyValuePair<int, string> part, DocumentElement de)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Use a solution to determine the individual parts of the document, based on some sort of classification.
+        /// This is an unkown factor of the conversion
+        /// </summary>
+        /// <param name="scannedDocument"></param>
+        /// <returns></returns>
+        private Dictionary<int, string> SplitDocumentInParts(byte[] scannedDocument)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public int GetWorkStatus(Guid jobId)
         {

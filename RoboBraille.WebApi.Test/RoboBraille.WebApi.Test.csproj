@@ -100,6 +100,8 @@
   <ItemGroup>
     <Compile Include="AsyncTestSetup.cs" />
     <Compile Include="InputSourceRepository.cs" />
+    <Compile Include="RoboBrailleFTP\RbFTPRepository.cs" />
+    <Compile Include="RoboBrailleFTP\SensusRequest.cs" />
     <Compile Include="PostTests\TestAudioJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PostTests\TestBraille.cs" />

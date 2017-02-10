@@ -35,7 +35,7 @@ namespace RoboBraille.WebApi
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("Realease 1.0", "RoboBraille WebApi")
+                        c.SingleApiVersion("Realease 1.01", "RoboBraille WebApi")
                             .Description("P4All - RoboBraille API using a RESTful Web Service")
                             .TermsOfService("Terms")
                             .Contact(cc => cc

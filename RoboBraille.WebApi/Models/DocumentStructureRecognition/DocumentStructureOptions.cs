@@ -9,8 +9,8 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
     {
         Title = 1,
         Subtitle = 2,
-        paragraph = 3,
-        quote = 4,
+        Paragraph = 3,
+        Quote = 4,
         Preface = 5,
         Appendix = 6,
         Bulleted_List = 7,
@@ -29,15 +29,12 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
         Object = 20,
         Image = 21,
         Video = 22,
-        Presentation = 23,
-        PowerPoint = 24,
-        Calendar = 25,
-        Figures = 26,
-        SmartArt = 27,
-        Diagram = 28,
-        Equation = 29,
-        Spreadsheet = 30,
-        Table = 31
+        Calendar = 23,
+        Figures = 24,
+        SmartArt = 25,
+        Diagram = 26,
+        Equation = 27,
+        Table = 28
     }
   
 }

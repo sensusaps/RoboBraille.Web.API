@@ -8,8 +8,6 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
 {
     public class DocumentStructureJob : Job
     {
-        [NotMapped]
-        public DocumentElement DocumentElement { get; set; }
-
+        
     }
 }

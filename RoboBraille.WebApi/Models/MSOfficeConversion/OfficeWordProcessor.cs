@@ -37,7 +37,7 @@ namespace RoboBraille.WebApi.Models
         private List<String> PlaceholderIDList = new List<String>();
 
         //indexes for used for creating the placeholder ids
-        private static int tableIndex, mathIndex, textIndex, imageIndex;
+        private static int tableIndex, mathIndex, textIndex, imageIndex, videoIndex;
 
         //A string builder for creating the text parts when iterating through the document
         private static StringBuilder textBuilder = new StringBuilder();
@@ -93,6 +93,7 @@ namespace RoboBraille.WebApi.Models
             tableIndex = 1;
             mathIndex = 1;
             imageIndex = 1;
+            videoIndex = 1;
             textIndex = 1;
             using (WordprocessingDocument doc = WordprocessingDocument.Open(docFilePath, false))
             {
@@ -191,12 +192,33 @@ namespace RoboBraille.WebApi.Models
                 {
                     foreach (var video in doc.MainDocumentPart.Document.Descendants<DocumentFormat.OpenXml.Drawing.VideoFromFile>())
                     {
-                        string localName = video.LocalName;
-                        string innerXml = video.InnerXml;
-                    }
-                    foreach (var video in doc.MainDocumentPart.EmbeddedObjectParts)
-                    {
-                        string vct = video.ContentType;
+                        //extract video bytes from word document
+                        DocumentFormat.OpenXml.Drawing.Blip blip = video.FirstChild.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().First();
+                        var vid = doc.MainDocumentPart.GetPartById(blip.Embed.Value);
+                        var uri = vid.Uri;
+                        var filename = uri.ToString().Split('/').Last();
+                        var stream = doc.Package.GetPart(uri).GetStream();
+                        byte[] videoBytes;
+                        using (BinaryReader br = new BinaryReader(stream))
+                        {
+                            videoBytes = br.ReadBytes((int)stream.Length);
+                        }
+                        //TODO set these up universally somewhere
+                        string videoFolder = @"C:\websites\RoboBraille.Web.Api\dist\";
+                        string urlDistribution = @"http://2.109.50.18:5150/dist/"+filename;
+
+                        //write bytes to shared web folder
+                        File.WriteAllBytes(videoFolder + filename, videoBytes);
+                        //send post video request to Amara
+
+                        //put placeholder 
+                        //TODO check that video.Parent.Parent ...points to the right parent
+                        DocumentFormat.OpenXml.Wordprocessing.Paragraph para = video.Parent.Parent.Parent.Parent.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Paragraph());
+                        Run run = para.AppendChild(new Run());
+                        string IDplaceholder = "%Video-&" + videoIndex;
+                        run.AppendChild(new Text(IDplaceholder));
+                        videoIndex++;
+                        //make somehow an list of videos sent to amara and their source location and store that info somewhere? maybe as jobs?
                     }
                 } catch
                 {
@@ -597,6 +619,11 @@ namespace RoboBraille.WebApi.Models
         {
             public XElement Element;
             public int[] LevelNumbers;
+        }
+
+        internal bool ContainsVideo(string p)
+        {
+            throw new NotImplementedException();
         }
     }
 }

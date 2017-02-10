@@ -25,8 +25,10 @@ namespace RoboBraille.WebApi.Models
         /// <param name="guid">The Guid of the job</param>
         /// <returns>An integer representing the status.</returns>
         int GetWorkStatus(Guid guid);
+
         FileResult GetResultContents(Guid guid);
 
         RoboBrailleDataContext GetDataContext();
+
     }
 }
