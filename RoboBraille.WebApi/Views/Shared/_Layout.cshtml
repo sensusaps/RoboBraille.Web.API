@@ -6,12 +6,43 @@
     <title>@ViewBag.Title</title>
             @Scripts.Render("~/bundles/modernizr")
             @Scripts.Render("~/bundles/jquery")
-                @Scripts.Render("~/bundles/bootstrap")
-                    @RenderSection("scripts")
-                    @Styles.Render("~/Content/css")
+            @Scripts.Render("~/bundles/bootstrap")
+            @if (IsSectionDefined("scripts"))
+            {
+                @RenderSection("scripts")
+            }
+            @Styles.Render("~/Content/css")
 </head>
 <body>
-    <div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("RoboBraille Web API", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Guide", "Guide", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("API Overview", "Api", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Demo", "Index", "RoboBrailleSPA", new { area = "" }, null)</li>
+                    @if (!String.IsNullOrWhiteSpace((string)Session["userid"]))
+                    {
+                        <li>@Html.ActionLink("Jobs", "Index", "Jobs", new { area = "" }, null)</li>
+                    }
+                    @if (Session["role"] != null && RoboBraille.WebApi.Models.UserRole.Administrator.Equals(Session["role"]))
+                    {
+                        <li>@Html.ActionLink("Service Users", "Index", "ServiceUsers", new { area = "" }, null)</li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
         @RenderBody()
     </div>
     <footer >Copyright &copy; @DateTime.Now.Year Sensus ApS. All rights reseved</footer>

@@ -1,0 +1,953 @@
+﻿<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .c22 {
+        font-weight: bold;
+    }
+
+    :target:before {
+        content: "";
+        display: block;
+        height: 50px; /* fixed header height*/
+        margin: -50px 0 0; /* negative fixed header height */
+    }
+</style>
+<h1>Guide</h1>
+<h2>Summary</h2>
+<p>This page provides a summary for the Web API</p>
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="#compcontr">Component controllers</a></li>
+
+    <li><a href="#prereqs">Prerequisites</a></li>
+
+    <li><a href="#structure">General Structure</a></li>
+
+    <li><a href="#supported">Supported request methods</a></li>
+
+    <li><a href="#post">Post</a></li>
+
+    <li><a href="#status">GetJobStatus</a></li>
+
+    <li><a href="#result">GetJobResult</a></li>
+
+    <li><a href="#delete">Delete</a></li>
+
+    <li><a href="#otherreq">Other request methods</a></li>
+
+    <li><a href="#workflow">Workflow for the api</a></li>
+
+    <li><a href="#params">Input parameters for each controller</a></li>
+
+    <li><a href="#examples">Example workflows</a></li>
+
+</ol>
+<h2 id="compcontr">Component Controllers</h2>
+<p><a href="~/swagger">Please use this link for a better overview of the current API controllers</a></p>
+<p>
+    For the purpose of this document the name “Controller” and “Controllers” will be used when providing general information about all controllers.
+    Information relevant to each component will be provided by referencing their names.
+</p>
+<h2 id="prereqs">Prerequisites</h2>
+<p>In order to use the API you must be authenticated. Please contact Sensus in order to discuss billing options and receive a User ID and API key.</p>
+<p>
+    The authentication is done using <a href="https://github.com/hueniverse/hawk">HAWK</a> authentication scheme.
+    You must specify your given user id and api key and for the algorithm you must select sha256.
+    Third party libraries exist in most major programming languages that can create the authentication header automatically.
+</p>
+<p>In order to make sure you can call the controllers correctly and that the authentication is setup accordingly it is reccommended to use <a href="https://www.getpostman.com/">Postman</a> or similar software for creating requests to the controllers.</p>
+<h2 id="structure">General Structure</h2>
+<p>
+    All of the controllers reside under the “http://{localhost:port}/api” namespace.
+
+    Each controller can be referenced by appending the name of the controller to the namespace (Example: http://{localhost:port}/api/braille), after that simply append the name of the method that will be used (Post, GetJobStatus, GetJobResult).
+
+    Please see the next part for more details about the individual API methods.
+
+    All controllers have the following generic structure: http://{localhost:port}/api/{Controller Name}/{Method Name}.
+</p>
+<h2 id="supported">Supported request methods</h2>
+<p>The exact methods can be viewed <a href="~/swagger">here</a> by clicking on each controller. Please note that only the post requests require using the authentication header.</p>
+<h3 id="post">Post</h3>
+<p>
+    The Post request contains all the necessary parameters for starting a job in the API.
+    The file content and all the necessary parameters must be placed in the body of the POST request and the POST content type is "multipart/form-data".
+
+    The request returns a unique jobID in the form of: “ca427b75-bb66-e511-91f0-1c6f65d84158”.
+    This id will be used in the GetJobStatus and GetJobResult in order to track and retrieve the job.
+</p>
+<h3 id="status">GetJobStatus</h3>
+<p>The GetJobStatus request is used in order to verify when the job is finished. It will return one of the following status codes:</p>
+<ul>
+    <li>0 = error</li>
+    <li>1 = success</li>
+    <li>2 = processing</li>
+</ul>
+<p>Request url: http://{localhost:port}/api/{Controller Name}/GetJobStatus?jobId={your jobID}</p>
+<p>When programming against the Web API it is recommended to always check for the Job status before returning the result. </p>
+<h3 id="result">GetJobResult</h3>
+<p>The GetJobResult request will return the converted file. Make sure that the GetJobStatus request returns the value 1 before attempting to return the file result.</p>
+<p>Request url: http://{localhost:port}/api/{Controller Name}/GetJobResult?jobId={your jobID}</p>
+<h3 id="delete">Delete</h3>
+<p>
+    For privacy and security reasons, all jobs are deleted after 30 days, please keep that in mind when using our api.
+    However it is also possible to issue a delete request after your job is finished. Please note that your job cannot be recovered afterwards.
+    Please use the delete request when your job status is not a success.
+</p>
+<h3 id="otherreq">Other request methods</h3>
+<p>Other request methods exist to aid the calling of the Post request. They provide relevant input parameters or optional parameters for creating the post request when needed.</p>
+<h2 id="workflow">Workflow for the api</h2>
+<p>
+    In order to use the Web API controllers in a production environment, the following workflow should be followed:
+</p>
+<ul>
+    <li>POST the job to the Controller (remember the authentication header)</li>
+    <li>
+        Save the jobID in your application/computer
+    </li>
+    <li>
+        Repeat: Call GetJobStatus with the saved jobID in predefined time intervals. Repeat until GetJobStatus value equals 1 or 0.
+    </li>
+    <li>
+        Depending on jobstatus from step 3.
+        <ul>
+            <li>
+                If jobstatus = 0 Notify the user that a conversion error has occured.
+            </li>
+            <li>
+                If jobstatus = 1 then call the GetJobResult with the saved jobID, get the converted file and save it or provide it to the user.
+            </li>
+        </ul>
+    </li>
+    <li>End of workflow.</li>
+</ul>
+<p>
+    In the above mentioned workflow will define 1 controller request.
+    In order to achieve more complex conversions it may be necessary to have 2 or more controller requests.
+    Multiple controller requests work by using the job id from the previously completed job request as the input for the next one.
+</p>
+<h2 id="params">Input parameters for each controller</h2>
+<div style="overflow-x:auto;">
+    <table>
+        <tbody>
+            <tr class="c9">
+                <th class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Parameter Name</span></p>
+                </th>
+                <th class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Valid Values</span></p>
+                </th>
+                <th class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Notes</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c22 c24">(AC) AccessibleConversion</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">The input document can be of any common document format as long as it is sensible to the desired target document output format.</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">TargetDocumentFormat</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">"OFF_MSWord",</span></p>
+                    <p class="c1"><span class="c4">"OFF_MSExcel",</span></p>
+                    <p class="c1"><span class="c4">"OFF_RTF",</span></p>
+                    <p class="c1"><span class="c4">"OFF_XML",</span></p>
+                    <p class="c1"><span class="c4">"OFF_PDF",</span></p>
+                    <p class="c1"><span class="c4">"OFF_PDFA",</span></p>
+                    <p class="c1"><span class="c4">"OFF_Text",</span></p>
+                    <p class="c1"><span class="c4">"OFF_CSV",</span></p>
+                    <p class="c1"><span class="c4">"OFF_HTML",</span></p>
+                    <p class="c1"><span class="c4">"OFF_NoConversion",</span></p>
+                    <p class="c1"><span class="c4">"OFF_TIFF",</span></p>
+                    <p class="c1"><span class="c4">"OFF_JPG",</span></p>
+                    <p class="c1"><span class="c4">"OFF_J2K",</span></p>
+                    <p class="c1"><span class="c4">"OFF_InternalFormat",</span></p>
+                    <p class="c1"><span class="c4">"OFF_DOCX",</span></p>
+                    <p class="c1"><span class="c4">"OFF_XLSX",</span></p>
+                    <p class="c1"><span class="c4">"OFF_JBIG2",</span></p>
+                    <p class="c1"><span class="c4">"OFF_ALTO",</span></p>
+                    <p class="c1"><span class="c4">"OFF_EPUB"</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(AU) Audio</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a simple .txt file containing the text you want to be synthesized to speech</span></p>
+                </td>
+                <td class="c5" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Language</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">enUS =0x0409,</span></p>
+                    <p class="c1"><span class="c4">enGB =0x0809</span></p>
+                </td>
+                <td class="c5" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">SpeedOptions</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Fastest = 6,</span></p>
+                    <p class="c1"><span class="c4">Faster = 4,</span></p>
+                    <p class="c1"><span class="c4">Fast = 2,</span></p>
+                    <p class="c1"><span class="c4">Normal = 0,</span></p>
+                    <p class="c1"><span class="c4">Slow = -2,</span></p>
+                    <p class="c1"><span class="c4">Slower= -4,</span></p>
+                    <p class="c1"><span class="c4">Slowest = -6</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FormatOptions</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Mp3 =1,</span></p>
+                    <p class="c1"><span class="c4">Wav =2,</span></p>
+                    <p class="c1"><span class="c4">Wma =4,</span></p>
+                    <p class="c1"><span class="c4">Aac =8</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(BR) Braille</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a .txt file</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">BrailleFormat</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">sixdot =6,</span></p>
+                    <p class="c1"><span class="c4">eightdot=8</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Language</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">enUEB =0x1,</span></p>
+                    <p class="c1"><span class="c4">enGB =0x0809,</span></p>
+                    <p class="c1"><span class="c4">enUS =0x0409,</span></p>
+                    <p class="c1"><span class="c4">daDK =0x0406,</span></p>
+                    <p class="c1"><span class="c4">nnNO =0x0814,</span></p>
+                    <p class="c1"><span class="c4">isIS =0x040F,</span></p>
+                    <p class="c1"><span class="c4">ptPT =0x0816,</span></p>
+                    <p class="c1"><span class="c4">itIT =0x0410,</span></p>
+                    <p class="c1"><span class="c4">frFR =0x040C,</span></p>
+                    <p class="c1"><span class="c4">deDE =0x0407,</span></p>
+                    <p class="c1"><span class="c4">roRO =0x0418,</span></p>
+                    <p class="c1"><span class="c4">esES =0x0C0A,</span></p>
+                    <p class="c1"><span class="c4">slSI =0x0424,</span></p>
+                    <p class="c1"><span class="c4">huHU =0x040E,</span></p>
+                    <p class="c1"><span class="c4">bgBG =0x0402,</span></p>
+                    <p class="c1"><span class="c4">svSE =0x041D,</span></p>
+                    <p class="c1"><span class="c4">elGR =0x0408,</span></p>
+                    <p class="c1"><span class="c8">plPL = 0x0415</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Not all languages may work.</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">Contraction</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">full =1,</span></p>
+                    <p class="c1"><span class="c4">small =2,</span></p>
+                    <p class="c1"><span class="c4">large =3,</span></p>
+                    <p class="c1"><span class="c4">large2 =4,</span></p>
+                    <p class="c1"><span class="c4">grade0 =5,</span></p>
+                    <p class="c1"><span class="c4">grade1 =6,</span></p>
+                    <p class="c1"><span class="c4">grade2b =7,</span></p>
+                    <p class="c1"><span class="c4">grade2i =8,</span></p>
+                    <p class="c1"><span class="c4">grade2 =9,</span></p>
+                    <p class="c1"><span class="c4">level0 =10,</span></p>
+                    <p class="c1"><span class="c4">level1 =11,</span></p>
+                    <p class="c1"><span class="c4">level2 =12,</span></p>
+                    <p class="c1"><span class="c4">level3 =13,</span></p>
+                    <p class="c1"><span class="c4">user =14</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Not all contractions work for all languages. Specific contractions work with specific languages (Knowledge of braille contractions is recommended).</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">OutputFormat</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Unicode=215,</span></p>
+                    <p class="c1"><span class="c4">OctoBraille=216,</span></p>
+                    <p class="c1"><span class="c4">Pef=217,</span></p>
+                    <p class="c1"><span class="c4">noContractions = 1,</span></p>
+                    <p class="c1"><span class="c4">compbrlAtCursor = 2,</span></p>
+                    <p class="c1"><span class="c4">dotsIO = 4,</span></p>
+                    <p class="c1"><span class="c4">comp8Dots = 8,</span></p>
+                    <p class="c1"><span class="c4">pass1Only = 16,</span></p>
+                    <p class="c1"><span class="c4">compbrlLeftCursor = 32,</span></p>
+                    <p class="c1"><span class="c4">otherTrans = 64,</span></p>
+                    <p class="c1"><span class="c4">ucBrl = 128,</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c1 c21"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">ConversionPath</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">texttobraille = 0,</span></p>
+                    <p class="c1"><span class="c4">brailletotext = 1</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Default is texttobraille = 0</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">CharactersPerLine</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">number: 0 = no pagination and greater than (&gt;) 10 for a valid pagination</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Default is 0</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">LinesPerPage</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">number: 0 = no pagination and greater than (&gt;) 2 for a valid pagination</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Default is 0</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">TranslationTable</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a valid translation table from the getTranslationTables API method</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">(Optional)</span></p>
+                    <p class="c1"><span class="c4">Note: By using a typed translation table the braille controller will ignore the language and contraction parameters</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">PageNumbering</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">none = 0,</span></p>
+                    <p class="c1"><span class="c4">right = 1,</span></p>
+                    <p class="c1"><span class="c4">left = 2</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">(Optional)</span></p>
+                    <p class="c1"><span class="c4">Default is none = 0.</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(DA) Daisy</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a .docx document.</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">DaisyOutput</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">TalkingBook = 1,</span></p>
+                    <p class="c1"><span class="c4">Epub3WMO = 2</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(EB) EBook</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a .pdf file</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">format</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">mobi =1,</span></p>
+                    <p class="c1"><span class="c4">epub =2</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(HT) HTMLtoPDF</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a valid .html file with only a table</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">size</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a1 =1,</span></p>
+                    <p class="c1"><span class="c4">a2 =2,</span></p>
+                    <p class="c1"><span class="c4">a3 =3,</span></p>
+                    <p class="c1"><span class="c4">a4 =4,</span></p>
+                    <p class="c1"><span class="c4">a5 =5,</span></p>
+                    <p class="c1"><span class="c4">a6 =6,</span></p>
+                    <p class="c1"><span class="c4">a7 =7,</span></p>
+                    <p class="c1"><span class="c4">a8 =8,</span></p>
+                    <p class="c1"><span class="c4">a9 =9,</span></p>
+                    <p class="c1"><span class="c4">a10 =10,</span></p>
+                    <p class="c1"><span class="c4">letter =11</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(MS) MSOfficeConversion</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Word: - .doc, .dot, .docx, .dotx, .docm, .dotm, .rtf, .odt, .txt, .htm, .html</span></p>
+                    <p class="c1"><span class="c4">Excel - .xls, .xlsx, .xlsm, .xlt, .xltm, .xltx, .csv, .odc</span></p>
+                    <p class="c1"><span class="c4">Powerpoint - .ppt, .pptx, .pptm, .pps, .ppsx, .ppsm, .odp</span></p>
+                    <p class="c1"><span class="c4">Visio - .vsd, .vsdm, .vsdx, .svg [.vsdm, .vsdx &amp; .svg require Visio &gt;= 2013]</span></p>
+                    <p class="c1"><span class="c4">Publisher - .pub</span></p>
+                    <p class="c1"><span class="c4">Outlook - .msg, .vcf, .ics</span></p>
+                    <p class="c1"><span class="c4">Project - .mpp [requires Project &gt;= 2010]</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Note: All of the input files can be converted to pdf. Only some files can be converted to .txt .html .rtf</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">MSOfficeOutput</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">pdf =1,</span></p>
+                    <p class="c1"><span class="c4">txt=2,</span></p>
+                    <p class="c1"><span class="c4">html=4,</span></p>
+                    <p class="c1"><span class="c4">rtf=8</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">(OC) OcrConversion (deprecated: Please use AccessibleConversion (AC) for OCR capabilities)</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">any common picture format .jpg , .jpeg , .tiff</span></p>
+                </td>
+                <td class="c25" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">Note: THE PICTURE MUST CONTAIN TEXT</span></p>
+                </td>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c22">language</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">enUS = 0x0409,</span></p>
+                    <p class="c1"><span class="c4">daDK = 0x0406</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c0"><span class="c4"></span></p>
+                </td>
+            </tr>
+            <tr class="c33">
+                <th class="c23" colspan="3" rowspan="1">
+                    <p class="c1"><span class="c24 c22">HTMLToText</span></p>
+                </th>
+            </tr>
+            <tr class="c9">
+                <td class="c16" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c20 c22 c28">FileContent</span></p>
+                </td>
+                <td class="c6" colspan="1" rowspan="1">
+                    <p class="c1"><span class="c4">a valid .html file</span></p>
+                </td>
+                <td class="c31" colspan="1" rowspan="1">
+                    <p class="c13"><span class="c4">returns a .txt file</span></p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="examples">Example workflow conversions</h2>
+<div class="overflow-x:auto; ritz grid-container" dir="ltr">
+    <table class="waffle" cellspacing="0" cellpadding="0">
+        <thead>
+            <tr>
+                <th id="0C0" style="width:129px" class="column-headers-background">Use Case ID</th>
+                <th id="0C1" style="width:224px" class="column-headers-background">Workflow Name</th>
+                <th id="0C2" style="width:224px" class="column-headers-background">Controller(s) used</th>
+                <th id="0C3" style="width:249px" class="column-headers-background">Scope</th>
+                <th id="0C4" style="width:390px" class="column-headers-background">Workflow</th>
+                <th id="0C5" style="width:428px" class="column-headers-background">Input Parameters</th>
+                <th id="0C6" style="width:191px" class="column-headers-background">Expected Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style='height:20px;'>
+                <th class="c22" dir="ltr" colspan="8">Braille Conversion</th>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR1</td>
+                <td class="s2" dir="ltr">text to braille</td>
+                <td class="s2" dir="ltr">Braille</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the Braille Controller</td>
+                <td class="s2" dir="ltr">BrailleFormat: (Check Valid Parameter Ranges from Braille - BR),<br>  Contraction: (Check Valid Parameter Ranges from Braille - BR),<br>  BrailleLanguage: (Check Valid Parameter Ranges from Braille - BR),<br>  OutputFormat: &quot;None&quot;,<br>  ConversionPath: &quot;texttobraille&quot;,<br>  LinesPerPage: 0,<br>  CharactersPerLine: 0,<br>  FileContent: A .txt file (A2, A9, A10 or A11)</td>
+                <td class="s2" rowspan="7" dir="ltr">A .txt file with the same name as the input file containing the desired braille format and contraction</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR2</td>
+                <td class="s2" dir="ltr">.pptx to braille</td>
+                <td class="s2" dir="ltr">MSOfficeConversion, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call MSOfficeConversion with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case: <span style="font-weight:bold;">BR1</span></td>
+                <td class="s2" dir="ltr">A .pptx file with the parameter MSOfficeOutput set to: &quot;txt&quot; (A7)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR3</td>
+                <td class="s2" dir="ltr">image to braille</td>
+                <td class="s2" dir="ltr">OcrConversion, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call OcrConversion with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case:<span style="font-weight:bold;"> BR1</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the OcrLanguage parameter set to &quot;enUS&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR4</td>
+                <td class="s2" dir="ltr">.pdf to braille</td>
+                <td class="s2" dir="ltr">AccessibleConversion, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case:<span style="font-weight:bold;"> BR1</span></td>
+                <td class="s2" dir="ltr">A .pdf file and the TargetDocumentFormat set to &quot;OFF_Text&quot; (A6)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR5</td>
+                <td class="s2" dir="ltr">.docx to braille</td>
+                <td class="s2" dir="ltr">MSOfficeConversion, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call MSOfficeConversion with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case:<span style="font-weight:bold;"> BR1</span></td>
+                <td class="s2" dir="ltr">A .docx file and the MSOfficeOutput set to &quot;txt&quot; (A12)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR6</td>
+                <td class="s2" dir="ltr">.html to braille</td>
+                <td class="s2" dir="ltr">HTMLToText, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call HTMLToText with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case:<span style="font-weight:bold;"> BR1</span></td>
+                <td class="s2" dir="ltr">A valid .html file (A4)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">BR7</td>
+                <td class="s2" dir="ltr">.rtf to braille</td>
+                <td class="s2" dir="ltr">MSOfficeConversion, Braille</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call MSOfficeConversion with the Input Parameters<br>2) Call Braille with the output from step 1 and follow Test case:<span style="font-weight:bold;"> BR1</span></td>
+                <td class="s2" dir="ltr">A .rtf file and the MSOfficeOutput set to &quot;txt&quot; (A8)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <th class="c22" dir="ltr" colspan="8">Audio Conversion</th>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU1</td>
+                <td class="s2" dir="ltr">text to mp3</td>
+                <td class="s2" dir="ltr">Audio</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the Audio Controller</td>
+                <td class="s2" dir="ltr">AudioLanguage: (Check Valid Parameter Ranges from Audio - AU)<br>SpeedOptions: (Check Valid Parameter Ranges from Audio - AU)<br>FormatOptions: Mp3<br>FileContent: A .txt file (A2)</td>
+                <td class="s2" dir="ltr">A .mp3 file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU2</td>
+                <td class="s2" dir="ltr">text to .wav</td>
+                <td class="s2" dir="ltr">Audio</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the Audio Controller</td>
+                <td class="s2" dir="ltr">AudioLanguage: (Check Valid Parameter Ranges from Audio - AU)<br>SpeedOptions: (Check Valid Parameter Ranges from Audio - AU)<br>FormatOptions: Wav<br>FileContent: A .txt file (A2)</td>
+                <td class="s2" dir="ltr">A .wav file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU3</td>
+                <td class="s2" dir="ltr">text to .wma</td>
+                <td class="s2" dir="ltr">Audio</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the Audio Controller</td>
+                <td class="s2" dir="ltr">AudioLanguage: (Check Valid Parameter Ranges from Audio - AU)<br>SpeedOptions: (Check Valid Parameter Ranges from Audio - AU)<br>FormatOptions: Wma<br>FileContent: A .txt file (A2)</td>
+                <td class="s2" dir="ltr">A .wma file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU4</td>
+                <td class="s2" dir="ltr">text to .aac</td>
+                <td class="s2" dir="ltr">Audio</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the Audio Controller</td>
+                <td class="s2" dir="ltr">AudioLanguage: (Check Valid Parameter Ranges from Audio - AU)<br>SpeedOptions: (Check Valid Parameter Ranges from Audio - AU)<br>FormatOptions: Aac<br>FileContent: A .txt file (A2)</td>
+                <td class="s2" dir="ltr">A .aac file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU5</td>
+                <td class="s2" dir="ltr">HTML to mp3</td>
+                <td class="s2" dir="ltr">HTMLToText, Audio</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call HTMLToText with the Input Paramters<br>2) Call Audio with the output from step 1 and follow Test case:<span style="font-weight:bold;"> AU1</span></td>
+                <td class="s2" dir="ltr">A valid .html file (A4)</td>
+                <td class="s2" rowspan="5" dir="ltr">A .mp3 file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU6</td>
+                <td class="s2" dir="ltr">.pdf to mp3</td>
+                <td class="s2" dir="ltr">AccessibleConversion, Audio</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call Audio with the output from step 1 and follow Test case:<span style="font-weight:bold;"> AU1</span></td>
+                <td class="s2" dir="ltr">A .pdf file and the TargetDocumentFormat set to &quot;OFF_Text&quot; (A6)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU7</td>
+                <td class="s2" dir="ltr">image to mp3</td>
+                <td class="s2" dir="ltr">OcrConversion, Audio</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call OcrConversion with the Input Paramters<br>2) Call Audio with the output from step 1 and follow Test case:<span style="font-weight:bold;"> AU1</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the OcrLanguage parameter set to &quot;enUS&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU8</td>
+                <td class="s2" dir="ltr">.docx to mp3</td>
+                <td class="s2" dir="ltr">MSOfficeConversion, Audio</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call MSOfficeConversion with the Input Paramters<br>2) Call Audio with the output from step 1 and follow Test case:<span style="font-weight:bold;"> AU1</span></td>
+                <td class="s2" dir="ltr">A .docx file and the MSOfficeOutput set to &quot;txt&quot; (A12)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AU9</td>
+                <td class="s2" dir="ltr">.rtf to mp3</td>
+                <td class="s2" dir="ltr">MSOfficeConversion, Audio</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call MSOfficeConversion with the Input Paramters<br>2) Call Audio with the output from step 1 and follow Test case:<span style="font-weight:bold;"> AU1</span></td>
+                <td class="s2" dir="ltr">A .rtf file and the MSOfficeOutput set to &quot;txt&quot; (A12)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <th class="c22" dir="ltr" colspan="8">Daisy Conversion</th>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">DA1</td>
+                <td class="s2" dir="ltr">.docx to daisy talking book</td>
+                <td class="s2" dir="ltr">DaisyConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the DaisyConversion Controller</td>
+                <td class="s2" dir="ltr">DaisyOutput: &quot;TalkingBook&quot;<br>  FileContent: A .docx file (A13)</td>
+                <td class="s2" rowspan="3" dir="ltr">A .zip archive with the same name as the input file containing the daisy talking book</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">DA2</td>
+                <td class="s2" dir="ltr">pdf to daisy talking book</td>
+                <td class="s2" dir="ltr">AccessibleConversion, DaisyConversion</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call DaisyConversion with the output from step 1 and follow Test case:<span style="font-weight:bold;"> DA1</span></td>
+                <td class="s2" dir="ltr">A .pdf file and the TargetDocumentFormat set to &quot;OFF_DOCX&quot; (A6)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">DA3</td>
+                <td class="s2" dir="ltr">image to daisy talking book</td>
+                <td class="s2" dir="ltr">AccessibleConversion, DaisyConversion</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call DaisyConversion with the output from step 1 and follow Test case:<span style="font-weight:bold;"> DA1</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the TargetDocumentFormat set to &quot;OFF_DOCX&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <th class="c22" dir="ltr" colspan="8">E-book Conversion</th>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">EB1</td>
+                <td class="s2" dir="ltr">.pdf to .epub2</td>
+                <td class="s2" dir="ltr">EBook</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the EBook Controller</td>
+                <td class="s2" dir="ltr">EbookFormat: &quot;epub&quot;,<br>  FileContent: A .pdf file (A6)</td>
+                <td class="s2" rowspan="3" dir="ltr">A .epub file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB2</td>
+                <td class="s2" dir="ltr">image to .epub2</td>
+                <td class="s2" dir="ltr">AccessibleConversion, EBook</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call EBook with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB1</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the TargetDocumentFormat set to &quot;OFF_PDF&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB3</td>
+                <td class="s2" dir="ltr">.html table to .epub2</td>
+                <td class="s2" dir="ltr">HTMLToPDF, EBook</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call HTMLToPDF with the Input Paramters<br>2) Call EBook with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB1</span></td>
+                <td class="s2" dir="ltr">size: &quot;a4&quot;,<br>  FileContent: A valid .html file containing a table (A3)</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB4</td>
+                <td class="s2" dir="ltr">.pdf to .mobi</td>
+                <td class="s2" dir="ltr">EBook</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the EBook Controller</td>
+                <td class="s2" dir="ltr">EbookFormat: &quot;mobi&quot;,<br>  FileContent: A .pdf file (A6)</td>
+                <td class="s2" rowspan="3" dir="ltr">A .mobi file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB5</td>
+                <td class="s2" dir="ltr">image to .mobi</td>
+                <td class="s2" dir="ltr">AccessibleConversion, EBook</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call EBook with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB4</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the TargetDocumentFormat set to &quot;OFF_PDF&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB6</td>
+                <td class="s2" dir="ltr">.html to .mobi</td>
+                <td class="s2" dir="ltr">HTMLToPDF, EBook</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call HTMLToPDF with the Input Paramters<br>2) Call EBook with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB4</span></td>
+                <td class="s2" dir="ltr">size: &quot;a4&quot;,<br>  FileContent: A valid .html file containing a table (A3)</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB7</td>
+                <td class="s2" dir="ltr">.docx to .epub3 with media overlay (WMO)</td>
+                <td class="s2" dir="ltr">DaisyConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One call to the DaisyConversion Controller</td>
+                <td class="s2" dir="ltr">DaisyOutput: &quot;Epub3WMO&quot;<br>  FileContent: A .docx file (A13)</td>
+                <td class="s2" rowspan="3" dir="ltr">A .epub file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB8</td>
+                <td class="s2" dir="ltr">.pdf to epub3 WMO</td>
+                <td class="s2" dir="ltr">AccessibleConversion, Daisy Conversion</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call DaisyConversion with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB7</span></td>
+                <td class="s2" dir="ltr">A .pdf file and the TargetDocumentFormat set to &quot;OFF_DOCX&quot; (A6)</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">EB9</td>
+                <td class="s2" dir="ltr">image to epub3 WMO</td>
+                <td class="s2" dir="ltr">AccessibleConversion, Daisy Conversion</td>
+                <td class="s2" dir="ltr">2 Component Controllers and Interaction</td>
+                <td class="s2" dir="ltr">1) Call AccessibleConversion with the Input Paramters<br>2) Call DaisyConversion with the output from step 1 and follow Test case:<span style="font-weight:bold;"> EB7</span></td>
+                <td class="s2" dir="ltr">An image (jpg, png, tiff) file containing text and the TargetDocumentFormat set to &quot;OFF_DOCX&quot; (A5)</td>
+            </tr>
+            <tr style='height:20px;'>
+                <th class="c22" dir="ltr" colspan="8">Accessibility Conversions</th>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">AC1</td>
+                <td class="s2" dir="ltr">.html tables to pdf</td>
+                <td class="s2" dir="ltr">HTMLToPDF</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to HTMLToPDF</td>
+                <td class="s2" dir="ltr">size: (A value from Valid Parameter Ranges from HTMLToPDF (HT)<br>  FileContent: A valid .html file containing only a table (A3)</td>
+                <td class="s2" dir="ltr">A .pdf file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">AC2</td>
+                <td class="s2" dir="ltr">.docx to text</td>
+                <td class="s2" dir="ltr">MSOfficeConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to MSOfficeConversion</td>
+                <td class="s2" dir="ltr">MSOfficeOutput: &quot;txt&quot;,<br>  FileContent: A .docx file (A12)</td>
+                <td class="s2" dir="ltr">A .txt file with the same name as the input file, containing only the text from the original document</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">AC3</td>
+                <td class="s2" dir="ltr">.pptx to text</td>
+                <td class="s2" dir="ltr">MSOfficeConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to MSOfficeConversion</td>
+                <td class="s2" dir="ltr">MSOfficeOutput: &quot;txt&quot;,<br>  FileContent: A .pptx file (A7)</td>
+                <td class="s2" dir="ltr">A .txt file with the same name as the input file, containing only the text from the original document</td>
+            </tr>
+            <tr style='height:20px;'>
+
+                <td class="s0" dir="ltr">AC4</td>
+                <td class="s2" dir="ltr">.rtf to text</td>
+                <td class="s2" dir="ltr">MSOfficeConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to MSOfficeConversion</td>
+                <td class="s2" dir="ltr">MSOfficeOutput: &quot;txt&quot;,<br>  FileContent: A .rtf file (A8)</td>
+                <td class="s2" dir="ltr">A .txt file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AC5</td>
+                <td class="s2" dir="ltr">text to .rtf</td>
+                <td class="s2" dir="ltr">MSOfficeConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to MSOfficeConversion</td>
+                <td class="s2" dir="ltr">MSOfficeOutput: &quot;rtf&quot;,<br>  FileContent: A .txt file (A2)</td>
+                <td class="s2" dir="ltr">A .rtf file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AC6</td>
+                <td class="s2" dir="ltr">any MS office to pdf </td>
+                <td class="s2" dir="ltr">MSOfficeConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to MSOfficeConversion</td>
+                <td class="s2" dir="ltr">MSOfficeOutput: &quot;pdf&quot;,<br>  FileContent: Any MS Office document (See Valid Parameter Ranges for MSOfficeConversion - MS) (A7, A8, A12, A13)</td>
+                <td class="s2" dir="ltr">A .pdf file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AC7</td>
+                <td class="s2" dir="ltr">.pdf to .docx</td>
+                <td class="s2" dir="ltr">AccessibleConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to AccessibleConversion</td>
+                <td class="s2" dir="ltr">TargetDocumentFormat&quot;: &quot;OFF_DOCX&quot;,<br>  FileContent: A .pdf file. (A6)</td>
+                <td class="s2" dir="ltr">A .docx file with the same name as the input file</td>
+            </tr>
+            <tr style='height:20px;'>
+                <td class="s0" dir="ltr">AC8</td>
+                <td class="s2" dir="ltr">image to text</td>
+                <td class="s2" dir="ltr">OcrConversion</td>
+                <td class="s2" dir="ltr">Component Controller</td>
+                <td class="s2" dir="ltr">One Call to OcrConversion</td>
+                <td class="s2" dir="ltr">OcrLanguage: &quot;enUS&quot;,<br>  FileContent: An image (jpg, png, tiff) file containing text in English (A5)</td>
+                <td class="s2" dir="ltr">A .txt file with the same name as the input file</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

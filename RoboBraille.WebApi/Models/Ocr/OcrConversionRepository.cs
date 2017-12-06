@@ -3,31 +3,40 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using Tesseract;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace RoboBraille.WebApi.Models
 {
     public class OcrConversionRepository : IRoboBrailleJob<OcrConversionJob>
     {
         private RoboBrailleDataContext _context;
-        private static Dictionary<Language, string> supportedLangs = new Dictionary<Language, string>();
+        private static Dictionary<Language, string> supportedLangs;
+
+        private static readonly string baseAddress = "http://160.40.50.183:80/";
+        private static readonly string service_url = baseAddress+"P4All/certhOCR/";
 
         public OcrConversionRepository()
         {
             _context = new RoboBrailleDataContext();
+            supportedLangs = new Dictionary<Language, string>();
+            supportedLangs.Add(Language.enUS, "eng");
+            supportedLangs.Add(Language.daDK, "dan");
         }
 
         public OcrConversionRepository(RoboBrailleDataContext context)
         {
             _context = context;
+            supportedLangs = new Dictionary<Language, string>();
+            supportedLangs.Add(Language.enUS, "eng");
+            supportedLangs.Add(Language.daDK, "dan");
         }
 
         public static IEnumerable<string> getOcrLanguages()
@@ -41,25 +50,12 @@ namespace RoboBraille.WebApi.Models
 
             return supportedLangs;
         }
-        public System.Threading.Tasks.Task<Guid> SubmitWorkItem(OcrConversionJob job)
+        public async System.Threading.Tasks.Task<Guid> SubmitWorkItem(OcrConversionJob job)
         {
-            supportedLangs.Add(Language.enUS, "eng");
-            supportedLangs.Add(Language.daDK, "dan");
-            if (job == null)
-                return null;
-
-            // TODO : REMOVE and use authenticated user id
-            //Guid uid;
-            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-            //job.UserId = uid;
-
             try
             {
-                //using (var context = new RoboBrailleDataContext())
-                //{
-                    _context.Jobs.Add(job);
-                    _context.SaveChanges();
-                //}
+                _context.Jobs.Add(job);
+                _context.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
@@ -68,70 +64,76 @@ namespace RoboBraille.WebApi.Models
             }
             var task = Task.Factory.StartNew(t =>
             {
-                bool success = true;
                 try
                 {
-                    if (!supportedLangs.ContainsKey(job.OcrLanguage))
+                    string mime = "text/plain";
+                    string fileExtension = ".txt";
+                    if (job.HasTable)
                     {
-                        throw new Exception("The input language is not supported by the ocr conversion tool");
+                        job = PostToCerth(job).Result;
+                        mime = "text/html";
+                        fileExtension = ".html";
                     }
-                    using (var engine = new TesseractEngine(ConfigurationManager.AppSettings["TessDataPath"], supportedLangs[job.OcrLanguage], EngineMode.Default))
+                    else
                     {
-                        MemoryStream stream = new MemoryStream();
-                        stream.Write(job.FileContent, 0, job.FileContent.Length);
-                        // have to load Pix via a bitmap since Pix doesn't support loading a stream.
-                        using (var image = new System.Drawing.Bitmap(stream))
+                        if (!supportedLangs.ContainsKey(job.OcrLanguage))
                         {
-                            using (var pix = PixConverter.ToPix(image))
+                            throw new Exception("The input language is not supported by the ocr conversion tool");
+                        }
+                        using (var engine = new TesseractEngine(ConfigurationManager.AppSettings["TessDataPath"], supportedLangs[job.OcrLanguage], EngineMode.Default))
+                        {
+                            MemoryStream stream = new MemoryStream();
+                            stream.Write(job.FileContent, 0, job.FileContent.Length);
+                            // have to load Pix via a bitmap since Pix doesn't support loading a stream.
+                            using (var image = new System.Drawing.Bitmap(stream))
                             {
-                                using (var page = engine.Process(pix))
+                                using (var pix = PixConverter.ToPix(image))
                                 {
-                                    job.ResultContent = Encoding.UTF8.GetBytes(page.GetText());
+                                    using (var page = engine.Process(pix))
+                                    {
+                                        job.ResultContent = Encoding.UTF8.GetBytes(page.GetText());
+                                    }
                                 }
                             }
                         }
-                    } 
-                    string mime = "text/plain";
-                    string fileExtension = ".txt";
-                    //using (var context = new RoboBrailleDataContext())
-                    //{
-                        job.DownloadCounter = 0;
-                        job.ResultFileExtension = fileExtension;
-                        job.ResultMimeType = mime;
-                        job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.Now;
-                        _context.Entry(job).State = EntityState.Modified;
-                        _context.SaveChanges();
-                    //}
+                        mime = "text/plain";
+                        fileExtension = ".txt";
+                    }
+                    job.DownloadCounter = 0;
+                    job.ResultFileExtension = fileExtension;
+                    job.ResultMimeType = mime;
+                    job.Status = JobStatus.Done;
+                    job.FinishTime = DateTime.Now;
+                    _context.Entry(job).State = EntityState.Modified;
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    success = false;
-                    Trace.WriteLine(ex.Message);
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw ex;
                 }
-
-                if (!success)
-                {
-                    try
-                    {
-                        RoboBrailleProcessor.SetJobFaulted(job, _context);
-                        //using (var context = new RoboBrailleDataContext())
-                        //{
-                            //job.Status = JobStatus.Error;
-                            //job.FinishTime = DateTime.UtcNow;
-                            //_context.Entry(job).State = EntityState.Modified;
-                            //_context.SaveChanges();
-                        //}
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex.Message);
-                    }
-                }
-
             }, job);
+            
+            return job.Id;
+        }
 
-            return Task.FromResult(job.Id);
+        public static async Task<OcrConversionJob> PostToCerth(OcrConversionJob job)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://160.40.50.183/");
+                var bac = new ByteArrayContent(job.FileContent);
+                bac.Headers.ContentType = MediaTypeHeaderValue.Parse("application/binary");
+                var mfdc = new MultipartFormDataContent();
+                mfdc.Add(bac, "fileToUpload", job.FileName);
+                var response = await client.PostAsync("P4All/certhOCR/",mfdc);
+                if (response.IsSuccessStatusCode)
+                {
+                    var htmlRes = await response.Content.ReadAsStringAsync();
+                    job.ResultContent = Encoding.UTF8.GetBytes(htmlRes);
+                }
+                return job;
+            }
         }
 
         public int GetWorkStatus(Guid jobId)
@@ -139,12 +141,10 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
+
             return (int)JobStatus.Error;
         }
 
@@ -153,23 +153,20 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
+            {
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
         }
 
 

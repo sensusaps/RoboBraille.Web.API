@@ -10,10 +10,11 @@ namespace RoboBraille.WebApi.Models
     public class LouisFacade : IDisposable
     {
         private string holder = null;
-        private static readonly Dictionary<Language, string[]> tableMapping = new Dictionary<Language, string[]>();
+        private static Dictionary<Language, string[]> tableMapping = new Dictionary<Language, string[]>();
 
         public LouisFacade()
         {
+            tableMapping = new Dictionary<Language, string[]>();
             tableMapping.Add(Language.itIT, new string[] { "it-it-comp8.utb", "it-it-comp6.utb" });
             tableMapping.Add(Language.plPL, new string[] { "Pl-Pl-g1.utb", "pl-pl-comp8.ctb" });
             tableMapping.Add(Language.ptPT, new string[] { "pt-pt-g1.utb", "pt-pt-g2.ctb", "pt-pt-comp8.ctb" });
@@ -99,7 +100,6 @@ namespace RoboBraille.WebApi.Models
             string searchContraction = "", searchDots = "8";
             switch (brailleContraction)
             {
-                case BrailleContraction.grade0: searchContraction = "g0"; break;
                 case BrailleContraction.grade1: searchContraction = "g1"; break;
                 case BrailleContraction.grade2: searchContraction = "g2"; break;
                 default: break;

@@ -11,16 +11,13 @@ using System.Web;
 using System.Web.Http;
 using iTextSharp.text;
 
-namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
+namespace RoboBraille.WebApi.Models
 {
-    public class DocumentStructurerepository : IRoboBrailleJob<DocumentStructureJob>
+    public class DocumentStructureRepository : IRoboBrailleJob<DocumentStructureJob>
     {
         private RoboBrailleDataContext _context;
-        public System.Threading.Tasks.Task<Guid> SubmitWorkItem(DocumentStructureJob job)
+        public async System.Threading.Tasks.Task<Guid> SubmitWorkItem(DocumentStructureJob job)
         {
-            if (job == null)
-                return null;
-
             try
             {
                 using (var context = new RoboBrailleDataContext())
@@ -53,7 +50,8 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
 
                     //get result and save to database
                     string result = null;
-                    foreach(Tuple<DocumentElement,string> tuple in elements) {
+                    foreach (Tuple<DocumentElement, string> tuple in elements)
+                    {
                         result += tuple.Item1.ToString() + " = " + tuple.Item2 + Environment.NewLine;
                     }
                     job.ResultContent = Encoding.UTF8.GetBytes(result);
@@ -91,7 +89,7 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
 
             }, job);
 
-            return Task.FromResult(job.Id);
+            return job.Id;
         }
 
         /// <summary>
@@ -99,7 +97,7 @@ namespace RoboBraille.WebApi.Models.DocumentStructureRecognition
         /// </summary>
         /// <param name="scannedDocument"></param>
         /// <returns></returns>
-        public Tuple<DocumentElement,string>[] MockRecognizeStructure(byte[] scannedDocument)
+        public Tuple<DocumentElement, string>[] MockRecognizeStructure(byte[] scannedDocument)
         {
             Dictionary<int, string> parts = SplitDocumentInParts(scannedDocument);
             Tuple<DocumentElement, string>[] result = new Tuple<DocumentElement, string>[parts.Count];

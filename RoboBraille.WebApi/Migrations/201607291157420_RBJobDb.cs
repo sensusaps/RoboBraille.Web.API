@@ -50,6 +50,9 @@ namespace RoboBraille.WebApi.Migrations
                         FromDate = c.DateTime(nullable: false),
                         ToDate = c.DateTime(nullable: false),
                         EmailAddress = c.String(nullable: false),
+                        Password = c.String(nullable: false),
+                        IsApproved = c.Boolean(nullable:false,defaultValue:false),
+                        UserRole = c.Int(defaultValue:2)
                     })
                 .PrimaryKey(t => t.UserId);
             

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Office.Core;
 using System.Configuration;
@@ -14,77 +13,106 @@ using System.IO;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.Diagnostics;
+using Spire.Presentation;
 
 namespace RoboBraille.WebApi.Models
 {
     public class OfficePresentationProcessor
     {
-        private static string FileDirectory = ConfigurationManager.AppSettings.Get("FileDirectory");
-        private static string guid = null;
-        private static RoboVideo.VideoConversionRepository vcr = new RoboVideo.VideoConversionRepository();
-        public byte[] ProcessDocument(string source, MSOfficeJob job)
+        //private static string FileDirectory = ConfigurationManager.AppSettings.Get("FileDirectory");
+        private AmaraSubtitleRepository vcr;
+
+        public OfficePresentationProcessor()
         {
-            guid = job.Id.ToString();
+            vcr = new AmaraSubtitleRepository();
+        }
+
+        public static void SavePPtxAsHtml(string sourceFile, string targetFile)
+        {
+            using (Spire.Presentation.Presentation ppt = new Spire.Presentation.Presentation())
+            {
+                ppt.LoadFromFile(sourceFile);
+                ppt.SaveToFile(targetFile, FileFormat.Html);
+            }
+            string newHtml = File.ReadAllText(targetFile);
+            string toMatch = "Evaluation Warning : The document was created with  Spire.Presentation for .NET";
+            newHtml = newHtml.Replace(toMatch, "");
+            File.WriteAllText(targetFile, newHtml);
+        }
+
+        public static byte[] ProcessDocument(string source, MSOfficeJob job)
+        {
+            var guid = job.Id.ToString();
 
             byte[] result = null;
-            Application app = new Application();
-            var pres = app.Presentations.Open(source, MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoFalse);
             if (job.MSOfficeOutput.Equals(MSOfficeOutput.html))
             {
+                var tempDirectory = Path.Combine(Path.GetTempPath(), guid);
+                var tempZipFile = Path.Combine(Path.GetTempPath(), guid + ".zip");
                 try
                 {
-                    pres.SaveCopyAs(FileDirectory + @"Temp\" + guid + ".html", PpSaveAsFileType.ppSaveAsHTML, MsoTriState.msoCTrue);
-                    result = File.ReadAllBytes(FileDirectory + @"Temp\" + guid + ".html");
-                    File.Delete(FileDirectory + @"Temp\" + guid + ".html");
-                }
-                catch
-                {
+                    Application app = new Application();
+                    app.DisplayAlerts = PpAlertLevel.ppAlertsNone;
+                    var pres = app.Presentations.Open(source, MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoFalse);
+                    pres.SaveCopyAs(tempDirectory, PpSaveAsFileType.ppSaveAsHTML, MsoTriState.msoCTrue);
+                    pres.Close();
+                    app.Quit();
+                    app = null;
 
+                    ZipFile.CreateFromDirectory(tempDirectory, tempZipFile);
+                    result = File.ReadAllBytes(tempZipFile);
+                }
+                catch (Exception e)
+                {
+                    //an exception is thrown if the powerpoint version is too new and does not support save as HTML
+                    //instead use spire presentation
+                    var tempFile = Path.Combine(Path.GetTempPath(), guid + ".html");
+                    SavePPtxAsHtml(source, tempFile);
+                    result = File.ReadAllBytes(tempFile);
+                    if (File.Exists(tempFile))
+                        File.Delete(tempFile);
+                }
+                finally
+                {
+                    if (Directory.Exists(tempDirectory))
+                        Directory.Delete(tempDirectory, true);
+                    if (File.Exists(tempZipFile))
+                        File.Delete(tempZipFile);
                 }
             }
-            else
-                if (job.MSOfficeOutput.Equals(MSOfficeOutput.rtf))
+            else if (job.MSOfficeOutput.Equals(MSOfficeOutput.rtf))
+            {
+                var tempFile = Path.Combine(Path.GetTempPath(), guid + ".rtf");
+                try
                 {
-                    pres.SaveCopyAs(FileDirectory + @"Temp\" + guid + ".rtf", PpSaveAsFileType.ppSaveAsRTF, MsoTriState.msoCTrue);
-                    result = File.ReadAllBytes(FileDirectory + @"Temp\" + guid + ".rtf");
-                    File.Delete(FileDirectory + @"Temp\" + guid + ".rtf");
+                    Application app = new Application();
+                    app.DisplayAlerts = PpAlertLevel.ppAlertsNone;
+                    var pres = app.Presentations.Open(source, MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoFalse);
+                    pres.SaveCopyAs(tempFile, PpSaveAsFileType.ppSaveAsRTF, MsoTriState.msoCTrue);
+                    pres.Close();
+                    app.Quit();
+                    app = null;
+                    result = File.ReadAllBytes(tempFile);
                 }
-                else
-                    if (job.MSOfficeOutput.Equals(MSOfficeOutput.txt))
-                    {
-                        if (job.SubtitleLangauge != null && job.SubtitleFormat != null)
-                        {
-                            //maybe surround this with a try catch
-                            try
-                            {
-                                Directory.CreateDirectory(FileDirectory + "Temp\\" + guid);
-                                string text = "";
-                                foreach (KeyValuePair<int, string> val in ProcessPPTXWithVideo(source, job))
-                                {
-                                    text = text + val.Value + Environment.NewLine;
-                                }
-                                File.WriteAllText(FileDirectory + @"Temp\" + guid + "\\" + job.FileName + ".txt", text);
-                                string ZipFilePath = FileDirectory + @"Temp\" + guid + ".zip";
-                                ZipFile.CreateFromDirectory(FileDirectory + @"Temp\" + guid, ZipFilePath);
-                                result = File.ReadAllBytes(ZipFilePath);
-                                Directory.Delete(FileDirectory + "Temp\\" + guid,true);
-                                File.Delete(ZipFilePath);
-                            }
-                            catch (Exception e)
-                            {
-                                
-                            }
-                        }
-                        else
-                        {
-                            string text = "";
-                            foreach (KeyValuePair<int, string> val in ExtractText(source))
-                            {
-                                text = text + val.Value + Environment.NewLine;
-                            }
-                            result = Encoding.UTF8.GetBytes(text);
-                        }
-                    }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (File.Exists(tempFile))
+                        File.Delete(tempFile);
+                }
+            }
+            else if (job.MSOfficeOutput.Equals(MSOfficeOutput.txt))
+            {
+                string text = "";
+                foreach (KeyValuePair<int, string> val in ExtractText(source))
+                {
+                    text = text + val.Value + Environment.NewLine;
+                }
+                result = Encoding.UTF8.GetBytes(text);
+            }
             return result;
         }
 
@@ -127,7 +155,7 @@ namespace RoboBraille.WebApi.Models
             return TextContent;
         }
 
-        public bool ContainsVideo(string source)
+        public static bool ContainsVideo(string source)
         {
             using (PresentationDocument ppt = PresentationDocument.Open(source, false))
             {
@@ -143,6 +171,41 @@ namespace RoboBraille.WebApi.Models
             return false;
         }
 
+        public byte[] ProcessPPTXWithVideo(string source, MSOfficeJob job)
+        {
+            var guid = job.Id.ToString();
+            byte[] result = null;
+            var tempDirectory = Path.Combine(Path.GetTempPath(), guid);
+            var tempZipFile = Path.Combine(Path.GetTempPath(), guid + ".zip");
+            try
+            {
+
+                Directory.CreateDirectory(tempDirectory);
+                string text = "";
+                foreach (KeyValuePair<int, string> val in ProcessVideoParts(source, job,tempDirectory).Result)
+                {
+                    text = text + val.Value + Environment.NewLine;
+                }
+
+                File.WriteAllText(Path.Combine(tempDirectory, job.FileName + ".txt"), text);
+
+                ZipFile.CreateFromDirectory(tempDirectory, tempZipFile);
+                result = File.ReadAllBytes(tempZipFile);
+            }
+            catch (Exception e)
+            {
+                result = null;
+            }
+            finally
+            {
+                if (Directory.Exists(tempDirectory))
+                    Directory.Delete(tempDirectory, true);
+                if (File.Exists(tempZipFile))
+                    File.Delete(tempZipFile);
+            }
+            return result;
+        }
+
         /// <summary>
         /// Consider two output types:
         /// .txt if pptx doesn't contain videos 
@@ -150,7 +213,7 @@ namespace RoboBraille.WebApi.Models
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        private static Dictionary<int, string> ProcessPPTXWithVideo(string source, MSOfficeJob job)
+        public async Task<Dictionary<int, string>> ProcessVideoParts(string source, MSOfficeJob job,string tempDirectory)
         {
             Dictionary<int, string> TextContent = new Dictionary<int, string>();
             int index = 1;
@@ -182,14 +245,14 @@ namespace RoboBraille.WebApi.Models
                             videoBytes = br.ReadBytes((int)s.Length);
                         }
                         //write video to result directory
-                        File.WriteAllBytes(FileDirectory + "Temp\\" + guid + "\\" + filename, videoBytes);
+                        File.WriteAllBytes(Path.Combine(tempDirectory, filename), videoBytes);
 
                         //send to amara
                         string langauge = "en-us";
                         if (ppt.PackageProperties.Language != null)
                             langauge = ppt.PackageProperties.Language;
 
-                        RoboVideo.VideoJob vj = new RoboVideo.VideoJob()
+                        AmaraSubtitleJob vj = new AmaraSubtitleJob()
                         {
                             SubmitTime = DateTime.Now,
                             FinishTime = DateTime.Now,
@@ -199,29 +262,22 @@ namespace RoboBraille.WebApi.Models
                             UserId = job.UserId,
                             DownloadCounter = 0,
                             FileContent = videoBytes,
-                            InputFileHash = RoboBrailleProcessor.GetInputFileHash(videoBytes),
+                            InputFileHash = RoboBrailleProcessor.GetMD5Hash(videoBytes),
                             SubtitleFormat = job.SubtitleFormat,
                             SubtitleLangauge = job.SubtitleLangauge,
-                            FileName = guid + "-" + filename.Substring(0, filename.LastIndexOf('.')),
+                            FileName = job.Id.ToString() + "-" + filename.Substring(0, filename.LastIndexOf('.')),
                             FileExtension = filename.Substring(filename.LastIndexOf('.') + 1)
                         };
 
                         //retrieve the message from amara
                         byte[] filebytes = null;
                         Guid subtitleJobId = vcr.SubmitWorkItem(vj).Result;
-                        //try
-                        //{
-                            while (vcr.GetWorkStatus(subtitleJobId) == 2)
-                            {
-                                Task.Delay(2000); //don't think that this actually works
-                            }
-                        //}
-                        //catch (Exception e)
-                        //{
-                        //    Trace.WriteLine(e);
-                        //}
+                        while (vcr.GetWorkStatus(subtitleJobId) == 2)
+                        {
+                            await Task.Delay(2000); 
+                        }
                         filebytes = vcr.GetResultContents(subtitleJobId).getFileContents();
-                        File.WriteAllBytes(FileDirectory + "Temp\\" + guid + "\\" + filename.Substring(0, filename.LastIndexOf('.')) + vj.ResultFileExtension, filebytes);
+                        File.WriteAllBytes(Path.Combine(tempDirectory,filename.Substring(0, filename.LastIndexOf('.')) + vj.ResultFileExtension), filebytes);
 
                         slide.Slide.CommonSlideData.ShapeTree.AppendChild(
                             new ShapeProperties(

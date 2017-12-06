@@ -21,6 +21,8 @@ namespace RoboBraille.WebApi.Models
         //21.09.2016 added virtual
         public virtual DbSet<Job> Jobs { get; set; }
         public virtual DbSet<ServiceUser> ServiceUsers { get; set; }
+
+        public System.Data.Entity.DbSet<RoboBraille.WebApi.Models.LoginServiceUser> LoginServiceUsers { get; set; }
     }
 
 }

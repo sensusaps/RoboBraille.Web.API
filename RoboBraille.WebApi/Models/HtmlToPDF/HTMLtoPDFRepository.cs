@@ -9,6 +9,7 @@ using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
@@ -37,12 +38,12 @@ namespace RoboBraille.WebApi.Models
             _context = context;
         }
 
-        public Task<Guid> SubmitWorkItem(HTMLtoPDFJob job)
+        public async Task<Guid> SubmitWorkItem(HTMLtoPDFJob job)
         {
             iTextSharp.text.Rectangle pageSize = PageSize.A4;
 
             if (job == null)
-                return null;
+                throw new Exception("html to pdf job is null");
 
             switch (job.paperSize)
             {
@@ -81,47 +82,17 @@ namespace RoboBraille.WebApi.Models
                     break;
             }
 
-
-
-
-
             try
             {
-                // TODO : REMOVE and use authenticated user id
-                //Guid uid;
-                //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-                //job.UserId = uid;
-
-                //using (var context = new RoboBrailleDataContext())
-                //{
-                try
-                {
-                    _context.Jobs.Add(job);
-                    _context.SaveChanges();
-                }
-                catch (DbEntityValidationException dbEx)
-                {
-                    foreach (var validationErrors in dbEx.EntityValidationErrors)
-                    {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                        }
-                    }
-                    throw dbEx;
-                }
-
-                //}
+                _context.Jobs.Add(job);
+                _context.SaveChanges();
             }
-            catch (Exception ex)
+            catch (DbEntityValidationException ex)
             {
-                Console.WriteLine(ex);
+                string errorMessages = string.Join("; ", ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage));
+                throw new DbEntityValidationException(errorMessages);
             }
-
-
-
-
-
+            
             var task = Task.Factory.StartNew(t =>
             {
                 HTMLtoPDFJob ebJob = (HTMLtoPDFJob)t;
@@ -163,15 +134,27 @@ namespace RoboBraille.WebApi.Models
                         tagProcessors.AddProcessor(HTML.Tag.TABLE, new TableTagProcessor());
                         tagProcessors.AddProcessor(HTML.Tag.TH, new THTagProcessor());
 
-                        string colorProfilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/colors/sRGB.profile");
-                        string defaultCSSPath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/css/default.css");
-
+                        string colorProfilePath = null;
+                        string defaultCSSPath = null;
+                        try
+                        {
+                            colorProfilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/colors/sRGB.profile");
+                            defaultCSSPath = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data/css/default.css");
+                        }
+                        catch (Exception e)
+                        {
+                            colorProfilePath = Path.Combine(ConfigurationManager.AppSettings.Get("ProjectDirectory"), "App_Data/colors/sRGB.profile");
+                            defaultCSSPath = Path.Combine(ConfigurationManager.AppSettings.Get("ProjectDirectory"), "App_Data/css/default.css");
+                        }
                         //Setup color profile
-                        ICC_Profile icc = ICC_Profile.GetInstance(new FileStream(colorProfilePath, FileMode.Open, FileAccess.Read));
-                        pdfWriter.SetOutputIntents("Custom", "", "http://www.color.org", "sRGB IEC61966-2.1", icc);
-                        var xmlWorkerHelper = XMLWorkerHelper.GetInstance();
                         var cssResolver = new StyleAttrCSSResolver();
-                        cssResolver.AddCssFile(defaultCSSPath, true);// CSS with default style for all converted docs
+                        if (colorProfilePath != null && defaultCSSPath != null)
+                        {
+                            ICC_Profile icc = ICC_Profile.GetInstance(new FileStream(colorProfilePath, FileMode.Open, FileAccess.Read));
+                            pdfWriter.SetOutputIntents("Custom", "", "http://www.color.org", "sRGB IEC61966-2.1", icc);
+                            var xmlWorkerHelper = XMLWorkerHelper.GetInstance();
+                            cssResolver.AddCssFile(defaultCSSPath, true);// CSS with default style for all converted docs
+                        }
 
                         //Register system fonts
                         var xmlWorkerFontProvider = new XMLWorkerFontProvider();
@@ -202,18 +185,10 @@ namespace RoboBraille.WebApi.Models
                         //Data as byte array
                         byte[] fileData = fsOut.ToArray();
 
-                        //For Test. Save file to temp
-                        //BinaryWriter Writer = new BinaryWriter(File.OpenWrite(tempfile + ".pdf"));             
-                        //Writer.Write(fileData);
-                        //Writer.Flush();
-                        //Writer.Close();
-
                         try
                         {
                             string mime = "application/pdf";
                             string fileExtension = ".pdf";
-                            //using (var context = new RoboBrailleDataContext())
-                            //{
                             ebJob.DownloadCounter = 0;
                             ebJob.ResultFileExtension = fileExtension;
                             ebJob.ResultMimeType = mime;
@@ -223,43 +198,29 @@ namespace RoboBraille.WebApi.Models
                             _context.Jobs.Attach(ebJob);
                             _context.Entry(job).State = EntityState.Modified;
                             _context.SaveChanges();
-
-                            //}
                         }
                         catch (Exception ex)
                         {
-                            Trace.WriteLine(ex.Message);
+                            RoboBrailleProcessor.SetJobFaulted(job, _context);
                             throw ex;
                         }
                     }
                     else
                     {
+                        RoboBrailleProcessor.SetJobFaulted(job, _context);
                         //Error No HTML file to convert
                         throw new Exception("Error No HTML file to convert");
                     }
-
-
-
                 }
                 catch (Exception e)
                 {
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
                     //ignore
                     throw e;
                 }
-                finally
-                {
-                    //File.Delete(tempfile + ".html");
-                }
+            }, job);
 
-
-
-            }, job).ContinueWith(t =>
-            {
-
-            }, TaskContinuationOptions.OnlyOnFaulted);
-
-            return Task.FromResult(job.Id);
-
+            return job.Id;
         }
 
         public int GetWorkStatus(Guid jobId)
@@ -282,8 +243,6 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
             var job = (HTMLtoPDFJob)_context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
             if (job == null || job.ResultContent == null)
                 return null;
@@ -322,7 +281,6 @@ namespace RoboBraille.WebApi.Models
                 throw e;
             }
             return result;
-            //}
         }
 
 

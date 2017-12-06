@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="RSSoapServiceSoap" contract="ABBYY.RSSoapServiceSoap" bindingType="basicHttpBinding" address="http://192.168.1.75/Recognition3WS/RSSoapService.asmx" bindingConfiguration="RSSoapServiceSoap">
+    <endpoint name="RSSoapServiceSoap" contract="ABBYY.RSSoapServiceSoap" bindingType="basicHttpBinding" address="http://127.0.0.1/Recognition3WS/RSSoapService.asmx" bindingConfiguration="RSSoapServiceSoap">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://192.168.1.75/Recognition3WS/RSSoapService.asmx</serializedValue>
+          <serializedValue>http://127.0.0.1/Recognition3WS/RSSoapService.asmx</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

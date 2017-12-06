@@ -108,8 +108,8 @@ namespace OfficeToPDF
                 activeDoc.ExportAsFixedFormat(VisFixedFormatTypes.visFixedFormatPDF, outputFile, quality, VisPrintOutRange.visPrintAll, 1, -1, false, true, includeProps, includeTags, pdfa);
                 activeDoc.Close();
 
-                Converter.releaseCOMObject(documents);
-                Converter.releaseCOMObject(activeDoc);
+                Converter.ReleaseCOMObject(documents);
+                Converter.ReleaseCOMObject(activeDoc);
                 return (int)ExitCode.Success;
             }
             catch (Exception e)
@@ -127,7 +127,7 @@ namespace OfficeToPDF
                 {
                     app.Quit();
                 }
-                Converter.releaseCOMObject(app);
+                Converter.ReleaseCOMObject(app);
             }
         }
     }

@@ -1,0 +1,78 @@
+﻿@model IEnumerable<RoboBraille.WebApi.Models.Job>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@if (Session["role"] != null && (int)Session["role"]==1)
+{
+    <p>
+        <!--Input your userID here-->
+        @using (Html.BeginForm("Index", "Jobs", FormMethod.Post))
+        {
+            <label for="userid">Enter User ID</label>
+            <input id="UserId" name="UserId" type="text" />
+            <button type="submit" id="getJobs">Submit</button>
+        }
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubmitTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FinishTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DownloadCounter)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubmitTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinishTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DownloadCounter)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

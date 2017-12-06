@@ -11,11 +11,17 @@ using System.Web;
 
 namespace RoboBraille.WebApi.Models
 {
+
     /// <summary>
     /// A repository class of text processing methods
     /// </summary>
     public class RoboBrailleProcessor
     {
+        public static void WriteMessageToLog(string message)
+        {
+            File.AppendAllText(@"C:\RoboBrailleWebApi\log.txt", "On:"+DateTime.Now.ToString()+Environment.NewLine+ message + Environment.NewLine + Environment.NewLine);
+        }
+
         private static readonly Dictionary<int, char> SixDotNumberMapping = new Dictionary<int, char> {
             {0, (char)0x281A},
             {1, (char)0x2801},
@@ -29,7 +35,7 @@ namespace RoboBraille.WebApi.Models
             {9, (char)0x280A},
             {-1, (char)0x283C}
     };
-        public static byte[] GetInputFileHash(byte[] file)
+        public static byte[] GetMD5Hash(byte[] file)
         {
             using (var md5 = MD5.Create())
             {
@@ -106,7 +112,7 @@ namespace RoboBraille.WebApi.Models
                             context.SaveChanges();
                         }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     // ignored
                 }
@@ -144,6 +150,7 @@ namespace RoboBraille.WebApi.Models
                 context.Jobs.Attach(job);
                 context.Entry(job).State = EntityState.Modified;
                 context.SaveChanges();
+                WriteMessageToLog("Job Faulted: " + job.FileName + " ID: " + job.Id+ " UserID: "+job.UserId);
             }
             catch (Exception)
             {
@@ -183,27 +190,49 @@ namespace RoboBraille.WebApi.Models
                 case Language.enUS:
                 case Language.deDE:
                 case Language.esES:
+                case Language.esCO:
                 case Language.frFR:
                 case Language.itIT:
                 case Language.ptPT:
                 case Language.daDK:
-                case Language.nnNO:
+                case Language.nlNL:
                 case Language.nbNO:
                 case Language.isIS:
                 case Language.svSE:
+                case Language.klGL:
+                case Language.cyGB:
+                    res = Encoding.GetEncoding(1252);
+                    break;
+                case Language.fiFI:
                     res = Encoding.GetEncoding(1252);
                     break;
                 case Language.slSI:
                 case Language.huHU:
                 case Language.plPL:
                 case Language.roRO:
+                case Language.czCZ:
+                case Language.skSK:
                     res = Encoding.GetEncoding(1250);
                     break;
                 case Language.ltLT:
                     res = Encoding.GetEncoding(1257);
                     break;
+                case Language.arEG:
+                    res = Encoding.GetEncoding(1256);
+                    break;
+                case Language.zhCN:
+                case Language.zhHK:
+                case Language.zhTW:
+                    res = Encoding.Unicode;
+                    break;
+                case Language.jaJP:
+                    res = Encoding.UTF8;
+                    break;
+                case Language.koKR:
+                    res = Encoding.UTF8;
+                    break;
                 default:
-                    res = Encoding.ASCII;
+                    res = Encoding.Unicode;
                     break;
             }
             return res;

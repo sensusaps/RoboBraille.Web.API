@@ -50,24 +50,49 @@ namespace AudioAgent
                 case Language.enUS:
                 case Language.deDE:
                 case Language.esES:
+                case Language.esCO:
                 case Language.frFR:
                 case Language.itIT:
                 case Language.ptPT:
                 case Language.daDK:
-                case Language.nnNO:
+                case Language.nlNL:
+                case Language.nbNO:
                 case Language.isIS:
-                case Language.klGL:
                 case Language.svSE:
+                case Language.klGL:
+                case Language.cyGB:
+                    res = Encoding.GetEncoding(1252);
+                    break;
+                case Language.fiFI:
                     res = Encoding.GetEncoding(1252);
                     break;
                 case Language.slSI:
                 case Language.huHU:
                 case Language.plPL:
                 case Language.roRO:
+                case Language.czCZ:
+                case Language.skSK:
                     res = Encoding.GetEncoding(1250);
                     break;
+                case Language.ltLT:
+                    res = Encoding.GetEncoding(1257);
+                    break;
+                case Language.arEG:
+                    res = Encoding.GetEncoding(1256);
+                    break;
+                case Language.zhCN:
+                case Language.zhHK:
+                case Language.zhTW:
+                    res = Encoding.Unicode;
+                    break;
+                case Language.jaJP:
+                    res = Encoding.UTF8;
+                    break;
+                case Language.koKR:
+                    res = Encoding.UTF8;
+                    break;
                 default:
-                    res = Encoding.ASCII;
+                    res = Encoding.Unicode;
                     break;
             }
             return res;

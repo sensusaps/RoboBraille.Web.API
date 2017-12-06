@@ -1,5 +1,5 @@
 ﻿//controller variables
-var url = '';//server: http://2.109.50.18:5150 or development: http://localhost:35015
+var url = 'http://2.109.50.18:5150';
 
 var apiPaths = {
     accessibleConversion: url + '/api/AccessibleConversion',
@@ -58,7 +58,7 @@ app.controller('roboAppController', ['$scope', '$timeout', '$window', '$q', 'htt
             $scope.acc = data.acc[0];
 
             //ebook
-            $scope.ebookformats = [{ id: 2, name: 'Epub3 WMO' }, { id: 2, name: 'Epub' }, { id: 1, name: 'Mobi' }];
+            $scope.ebookformats = [{ id: 2, name: 'Epub3 WMO' }, { id: 2, name: 'Epub' }, { id: 1, name: 'Mobi' }, { id: 3, name: 'Epub to Txt' }, { id: 4, name: 'Epub to Rtf' }];
             $scope.ebook = $scope.ebookformats[0];
 
             //braille
@@ -95,7 +95,7 @@ app.controller('roboAppController', ['$scope', '$timeout', '$window', '$q', 'htt
             minFileCount: 1,
             maxFileCount: 1,
             //TODO check if to keep this method or go to the todo below
-            allowedFileExtensions: ['docx', 'doc', 'pdf', 'doc', 'txt', 'png', 'gif', 'jpg', 'jpeg', 'html', 'bmp', 'tiff', 'rtf', 'xls', 'xlsx', 'csv', 'ppt', 'pptx']
+            allowedFileExtensions: ['docx', 'doc', 'pdf', 'doc', 'txt', 'png', 'gif', 'jpg', 'jpeg', 'html', 'bmp', 'tiff', 'rtf', 'xls', 'xlsx', 'csv', 'ppt', 'pptx','epub']
         }).off('filepreupload').on('filepreupload', function (event, data, previewId, index) {
             $scope.inputStepClick(0);
             if ($scope.fileTypeError) {
@@ -111,6 +111,10 @@ app.controller('roboAppController', ['$scope', '$timeout', '$window', '$q', 'htt
         $('#file-upload').on('fileloaded', function (event, file, previewId, index, reader) {
             //when file is loaded from computer
             $scope.myFile = file;
+
+            if ($scope.myFile.name.match("/epub$/")) {
+                $scope.myFile.type = 'application/epub+zip'
+            }
         });
         //$('#file-upload').keyup(function (e) {
         //    var keyID = e.which;
@@ -331,6 +335,13 @@ app.controller('roboAppController', ['$scope', '$timeout', '$window', '$q', 'htt
                     }
                     $scope.accformats = newArr;
                     break;
+                case 'application/epub+zip':
+                    $scope.showOptionAudio = false;
+                    $scope.showOptionBraille = false;
+                    $scope.showOptionDaisy = false;
+                    $scope.showOptionEbook = true;
+                    $scope.showOptionAC = false;
+                    break;
                 default:
                     $scope.showOptionAudio = false;
                     $scope.showOptionBraille = false;
@@ -405,7 +416,6 @@ app.controller('roboAppController', ['$scope', '$timeout', '$window', '$q', 'htt
             case 5: //e-book
                 $scope.showFileToAudio = false;
                 $scope.showAccConv = false;
-                $scope.showEBook = false;
                 $scope.showEBook = true;
                 $scope.showBraille = false;
                 $scope.showDaisy = false;

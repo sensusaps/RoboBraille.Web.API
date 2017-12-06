@@ -691,6 +691,10 @@ namespace RoboBraille.WebApi.ABBYY {
         
         /// <remarks/>
         OFF_EPUB,
+
+        OFF_UTF16,
+
+        OFF_UTF8
     }
     
     /// <remarks/>

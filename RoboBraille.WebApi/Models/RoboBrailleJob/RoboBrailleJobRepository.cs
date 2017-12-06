@@ -26,12 +26,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
             return (int)JobStatus.Error;
         }
         public FileResult GetResultContents(Guid jobId)
@@ -39,23 +36,20 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
+            {
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
         }
 
         public RoboBrailleDataContext GetDataContext()

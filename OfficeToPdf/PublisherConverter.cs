@@ -56,7 +56,7 @@ namespace OfficeToPDF
                 {
                     var activeWin = app.ActiveWindow;
                     activeWin.Visible = false;
-                    Converter.releaseCOMObject(activeWin);
+                    Converter.ReleaseCOMObject(activeWin);
                 }
                 app.Open(inputFile, nowrite, false, PbSaveOptions.pbDoNotSaveChanges);
                 PbFixedFormatIntent quality = PbFixedFormatIntent.pbIntentStandard;
@@ -78,7 +78,7 @@ namespace OfficeToPDF
                 activeDocument.ExportAsFixedFormat(PbFixedFormatType.pbFixedFormatTypePDF, outputFile, quality, includeProps, -1, -1, -1, -1, -1, -1, -1, true, PbPrintStyle.pbPrintStyleDefault, includeTags, true, pdfa);
                 activeDocument.Close();
 
-                Converter.releaseCOMObject(activeDocument);
+                Converter.ReleaseCOMObject(activeDocument);
                 return (int)ExitCode.Success;
             }
             catch (Exception e)
@@ -96,7 +96,7 @@ namespace OfficeToPDF
                 {
                     ((Microsoft.Office.Interop.Publisher._Application)app).Quit();
                 }
-                Converter.releaseCOMObject(app);
+                Converter.ReleaseCOMObject(app);
             }
         }
     }

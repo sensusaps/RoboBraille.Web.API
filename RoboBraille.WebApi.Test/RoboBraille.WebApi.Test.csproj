@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -16,6 +17,8 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,10 +42,6 @@
       <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="edtftpnet-1.2.2, Version=1.2.2.0, Culture=neutral, PublicKeyToken=4b0c991f43097782">
-      <HintPath>..\packages\edtFTPnet.1.2.2\lib\edtftpnet-1.2.2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -59,9 +58,8 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=3.5.6.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
@@ -70,6 +68,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -78,10 +78,12 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -98,38 +100,57 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AsyncTestSetup.cs" />
-    <Compile Include="InputSourceRepository.cs" />
-    <Compile Include="RoboBrailleFTP\RbFTPRepository.cs" />
-    <Compile Include="RoboBrailleFTP\SensusRequest.cs" />
-    <Compile Include="PostTests\TestAudioJob.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="RoboBrailleAPI\RabbitMQCluster.cs" />
+    <Compile Include="TestModels\TestHtmlToTextWorkflow.cs" />
+    <Compile Include="TestModels\TestOfficeWorkflows.cs" />
+    <Compile Include="TestModels\TestHtmlToPdfWorkflow.cs" />
+    <Compile Include="TestModels\TestOcrWorkflows.cs" />
+    <Compile Include="TestOther\AsyncTestSetup.cs" />
+    <Compile Include="RoboBrailleAPI\IOController.cs" />
+    <Compile Include="TestControllers\TestAudioJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PostTests\TestBraille.cs" />
-    <Compile Include="PostTests\TestAccessibleConversion.cs" />
-    <Compile Include="PostTests\TestDaisy.cs" />
-    <Compile Include="PostTests\TestEBook.cs" />
-    <Compile Include="PostTests\TestHtmlToPDF.cs" />
-    <Compile Include="PostTests\TestHtmlToText.cs" />
-    <Compile Include="PostTests\TestMSOfficeConversion.cs" />
-    <Compile Include="PostTests\TestOcr.cs" />
-    <Compile Include="TestAuthentication.cs" />
-    <Compile Include="TestRoboBrailleProcessor.cs" />
-    <Compile Include="TestMultipartFormDataFormatter.cs" />
-    <Compile Include="Workflows\TestAccessibilityWorkflows.cs" />
-    <Compile Include="Workflows\TestAudioWorkflows.cs" />
-    <Compile Include="Workflows\TestBrailleWorkflows.cs" />
-    <Compile Include="Workflows\TestDaisyWorkflows.cs" />
-    <Compile Include="Workflows\TestEbookWorkflows.cs" />
+    <Compile Include="TestControllers\TestBraille.cs" />
+    <Compile Include="TestControllers\TestAccessibleConversion.cs" />
+    <Compile Include="TestControllers\TestDaisy.cs" />
+    <Compile Include="TestControllers\TestEBook.cs" />
+    <Compile Include="TestControllers\TestHtmlToPDF.cs" />
+    <Compile Include="TestControllers\TestHtmlToText.cs" />
+    <Compile Include="TestControllers\TestMSOfficeConversion.cs" />
+    <Compile Include="TestControllers\TestOcr.cs" />
+    <Compile Include="TestOther\TestAuthentication.cs" />
+    <Compile Include="TestOther\TestRoboBrailleProcessor.cs" />
+    <Compile Include="TestOther\TestMultipartFormDataFormatter.cs" />
+    <Compile Include="TestModels\TestAccessibilityWorkflows.cs" />
+    <Compile Include="TestModels\TestAudioWorkflows.cs" />
+    <Compile Include="TestModels\TestBrailleWorkflows.cs" />
+    <Compile Include="TestModels\TestDaisyWorkflows.cs" />
+    <Compile Include="TestModels\TestEbookWorkflows.cs" />
+    <Compile Include="TestOther\TestInterfaces.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RoboBraille.WebApi\RoboBraille.WebApi.csproj">
       <Project>{21fe7177-21be-4c60-9dfe-1ff32fb801c4}</Project>
       <Name>RoboBraille.WebApi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FilesInput\" />
+    <Folder Include="FilesOutput\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -151,6 +172,12 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

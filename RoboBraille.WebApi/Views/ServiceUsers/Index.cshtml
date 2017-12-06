@@ -6,7 +6,7 @@
 }
 
 <h2>Index</h2>
-
+    <!--Input your userID here-->
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -14,6 +14,9 @@
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsApproved)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FromDate)
@@ -33,6 +36,9 @@
             @Html.DisplayFor(modelItem => item.UserName)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.IsApproved)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.FromDate)
         </td>
         <td>
@@ -50,5 +56,3 @@
 }
 
 </table>
-@section scripts {
-}

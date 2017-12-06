@@ -19,26 +19,23 @@ using System.Configuration;
 
 namespace RoboBraille.WebApi.Models
 {
-    /*
-     The RESTful API is the entry point. Each of the above mentioned service is represented by its own API Controller, 
-     some to a finer granularity. The Controller classes are responsible for quality. 
-     The repository classes in the models use other classes in support of doing the actual work 
-     and saving the information to the database.
-    */
+    /// <summary>
+    /// The RESTful API is the entry point. Each of the above mentioned service is represented by its own API Controller, 
+    /// some to a finer granularity.The Controller classes are responsible for quality.
+    /// The repository classes in the models use other classes in support of doing the actual work
+    /// and saving the information to the database.
+    /// </summary>
     public class AccessibleConversionRepository : IRoboBrailleJob<AccessibleConversionJob>
     {
         private RoboBrailleDataContext _context;
-        //private RSSoapServiceSoapClient _wsClient;
         public AccessibleConversionRepository()
         {
             _context = new RoboBrailleDataContext();
-            //_wsClient = new RSSoapServiceSoapClient();
         }
 
-        public AccessibleConversionRepository(RoboBrailleDataContext context/*, RSSoapServiceSoapClient wsClient*/)
+        public AccessibleConversionRepository(RoboBrailleDataContext context)
         {
             _context = context;
-            //_wsClient = (RSSoapServiceSoapClient)wsClient;
         }
 
         public RoboBrailleDataContext GetDataContext()
@@ -51,19 +48,16 @@ namespace RoboBraille.WebApi.Models
         }
         public async Task<Guid> SubmitWorkItem(AccessibleConversionJob accessibleJob)
         {
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                try
-                {
-                    _context.Jobs.Add(accessibleJob);
-                    _context.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    string errorMessages = string.Join("; ", ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage));
-                    throw new DbEntityValidationException(errorMessages);
-                }
-            //}
+            try
+            {
+                _context.Jobs.Add(accessibleJob);
+                _context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                string errorMessages = string.Join("; ", ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage));
+                throw new DbEntityValidationException(errorMessages);
+            }
 
             // send the job to OCR server
             var task = Task.Factory.StartNew(j =>
@@ -82,13 +76,18 @@ namespace RoboBraille.WebApi.Models
                     var workflows = wsClient.GetWorkflows(wsUri);
                     flowName = workflows.FirstOrDefault(e => e.Equals(wName));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    return;
+                    Trace.WriteLine(e);
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw e;
                 }
 
                 if (string.IsNullOrWhiteSpace(flowName))
-                    return;
+                {
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw new Exception("The conversion workflow does not exist!");
+                }
 
                 var fileContainer = new FileContainer { FileContents = job.FileContent };
 
@@ -105,7 +104,7 @@ namespace RoboBraille.WebApi.Models
                     case OutputFileFormatEnum.OFF_PDF:
                         ofs = new PDFExportSettings
                         {
-                            PDFExportMode = PDFExportModeEnum.PEM_ImageOnText,
+                            PDFExportMode = PDFExportModeEnum.PEM_TextOnly,
                             PictureResolution = -1,
                             Quality = 70,
                             UseOriginalPaperSize = true,
@@ -143,12 +142,30 @@ namespace RoboBraille.WebApi.Models
                     case OutputFileFormatEnum.OFF_Text:
                         ofs = new TextExportSettings
                         {
-                            //
-                            EncodingType = TextEncodingTypeEnum.TET_UTF8,
+                            ExportParagraphsAsOneLine = true,
+                            EncodingType = TextEncodingTypeEnum.TET_Simple,
+                            KeepOriginalHeadersFooters = true,
                             FileFormat = OutputFileFormatEnum.OFF_Text
                         };
                         break;
-
+                    case OutputFileFormatEnum.OFF_UTF8:
+                        ofs = new TextExportSettings
+                        {
+                            ExportParagraphsAsOneLine = true,
+                            EncodingType = TextEncodingTypeEnum.TET_UTF8,
+                            KeepOriginalHeadersFooters = true,
+                            FileFormat = OutputFileFormatEnum.OFF_Text
+                        };
+                        break;
+                    case OutputFileFormatEnum.OFF_UTF16:
+                        ofs = new TextExportSettings
+                        {
+                            ExportParagraphsAsOneLine = true,
+                            EncodingType = TextEncodingTypeEnum.TET_UTF16,
+                            KeepOriginalHeadersFooters = true,
+                            FileFormat = OutputFileFormatEnum.OFF_Text
+                        };
+                        break;
                     case OutputFileFormatEnum.OFF_MSWord:
                         ofs = new MSWordExportSettings
                         {
@@ -287,15 +304,14 @@ namespace RoboBraille.WebApi.Models
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
-                    SetOCRTaskFaulted(job);
-                    return;
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw ex;
                 }
 
                 if (result.IsFailed)
                 {
-                    SetOCRTaskFaulted(job);
-                    return;
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw new Exception("Conversion job failed!");
                 }
 
                 byte[] contents = null;
@@ -332,8 +348,8 @@ namespace RoboBraille.WebApi.Models
 
                 if (contents == null)
                 {
-                    SetOCRTaskFaulted(job);
-                    return;
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw new Exception("Job result is null!");
                 }
                 string mime;
                 string fileExtension = ".txt";
@@ -416,31 +432,26 @@ namespace RoboBraille.WebApi.Models
                         break;
                 }
 
-                //using (var context = new RoboBrailleDataContext())
-                //{
-                    try
-                    {
-                        job.DownloadCounter = 0;
-                        job.ResultFileExtension = fileExtension;
-                        job.ResultMimeType = mime;
-                        job.ResultContent = contents;
-                        job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.Now;
-                        _context.Jobs.Attach(job);
-                        _context.Entry(job).State = EntityState.Modified;
-                        _context.SaveChanges();
-                    }
-                    catch (Exception)
-                    {
-                        SetOCRTaskFaulted(job);
-                    }
-                //}
+                try
+                {
+                    job.DownloadCounter = 0;
+                    job.ResultFileExtension = fileExtension;
+                    job.ResultMimeType = mime;
+                    job.ResultContent = contents;
+                    job.Status = JobStatus.Done;
+                    job.FinishTime = DateTime.Now;
+                    _context.Jobs.Attach(job);
+                    _context.Entry(job).State = EntityState.Modified;
+                    _context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw e;
+                }
 
             }, accessibleJob);
-
-            await task;
-
-            // send the job id
+            
             return accessibleJob.Id;
         }
 
@@ -449,12 +460,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
             return (int)JobStatus.Error;
         }
 
@@ -463,42 +471,20 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
-            //}
-        }
-
-        private void SetOCRTaskFaulted(AccessibleConversionJob job)
-        {
-            RoboBrailleProcessor.SetJobFaulted(job, _context);
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                //try
-                //{
-                //    job.Status = JobStatus.Error;
-                //    _context.Jobs.Attach(job);
-                //    _context.Entry(job).State = EntityState.Modified;
-                //    _context.SaveChanges();
-                //}
-                //catch (Exception)
-                //{
-                //    // ignored
-                //}
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
+            {
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
         }
     }
 }

@@ -25,6 +25,72 @@ namespace RoboBraille.WebApi.Controllers
             _repository = repository;
         }
 
+        [Authorize]
+        [Route("api/robobraillejob")]
+        [ResponseType(typeof(string))]
+        public async Task<IHttpActionResult> Post(Job job)
+        {
+            try
+            {
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                job.UserId = userId;
+                Guid jobId = Guid.Empty;
+                switch (job.GetType().Name)
+                {
+                    case nameof(AccessibleConversionJob):
+                        jobId = await (new AccessibleConversionRepository().SubmitWorkItem((AccessibleConversionJob)job));
+                        break;
+                    case nameof(AudioJob):
+                        jobId = await (new AudioRepository().SubmitWorkItem((AudioJob)job));
+                        break;
+                    case nameof(BrailleJob):
+                        jobId = await (new BrailleRepository().SubmitWorkItem((BrailleJob)job));
+                        break;
+                    case nameof(DaisyJob):
+                        jobId = await (new DaisyRepository().SubmitWorkItem((DaisyJob)job));
+                        break;
+                    case nameof(DocumentStructureJob):
+                        jobId = await (new DocumentStructureRepository().SubmitWorkItem((DocumentStructureJob)job));
+                        break;
+                    case nameof(EBookJob):
+                        jobId = await (new EBookRepository().SubmitWorkItem((EBookJob)job));
+                        break;
+                    case nameof(HTMLtoPDFJob):
+                        jobId = await (new HTMLtoPDFRepository().SubmitWorkItem((HTMLtoPDFJob)job));
+                        break;
+                    case nameof(HTMLToTextJob):
+                        jobId = await (new HTMLToTextRepository().SubmitWorkItem((HTMLToTextJob)job));
+                        break;
+                    case nameof(MSOfficeJob):
+                        jobId = await (new MSOfficeRepository().SubmitWorkItem((MSOfficeJob)job));
+                        break;
+                    case nameof(OcrConversionJob):
+                        jobId = await (new OcrConversionRepository().SubmitWorkItem((OcrConversionJob)job));
+                        break;
+                    case nameof(SignLanguageJob): 
+                        jobId = await (new SignLanguageRepository().SubmitWorkItem((SignLanguageJob)job));
+                        break;
+                    case nameof(TranslationJob):
+                        jobId = await (new TranslationRepository().SubmitWorkItem((TranslationJob)job));
+                        break;
+                    case nameof(AmaraSubtitleJob):
+                        jobId = await (new AmaraSubtitleRepository().SubmitWorkItem((AmaraSubtitleJob)job));
+                        break;
+                    default: break;
+                }
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = e.Message
+                };
+                throw new HttpResponseException(resp);
+            }
+        }
+
         /// <summary>
         /// GET the job status
         /// </summary>
@@ -59,7 +125,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

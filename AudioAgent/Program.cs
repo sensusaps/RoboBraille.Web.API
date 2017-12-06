@@ -89,7 +89,7 @@ namespace AudioAgent
                     if (ConsoleKey.Enter.Equals(ck.Key))
                     {
                         loop = false;
-                        ck = Console.ReadKey();
+                        //ck = Console.ReadKey();
                     }
                 } while (loop);
                 res = "";

@@ -16,7 +16,7 @@ namespace RoboBraille.WebApi.Controllers
 
         public BrailleController()
         {
-            _repository = new BrailleJobRepository();
+            _repository = new BrailleRepository();
         }
 
         public BrailleController(IRoboBrailleJob<BrailleJob> repository)
@@ -33,6 +33,40 @@ namespace RoboBraille.WebApi.Controllers
         public IEnumerable<string> GetTranslationTables()
         {
             return LouisFacade.GetTranslationTables();
+        }
+
+        /// <summary>
+        /// GET the installed braille languages
+        /// </summary>
+        /// <returns>A list of installed languages</returns>
+        [AllowAnonymous]
+        [Route("api/braille/getlangs")]
+        public IEnumerable<string> GetLangs()
+        {
+            //current supported langs are:
+            IEnumerable<string> supportedLangs = new List<string>()
+            {
+                Enum.GetName(typeof(Language),Language.enUS),
+                Enum.GetName(typeof(Language),Language.enGB),
+                Enum.GetName(typeof(Language),Language.bgBG),
+                Enum.GetName(typeof(Language),Language.czCZ),
+                Enum.GetName(typeof(Language),Language.daDK),
+                Enum.GetName(typeof(Language),Language.frFR),
+                Enum.GetName(typeof(Language),Language.deDE),
+                Enum.GetName(typeof(Language),Language.elGR),
+                Enum.GetName(typeof(Language),Language.huHU),
+                Enum.GetName(typeof(Language),Language.isIS),
+                Enum.GetName(typeof(Language),Language.itIT),
+                Enum.GetName(typeof(Language),Language.nbNO),
+                Enum.GetName(typeof(Language),Language.plPL),
+                Enum.GetName(typeof(Language),Language.ptPT),
+                Enum.GetName(typeof(Language),Language.roRO),
+                Enum.GetName(typeof(Language),Language.skSK),
+                Enum.GetName(typeof(Language),Language.slSI),
+                Enum.GetName(typeof(Language),Language.esES)
+            };
+
+            return supportedLangs;
         }
 
         [AllowAnonymous]
@@ -56,15 +90,6 @@ namespace RoboBraille.WebApi.Controllers
             {
                 Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
                 job.UserId = userId;
-                if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
-                {
-                    var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
-                    {
-                        Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
-                        ReasonPhrase = "Job already processing"
-                    };
-                    throw new HttpResponseException(resp);
-                }
                 Guid jobId = await _repository.SubmitWorkItem(job);
                 return Ok(jobId.ToString("D"));
             }
@@ -73,7 +98,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }
@@ -129,7 +154,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

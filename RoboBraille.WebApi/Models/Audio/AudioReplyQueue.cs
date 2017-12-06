@@ -10,7 +10,7 @@ namespace RoboBraille.WebApi.Models
 {
     public class AudioReplyQueue
     {
-         private IConnection connection;
+        private IConnection connection;
         private IModel channel;
         private string replyQueueName;
         private QueueingBasicConsumer consumer;
@@ -18,7 +18,7 @@ namespace RoboBraille.WebApi.Models
 
         public AudioReplyQueue()
         {
-           
+
         }
         public IBasicProperties Start(string jobId)
         {

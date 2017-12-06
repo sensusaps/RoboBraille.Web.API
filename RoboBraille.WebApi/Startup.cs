@@ -18,7 +18,7 @@ namespace RoboBraille.WebApi
             //HawkAuthenticator.EnableHawkAuthentication(config);
 
             builder.UseWebApi(config);
-
+            
         }
     }
 }

@@ -20,7 +20,7 @@ namespace RoboBraille.WebApi.Models
             markupConverter = new MarkupConverter.MarkupConverter();
         }
 
-        public string convertRtfToText(string input)
+        public string ConvertRtfToText(string input)
         {
             var thread = new Thread(ConvertRtfTextInSTAThread);
             var threadData = new ConvertRtfThreadData { RtfText = input };
@@ -33,8 +33,10 @@ namespace RoboBraille.WebApi.Models
         private void ConvertRtfTextInSTAThread(object rtf)
         {
             var threadData = rtf as ConvertRtfThreadData;
-            System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox();
-            rtBox.Rtf = threadData.RtfText;
+            System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox()
+            {
+                Rtf = threadData.RtfText
+            };
             threadData.HtmlText = rtBox.Text;
         }
         

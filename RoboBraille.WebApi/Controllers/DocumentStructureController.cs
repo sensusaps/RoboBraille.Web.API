@@ -6,12 +6,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using RoboBraille.WebApi.Models;
-using RoboBraille.WebApi.Models.DocumentStructureRecognition;
 using System.Web.Http.Description;
 
 namespace RoboBraille.WebApi.Controllers
 {
-     
+
 
     public class DocumentStructureController : ApiController
     {
@@ -19,18 +18,18 @@ namespace RoboBraille.WebApi.Controllers
 
         public DocumentStructureController()
         {
-            _repository = new DocumentStructurerepository();
+            _repository = new DocumentStructureRepository();
         }
         public DocumentStructureController(IRoboBrailleJob<DocumentStructureJob> jobRepository)
         {
-            _repository = new DocumentStructurerepository();
+            _repository = new DocumentStructureRepository();
         }
 
         [AllowAnonymous]
         [Route("api/documentstructure/getdocumentelements")]
         [ResponseType(typeof(string))]
 
-        public IEnumerable<string> GetDocumentelements()
+        public IEnumerable<string> GetDocumentElements()
         {
             return null;
         }
@@ -40,19 +39,22 @@ namespace RoboBraille.WebApi.Controllers
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(DocumentStructureJob job)
         {
-            Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
-            job.UserId = userId;
-            if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
+            try
             {
-                var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                job.UserId = userId;
+                Guid jobId = await _repository.SubmitWorkItem(job);
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
-                    Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
-                    ReasonPhrase = "Job already processing"
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }
-            Guid jobId = await _repository.SubmitWorkItem(job);
-            return Ok(jobId.ToString("D"));
         }
 
         [Route("api/documentstructure/getstatus")]
@@ -96,7 +98,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

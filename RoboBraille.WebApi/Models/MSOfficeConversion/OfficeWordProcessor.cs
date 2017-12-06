@@ -17,6 +17,7 @@ using System.Xml;
 using System.Xml.Xsl;
 using System.Xml.Linq;
 using Microsoft.Office.Interop.Word;
+using Microsoft.Office.Core;
 
 namespace RoboBraille.WebApi.Models
 {
@@ -41,6 +42,50 @@ namespace RoboBraille.WebApi.Models
 
         //A string builder for creating the text parts when iterating through the document
         private static StringBuilder textBuilder = new StringBuilder();
+        
+        public static byte[] ConvertWordDocument(string sourceFilePath,MSOfficeOutput outputFormat,int encoding=-1)
+        {
+            byte[] res = null;
+
+            WdSaveFormat saveFormat = WdSaveFormat.wdFormatUnicodeText;
+            string fileExtension = ".txt";
+
+            switch (outputFormat)
+            {
+                case MSOfficeOutput.html: saveFormat = WdSaveFormat.wdFormatFilteredHTML; fileExtension = ".html"; break;
+                case MSOfficeOutput.txt: saveFormat = WdSaveFormat.wdFormatText; fileExtension = ".txt"; break;
+                case MSOfficeOutput.rtf: saveFormat = WdSaveFormat.wdFormatRTF; fileExtension = ".rtf"; break;
+                case MSOfficeOutput.pdf: saveFormat = WdSaveFormat.wdFormatPDF; fileExtension = ".pdf"; break;
+                default: break;
+            }
+            var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + fileExtension);
+            Microsoft.Office.Interop.Word.Application app = new Microsoft.Office.Interop.Word.Application();
+            try
+            {
+                app.DisplayAlerts = WdAlertLevel.wdAlertsNone;
+                app.Documents.Open(sourceFilePath, MsoTriState.msoFalse, MsoTriState.msoFalse, MsoTriState.msoFalse);
+                if (encoding==-1)
+                    app.ActiveDocument.SaveAs2(tempFile, saveFormat);
+                else
+                    //more detailed save used for unicode text also for slovenian encoding: 1250 and for polish: 1257
+                    app.ActiveDocument.SaveAs2(tempFile, saveFormat, LockComments: false, Password: "", AddToRecentFiles: true, WritePassword: "",
+                        ReadOnlyRecommended: false, EmbedTrueTypeFonts: false, SaveNativePictureFormat: false, SaveFormsData: false, SaveAsAOCELetter: false,
+                        Encoding: encoding, InsertLineBreaks: false, AllowSubstitutions: false, LineEnding: WdLineEndingType.wdCRLF);
+                app.ActiveDocument.Close();
+                app.Quit();
+                app = null;
+                res = File.ReadAllBytes(tempFile);
+            } catch (Exception e)
+            {
+                res = null;
+            } finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+            app = null;
+            return res;
+        }
 
         public string ProcessDocument(string sourceFilePath)
         {
@@ -62,7 +107,6 @@ namespace RoboBraille.WebApi.Models
             }
             return text;
         }
-
         public Dictionary<string, Object> GetProcessedDocument()
         {
             Dictionary<string, Object> resultList = new Dictionary<string, Object>();
@@ -356,22 +400,7 @@ namespace RoboBraille.WebApi.Models
             textBuilder = new StringBuilder();
             return ret;
         }
-
-        public static string ConvertWordToRtf(string source,string guid)
-        {
-            string result = null;
-            try
-            {
-                Application app = new Application();
-                var word = app.Documents.Open(source);
-                word.SaveAs(FileDirectory + @"Temp\" + guid + ".rtf", WdSaveFormat.wdFormatRTF);
-                result = File.ReadAllText(FileDirectory + @"Temp\" + guid + ".rtf", Encoding.UTF8);
-                File.Delete(FileDirectory + @"Temp\" + guid + ".rtf");
-            }
-            catch { result = null; }
-            return result;
-        }
-
+        
         public static string ConvertToHtml(byte[] byteArray)
         {
             string result = null;

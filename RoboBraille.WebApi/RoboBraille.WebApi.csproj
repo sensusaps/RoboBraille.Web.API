@@ -38,7 +38,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -79,21 +79,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MarkupConverter">
-      <HintPath>..\Libs\MarkupConverter.dll</HintPath>
+      <HintPath>..\SensusMathLibrary\MarkupConverter.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.PowerPoint, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.PowerPoint.12.0.4518.1014\lib\net20\Microsoft.Office.Interop.PowerPoint.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -101,10 +99,6 @@
     </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
@@ -140,6 +134,51 @@
     <Reference Include="RabbitMQ.Client, Version=3.5.6.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Spire.Barcode, Version=1.4.11.11040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Common, Version=1.2.757.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.DataExport, Version=3.5.133.4040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.DataExport.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.DataExport.ResourceMgr, Version=1.6.71.4040, Culture=neutral, PublicKeyToken=4bc1500157862925, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.DataExport.ResourceMgr.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc, Version=6.0.58.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.DocViewer.Forms, Version=2.4.38.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.DocViewer.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Email, Version=1.1.16.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Email.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License, Version=1.3.6.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.OfficeViewer.Forms, Version=2.16.23.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.OfficeViewer.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=3.9.480.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.PdfViewer.Asp, Version=2.12.47.14340, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.PdfViewer.Asp.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.PdfViewer.Forms, Version=2.12.47.14340, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.PdfViewer.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Presentation, Version=2.8.81.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Presentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Spreadsheet, Version=2.2.50.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.XLS, Version=7.12.120.14040, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spire.Office.2.16.23\lib\net40\Spire.XLS.dll</HintPath>
     </Reference>
     <Reference Include="Swashbuckle.Core">
       <HintPath>..\packages\Swashbuckle.Core.5.1.5\lib\net40\Swashbuckle.Core.dll</HintPath>
@@ -258,7 +297,6 @@
     </Reference>
     <Reference Include="Thinktecture.IdentityModel.Hawk, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Thinktecture.IdentityModel.Hawk.2.1.2\lib\net45\Thinktecture.IdentityModel.Hawk.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="WebActivatorEx">
       <HintPath>..\packages\WebActivatorEx.2.0.6\lib\net40\WebActivatorEx.dll</HintPath>
@@ -462,6 +500,15 @@
     <Content Include="Views\ServiceUsers\Details.cshtml" />
     <Content Include="Views\ServiceUsers\Edit.cshtml" />
     <Content Include="Views\ServiceUsers\Index.cshtml" />
+    <Content Include="Views\Jobs\Delete.cshtml" />
+    <Content Include="Views\Jobs\Details.cshtml" />
+    <Content Include="Views\Jobs\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Guide.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -491,6 +538,7 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccessibleConversionController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AudioController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -498,16 +546,19 @@
     <Compile Include="Controllers\DocumentStructureController.cs" />
     <Compile Include="Controllers\EBookController.cs" />
     <Compile Include="Controllers\GenericController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HTMLtoPDFController.cs" />
     <Compile Include="Controllers\HTMLToTextController.cs" />
+    <Compile Include="Controllers\JobsController.cs" />
     <Compile Include="Controllers\MSOfficeConversionController.cs" />
     <Compile Include="Controllers\OcrConversionController.cs" />
     <Compile Include="Controllers\BrailleController.cs" />
     <Compile Include="Controllers\RoboBrailleJobController.cs" />
     <Compile Include="Controllers\RoboBrailleSPAController.cs" />
     <Compile Include="Controllers\ServiceUsersController.cs" />
+    <Compile Include="Controllers\SignLanguageController.cs" />
     <Compile Include="Controllers\TranslationController.cs" />
-    <Compile Include="Controllers\VideoConversionController.cs" />
+    <Compile Include="Controllers\AmaraSubtitleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -520,13 +571,13 @@
     <Compile Include="Models\AccessibleConversion\AccessibleConversionRepository.cs" />
     <Compile Include="Models\AccessibleConversion\AccessibleConversionJob.cs" />
     <Compile Include="Models\Audio\AudioJob.cs" />
-    <Compile Include="Models\Audio\AudioJobRepository.cs" />
+    <Compile Include="Models\Audio\AudioRepository.cs" />
     <Compile Include="Models\Audio\AudioJobSender.cs" />
     <Compile Include="Models\Audio\AudioOptions.cs" />
     <Compile Include="Models\Audio\AudioReplyQueue.cs" />
     <Compile Include="Models\Audio\IAudioJobSender.cs" />
     <Compile Include="Models\Braille\BrailleJob.cs" />
-    <Compile Include="Models\Braille\BrailleJobRepository.cs" />
+    <Compile Include="Models\Braille\BrailleRepository.cs" />
     <Compile Include="Models\Braille\BrailleOptions.cs" />
     <Compile Include="Models\Daisy\DaisyJob.cs" />
     <Compile Include="Models\Daisy\DaisyOptions.cs" />
@@ -540,7 +591,7 @@
     <Compile Include="Models\DocumentStructureRecognition\DocumentStructureJob.cs" />
     <Compile Include="Models\DocumentStructureRecognition\DocumentStructureOptions.cs" />
     <Compile Include="Models\DocumentStructureRecognition\DocumentStructureRepository.cs" />
-    <Compile Include="Models\EBook\EBookConversionOptions.cs" />
+    <Compile Include="Models\EBook\EBookOptions.cs" />
     <Compile Include="Models\EBook\EBookJob.cs" />
     <Compile Include="Models\EBook\EBookRepository.cs" />
     <Compile Include="Models\FileResult.cs" />
@@ -575,10 +626,13 @@
     <Compile Include="Models\RoboBrailleJob\RoboBrailleJobRepository.cs" />
     <Compile Include="Models\RoboBrailleProcessor.cs" />
     <Compile Include="Models\RoboBrailleDataContext.cs" />
-    <Compile Include="Models\Sample\GenericJob.cs" />
-    <Compile Include="Models\Sample\GenericJobOptions.cs" />
-    <Compile Include="Models\Sample\GenericJobRepository.cs" />
-    <Compile Include="Models\Braille\SensusWrapper.cs" />
+    <Compile Include="Models\Generic\GenericJob.cs" />
+    <Compile Include="Models\Generic\GenericJobOptions.cs" />
+    <Compile Include="Models\Generic\GenericJobRepository.cs" />
+    <Compile Include="Models\SignLanguage\SignLanguageJob.cs" />
+    <Compile Include="Models\SignLanguage\SignLanguageOptions.cs" />
+    <Compile Include="Models\SignLanguage\SignLanguageRepository.cs" />
+    <Compile Include="Models\UserManagement\AccountProcessor.cs" />
     <Compile Include="Models\UserManagement\Decrypt.cs" />
     <Compile Include="Models\UserManagement\Encrypt.cs" />
     <Compile Include="Models\UserManagement\ServiceUser.cs" />
@@ -587,11 +641,9 @@
     <Compile Include="Models\Ocr\OcrConversionOptions.cs" />
     <Compile Include="Models\Ocr\OcrConversionRepository.cs" />
     <Compile Include="Models\HtmlToPDF\THTagProcessor.cs" />
-    <Compile Include="Models\UserManagement\ServiceUserSummary.cs" />
-    <Compile Include="Models\UserManagement\UserManagementRepository.cs" />
-    <Compile Include="Models\RoboVideo\VideoConversionRepository.cs" />
-    <Compile Include="Models\RoboVideo\VideoJob.cs" />
-    <Compile Include="Models\RoboVideo\VideoJobProcessor.cs" />
+    <Compile Include="Models\AmaraSubtitle\AmaraSubtitleRepository.cs" />
+    <Compile Include="Models\AmaraSubtitle\AmaraSubtitleJob.cs" />
+    <Compile Include="Models\AmaraSubtitle\AmaraSubtitleProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

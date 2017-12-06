@@ -148,7 +148,7 @@ namespace OfficeToPDF
                         Object rEnd = 0;
                         Range range = doc.Range(rStart, rEnd);
                         range.InsertFile(inputFile);
-                        Converter.releaseCOMObject(range);
+                        Converter.ReleaseCOMObject(range);
                         // Make sure we save the file with the original filename so 
                         // filename fields update correctly
                         temporaryStorageDir = Path.GetTempFileName();
@@ -196,7 +196,7 @@ namespace OfficeToPDF
                     var activeWin = word.ActiveWindow;
                     activeWin.Visible = false;
                     activeWin.WindowState = WdWindowState.wdWindowStateMinimize;
-                    Converter.releaseCOMObject(activeWin);
+                    Converter.ReleaseCOMObject(activeWin);
                 }
 
                 // Check if we have a template file to apply to this document
@@ -225,7 +225,7 @@ namespace OfficeToPDF
                     var sectionFields = sectionRange.Fields;
                     foreach (Field sectionField in sectionFields)
                     {
-                        WordConverter.updateField(sectionField, word, inputFile);
+                        WordConverter.UpdateField(sectionField, word, inputFile);
                     }
 
                     var sectionPageSetup = section.PageSetup;
@@ -238,7 +238,7 @@ namespace OfficeToPDF
                             var rangeFields = range.Fields;
                             foreach (Field rangeField in rangeFields)
                             {
-                                WordConverter.updateField(rangeField, word, inputFile);
+                                WordConverter.UpdateField(rangeField, word, inputFile);
                             }
                             // Simply querying the range of the header will create it.
                             // If the header is empty, this can introduce additional space
@@ -250,9 +250,9 @@ namespace OfficeToPDF
                             {
                                 sectionPageSetup.HeaderDistance = 0;
                             }
-                            Converter.releaseCOMObject(shapes);
-                            Converter.releaseCOMObject(rangeFields);
-                            Converter.releaseCOMObject(range);
+                            Converter.ReleaseCOMObject(shapes);
+                            Converter.ReleaseCOMObject(rangeFields);
+                            Converter.ReleaseCOMObject(range);
                         }
                     }
 
@@ -265,7 +265,7 @@ namespace OfficeToPDF
                             var rangeFields = range.Fields;
                             foreach (Field rangeField in rangeFields)
                             {
-                                WordConverter.updateField(rangeField, word, inputFile);
+                                WordConverter.UpdateField(rangeField, word, inputFile);
                             }
                             // Simply querying the range of the footer will create it.
                             // If the footer is empty, this can introduce additional space
@@ -277,22 +277,22 @@ namespace OfficeToPDF
                             {
                                 sectionPageSetup.FooterDistance = 0;
                             }
-                            Converter.releaseCOMObject(shapes);
-                            Converter.releaseCOMObject(rangeFields);
-                            Converter.releaseCOMObject(range);
+                            Converter.ReleaseCOMObject(shapes);
+                            Converter.ReleaseCOMObject(rangeFields);
+                            Converter.ReleaseCOMObject(range);
                         }
                     }
-                    Converter.releaseCOMObject(sectionFields);
-                    Converter.releaseCOMObject(sectionRange);
-                    Converter.releaseCOMObject(headers);
-                    Converter.releaseCOMObject(footers);
-                    Converter.releaseCOMObject(sectionPageSetup);
+                    Converter.ReleaseCOMObject(sectionFields);
+                    Converter.ReleaseCOMObject(sectionRange);
+                    Converter.ReleaseCOMObject(headers);
+                    Converter.ReleaseCOMObject(footers);
+                    Converter.ReleaseCOMObject(sectionPageSetup);
                 }
 
                 var docFields = doc.Fields;
                 foreach (Field docField in docFields)
                 {
-                    WordConverter.updateField(docField, word, inputFile);
+                    WordConverter.UpdateField(docField, word, inputFile);
                 }
                 var storyRanges = doc.StoryRanges;
                 foreach (Range range in storyRanges)
@@ -300,12 +300,12 @@ namespace OfficeToPDF
                     var rangeFields = range.Fields;
                     foreach (Field field in rangeFields)
                     {
-                        WordConverter.updateField(field, word, inputFile);
+                        WordConverter.UpdateField(field, word, inputFile);
                     }
-                    Converter.releaseCOMObject(rangeFields);
+                    Converter.ReleaseCOMObject(rangeFields);
                 }
-                Converter.releaseCOMObject(storyRanges);
-                Converter.releaseCOMObject(docFields);
+                Converter.ReleaseCOMObject(storyRanges);
+                Converter.ReleaseCOMObject(docFields);
 
                 var pageSetup = doc.PageSetup;
                 if ((float)options["word_header_dist"] >= 0)
@@ -336,14 +336,14 @@ namespace OfficeToPDF
                 normalTemplate.Saved = true;
                 ((_Document)doc).Close(ref saveChanges, ref oMissing, ref oMissing);
 
-                Converter.releaseCOMObject(pageSetup);
-                Converter.releaseCOMObject(docWinView);
-                Converter.releaseCOMObject(docWin);
-                Converter.releaseCOMObject(wdOptions);
-                Converter.releaseCOMObject(documents);
-                Converter.releaseCOMObject(doc);
-                Converter.releaseCOMObject(tmpl);
-                Converter.releaseCOMObject(normalTemplate);
+                Converter.ReleaseCOMObject(pageSetup);
+                Converter.ReleaseCOMObject(docWinView);
+                Converter.ReleaseCOMObject(docWin);
+                Converter.ReleaseCOMObject(wdOptions);
+                Converter.ReleaseCOMObject(documents);
+                Converter.ReleaseCOMObject(doc);
+                Converter.ReleaseCOMObject(tmpl);
+                Converter.ReleaseCOMObject(normalTemplate);
 
                 return (int)ExitCode.Success;
             }
@@ -366,10 +366,10 @@ namespace OfficeToPDF
                 {
                     ((_Application)word).Quit(ref oMissing, ref oMissing, ref oMissing);
                 }
-                Converter.releaseCOMObject(word);
+                Converter.ReleaseCOMObject(word);
             }
         }
-        private static void updateField(Field field, Microsoft.Office.Interop.Word.Application word, String filename)
+        private static void UpdateField(Field field, Microsoft.Office.Interop.Word.Application word, String filename)
         {
             switch (field.Type)
             {
@@ -419,7 +419,7 @@ namespace OfficeToPDF
                     field.Delete();
                     Selection selection = word.Selection;
                     selection.TypeText(Path.GetFileName(filename));
-                    Converter.releaseCOMObject(selection);
+                    Converter.ReleaseCOMObject(selection);
                     break;
             }
         }

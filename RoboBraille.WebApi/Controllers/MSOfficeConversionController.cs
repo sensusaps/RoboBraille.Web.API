@@ -12,7 +12,7 @@ using System.Web.Http.Description;
 
 namespace RoboBraille.WebApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class MSOfficeConversionController : ApiController
     {
         private readonly IRoboBrailleJob<MSOfficeJob> _repository;
@@ -41,15 +41,6 @@ namespace RoboBraille.WebApi.Controllers
             {
                 Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
                 job.UserId = userId;
-                if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
-                {
-                    var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
-                    {
-                        Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
-                        ReasonPhrase = "Job already processing"
-                    };
-                    throw new HttpResponseException(resp);
-                }
                 Guid jobId = await _repository.SubmitWorkItem(job);
                 return Ok(jobId.ToString("D"));
             }
@@ -58,7 +49,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }
@@ -101,8 +92,7 @@ namespace RoboBraille.WebApi.Controllers
                 string path = file.LocalFileName;
                 if (name.EndsWith("pptx"))
                 {
-                    OfficePresentationProcessor opp = new OfficePresentationProcessor();
-                    containsVideo = opp.ContainsVideo(path + name);
+                    containsVideo = OfficePresentationProcessor.ContainsVideo(path + name);
                 }
                 else if (name.EndsWith("docx"))
                 {
@@ -159,7 +149,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

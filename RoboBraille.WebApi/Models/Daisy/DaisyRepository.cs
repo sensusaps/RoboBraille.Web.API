@@ -27,23 +27,12 @@ namespace RoboBraille.WebApi.Models
             _context = context;
             _daisyCall = daisyCall;
         }
-        public System.Threading.Tasks.Task<Guid> SubmitWorkItem(DaisyJob job)
+        public async System.Threading.Tasks.Task<Guid> SubmitWorkItem(DaisyJob job)
         {
-            if (job == null)
-                return null;
-
-            // TODO : REMOVE and use authenticated user id
-            //Guid uid;
-            //Guid.TryParse("d2b97532-e8c5-e411-8270-f0def103cfd0", out uid);
-            //job.UserId = uid;
-
             try
             {
-                //using (var context = new RoboBrailleDataContext())
-                //{
-                    _context.Jobs.Add(job);
-                    _context.SaveChanges();
-                //}
+                _context.Jobs.Add(job);
+                _context.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
@@ -57,13 +46,8 @@ namespace RoboBraille.WebApi.Models
                 try
                 {
                     byte[] res = null;
-                    //using (DaisyRpcCall drp = new DaisyRpcCall())
-                    //{
-                        res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
-                    //}
-                    //DaisyPipelineConverter dpc = new DaisyPipelineConverter(job.Id.ToString());
-                    //res = dpc.ManageDaisyConversion(job.FileContent,DaisyOutput.Epub3WMO.Equals(job.DaisyOutput));
-                    if (res != null && res.Length>0)
+                    res = _daisyCall.Call(job.FileContent, DaisyOutput.Epub3WMO.Equals(job.DaisyOutput), job.Id.ToString());
+                    if (res != null && res.Length > 0)
                         job.ResultContent = res;
                     else success = false;
 
@@ -75,36 +59,29 @@ namespace RoboBraille.WebApi.Models
                         mime = "application/epub+zip";
                         fileExtension = ".epub";
                     }
-                    //using (var context = new RoboBrailleDataContext())
-                    //{
-                        if (!success)
-                        {
-                            RoboBrailleProcessor.SetJobFaulted(job, _context);
-                            //job.Status = JobStatus.Error;
-                            //job.FinishTime = DateTime.UtcNow;
-                            //_context.Entry(job).State = EntityState.Modified;
-                            //_context.SaveChanges();
-                        }
-                        else
-                        {
-                            job.ResultFileExtension = fileExtension;
-                            job.ResultMimeType = mime;
-                            job.DownloadCounter = 0;
-                            job.Status = JobStatus.Done;
-                            job.FinishTime = DateTime.Now;
-                            _context.Entry(job).State = EntityState.Modified;
-                            _context.SaveChanges();
-                        }
-                    //}
+                    if (!success)
+                    {
+                        RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    }
+                    else
+                    {
+                        job.ResultFileExtension = fileExtension;
+                        job.ResultMimeType = mime;
+                        job.DownloadCounter = 0;
+                        job.Status = JobStatus.Done;
+                        job.FinishTime = DateTime.Now;
+                        _context.Entry(job).State = EntityState.Modified;
+                        _context.SaveChanges();
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message);
                     RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw ex;
                 }
             }, job);
 
-            return Task.FromResult(job.Id);
+            return job.Id;
         }
 
         public int GetWorkStatus(Guid jobId)
@@ -112,12 +89,9 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
             return (int)JobStatus.Error;
         }
 
@@ -126,23 +100,20 @@ namespace RoboBraille.WebApi.Models
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            //using (var context = new RoboBrailleDataContext())
-            //{
-                var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
-            //}
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
+            {
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
         }
 
 

@@ -994,10 +994,10 @@
   </wsdl:binding>
   <wsdl:service name="RSSoapService">
     <wsdl:port name="RSSoapServiceSoap" binding="tns:RSSoapServiceSoap">
-      <soap:address location="http://192.168.1.75/Recognition3WS/RSSoapService.asmx" />
+      <soap:address location="http://127.0.0.1/Recognition3WS/RSSoapService.asmx" />
     </wsdl:port>
     <wsdl:port name="RSSoapServiceSoap12" binding="tns:RSSoapServiceSoap12">
-      <soap12:address location="http://192.168.1.75/Recognition3WS/RSSoapService.asmx" />
+      <soap12:address location="http://127.0.0.1/Recognition3WS/RSSoapService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = "Hello RoboBraille";
 }
-<div ng-app="roboApp">
+<div ng-app="roboApp"style="margin-top:40px;">
     <div ng-controller="roboAppController " data-ng-init="init()" class="container main" role="main">
         <div id="robo-step-text-buttons">
             <div class="row ">
@@ -311,5 +311,5 @@
     @Scripts.Render("~/Scripts/FileSaver.min.js")
     @Scripts.Render("~/Scripts/app/app.js")
     @Scripts.Render("~/Scripts/app/appFactories.js")
-    @Scripts.Render("../Scripts/app/appController.js")
+    @Scripts.Render("~/Scripts/app/appController.js")
 }

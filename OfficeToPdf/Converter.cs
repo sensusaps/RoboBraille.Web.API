@@ -43,7 +43,7 @@ namespace OfficeToPDF
             return (int)ExitCode.UnknownError;
         }
 
-        protected static void releaseCOMObject(object obj)
+        protected static void ReleaseCOMObject(object obj)
         {
             try
             {

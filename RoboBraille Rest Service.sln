@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboBraille.WebApi", "RoboBraille.WebApi\RoboBraille.WebApi.csproj", "{21FE7177-21BE-4C60-9DFE-1FF32FB801C4}"
 EndProject
@@ -108,6 +108,7 @@ Global
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release|Win32.ActiveCfg = Release|Any CPU
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release|x64.ActiveCfg = Release|Any CPU
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release|x86.ActiveCfg = Release|Any CPU
+		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release|x86.Build.0 = Release|Any CPU
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release-signed|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release-signed|Any CPU.Build.0 = Release|Any CPU
 		{E7A1CAA9-40D9-4094-8EE4-9EB54CCBA699}.Release-signed|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -129,6 +130,7 @@ Global
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release|Win32.ActiveCfg = Release|Any CPU
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release|x64.ActiveCfg = Release|Any CPU
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release|x86.ActiveCfg = Release|Any CPU
+		{825A79A4-F32A-432F-963E-D9CF83649060}.Release|x86.Build.0 = Release|Any CPU
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release-signed|Any CPU.ActiveCfg = Release|Any CPU
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release-signed|Any CPU.Build.0 = Release|Any CPU
 		{825A79A4-F32A-432F-963E-D9CF83649060}.Release-signed|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -150,6 +152,7 @@ Global
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release|Win32.ActiveCfg = Release|Any CPU
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release|x64.ActiveCfg = Release|Any CPU
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release|x86.ActiveCfg = Release|Any CPU
+		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release|x86.Build.0 = Release|Any CPU
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release-signed|Any CPU.ActiveCfg = Release|Any CPU
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release-signed|Any CPU.Build.0 = Release|Any CPU
 		{58C2D490-8193-460A-A4D9-5B2D70768407}.Release-signed|Mixed Platforms.ActiveCfg = Release|Any CPU

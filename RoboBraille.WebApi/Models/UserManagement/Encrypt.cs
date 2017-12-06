@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 
-namespace RoboBraille.WebApi.Models.UserManagement
+namespace RoboBraille.WebApi.Models
 {
     public class Encrypt
     {

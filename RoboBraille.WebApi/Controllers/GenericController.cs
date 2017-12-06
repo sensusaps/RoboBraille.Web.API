@@ -1,5 +1,4 @@
 ﻿using RoboBraille.WebApi.Models;
-using RoboBraille.WebApi.Models.Sample;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +36,22 @@ namespace RoboBraille.WebApi.Controllers
         [ResponseType(typeof(string))]
         public async Task<IHttpActionResult> Post(GenericJob job)
         {
-            Guid jobId = await _repository.SubmitWorkItem(job);
-            return Ok(jobId.ToString("D"));
+            try
+            {
+                Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
+                job.UserId = userId;
+                Guid jobId = await _repository.SubmitWorkItem(job);
+                return Ok(jobId.ToString("D"));
+            }
+            catch (Exception e)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(string.Format("Internal error: {0}", e)),
+                    ReasonPhrase = e.Message
+                };
+                throw new HttpResponseException(resp);
+            }
         }
 
         /// <summary>
@@ -91,7 +104,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

@@ -10,7 +10,6 @@ using RoboBraille.WebApi.ABBYY;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using RoboBraille.WebApi.Models.LanguageTranslation;
 
 
 
@@ -43,9 +42,10 @@ namespace RoboBraille.WebApi.Models
                 type == typeof(MSOfficeJob) ||
                 type == typeof(BrailleJob) ||
                 type == typeof(HTMLToTextJob) ||
-                type == typeof(RoboVideo.VideoJob) ||
-                type == typeof(DocumentStructureRecognition.DocumentStructureJob) ||
-                type == typeof(TranslationJob))
+                type == typeof(AmaraSubtitleJob) ||
+                type == typeof(DocumentStructureJob) ||
+                type == typeof(TranslationJob) ||
+                type == typeof(SignLanguageJob))
             {
                 return true;
             }
@@ -147,6 +147,10 @@ namespace RoboBraille.WebApi.Models
                 {
                     EbookFormat = (EbookFormat)Enum.Parse(typeof(EbookFormat), msp.FormData["format"])
                 };
+                if (msp.FormData.AllKeys.Contains("basefontsize"))
+                {
+                    ((EBookJob)job).BaseFontSize = (EbookBaseFontSize)Enum.Parse(typeof(EbookBaseFontSize), msp.FormData["basefontsize"]);
+                }
             }
             else if (type == typeof(HTMLtoPDFJob))
             {
@@ -171,38 +175,51 @@ namespace RoboBraille.WebApi.Models
             {
                 job = new OcrConversionJob
                 {
-                    OcrLanguage = (Language)Enum.Parse(typeof(Language), msp.FormData["language"])
+                    OcrLanguage = (Language)Enum.Parse(typeof(Language), msp.FormData["language"]),
+                    HasTable = false
                 };
+                if (msp.FormData.AllKeys.Contains("hastable"))
+                {
+                    ((OcrConversionJob)job).HasTable = bool.Parse(msp.FormData["hastable"]);
+                }
             }
             else if (type == typeof(HTMLToTextJob))
             {
                 job = new HTMLToTextJob();
             }
-            else if (type == typeof(RoboVideo.VideoJob))
+            else if (type == typeof(AmaraSubtitleJob))
             {
-                job = new RoboVideo.VideoJob()
+                job = new AmaraSubtitleJob()
                 {
                     SubtitleLangauge = msp.FormData["language"],
                     SubtitleFormat = msp.FormData["format"]
                 };
                 if (msp.FormData.AllKeys.Contains("videourl"))
                 {
-                    ((RoboVideo.VideoJob)job).VideoUrl = msp.FormData["videourl"];
+                    ((AmaraSubtitleJob)job).VideoUrl = msp.FormData["videourl"];
                 }
             }
-            else if (type == typeof(DocumentStructureRecognition.DocumentStructureJob))
+            else if (type == typeof(DocumentStructureJob))
             {
-                job = new DocumentStructureRecognition.DocumentStructureJob()
+                job = new DocumentStructureJob()
                 {
 
                 };
             }
-            else //if (type == typeof(TranslationJob))
+            else if (type == typeof(TranslationJob))
             {
                 job = new TranslationJob()
                 {
                     SourceLanguage = msp.FormData["sourcelanguage"],
                     TargetLanguage = msp.FormData["targetlanguage"]
+                };
+            }
+            else if (type == typeof(SignLanguageJob))
+            {
+                job = new SignLanguageJob()
+                {
+                    SourceTextLanguage = msp.FormData["sourcetextlanguage"],
+                    TargetSignLanguage = msp.FormData["targetsignlanguage"]
                 };
             }
 
@@ -273,9 +290,9 @@ namespace RoboBraille.WebApi.Models
                         //it's a video job
                     }
                 }
-                if (type != typeof(RoboVideo.VideoJob))
+                if (type != typeof(AmaraSubtitleJob))
                 {
-                    job.InputFileHash = RoboBrailleProcessor.GetInputFileHash(job.FileContent);
+                    job.InputFileHash = RoboBrailleProcessor.GetMD5Hash(job.FileContent);
                 }
                 job.Status = JobStatus.Started;
                 job.SubmitTime = DateTime.Now;

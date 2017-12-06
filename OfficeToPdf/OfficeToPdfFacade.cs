@@ -25,7 +25,7 @@ namespace OfficeToPDF
     public class OfficeToPdfFacade
     {
         private static string message = null;
-        public static string getMessage()
+        public static string GetMessage()
         {
             return message;
         }
@@ -33,29 +33,31 @@ namespace OfficeToPDF
         {
             string[] files = new string[2];
             int filesSeen = 0;
-            Hashtable options = new Hashtable();
+            Hashtable options = new Hashtable
+            {
 
-            // Loop through the input, grabbing switches off the command line
-            options["hidden"] = false;
-            options["markup"] = false;
-            options["readonly"] = false;
-            options["bookmarks"] = false;
-            options["print"] = true;
-            options["screen"] = false;
-            options["pdfa"] = false;
-            options["verbose"] = false;
-            options["excludeprops"] = false;
-            options["excludetags"] = false;
-            options["noquit"] = false;
-            options["merge"] = false;
-            options["template"] = "";
-            options["password"] = "";
-            options["excel_show_formulas"] = false;
-            options["excel_show_headings"] = false;
-            options["excel_auto_macros"] = false;
-            options["excel_max_rows"] = (int)0;
-            options["word_header_dist"] = (float)-1;
-            options["word_footer_dist"] = (float)-1;
+                // Loop through the input, grabbing switches off the command line
+                ["hidden"] = false,
+                ["markup"] = false,
+                ["readonly"] = false,
+                ["bookmarks"] = false,
+                ["print"] = true,
+                ["screen"] = false,
+                ["pdfa"] = false,
+                ["verbose"] = false,
+                ["excludeprops"] = false,
+                ["excludetags"] = false,
+                ["noquit"] = false,
+                ["merge"] = false,
+                ["template"] = "",
+                ["password"] = "",
+                ["excel_show_formulas"] = false,
+                ["excel_show_headings"] = false,
+                ["excel_auto_macros"] = false,
+                ["excel_max_rows"] = (int)0,
+                ["word_header_dist"] = (float)-1,
+                ["word_footer_dist"] = (float)-1
+            };
             Regex switches = new Regex(@"^/(hidden|markup|readonly|bookmarks|merge|noquit|print|screen|pdfa|template|writepassword|password|help|verbose|exclude(props|tags)|excel_max_rows|excel_show_formulas|excel_show_headings|excel_auto_macros|word_header_dist|word_footer_dist|\?)$", RegexOptions.IgnoreCase);
             for (int argIdx = 0; argIdx < args.Length; argIdx++)
             {
@@ -71,7 +73,7 @@ namespace OfficeToPDF
                         if (itemMatch.Groups[1].Value.ToLower().Equals("help") ||
                             itemMatch.Groups[1].Value.Equals("?"))
                         {
-                            showHelp();
+                            ShowHelp();
                         }
                         switch (itemMatch.Groups[1].Value.ToLower())
                         {
@@ -171,7 +173,7 @@ namespace OfficeToPDF
             // arguments to this script
             if (filesSeen != 1 && filesSeen != 2)
             {
-                showHelp();
+                ShowHelp();
             }
 
             // Make sure we only choose one of /screen or /print options
@@ -344,7 +346,7 @@ namespace OfficeToPDF
             return ((int)ExitCode.Success);
         }
 
-        public static string showHelp()
+        public static string ShowHelp()
         {
             return @"Converts Office documents to PDF from the command line.
 Handles Office files:

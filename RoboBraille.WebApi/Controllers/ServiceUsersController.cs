@@ -9,19 +9,21 @@ using System.Web;
 using System.Web.Mvc;
 using RoboBraille.WebApi.Models;
 using System.Text;
-using RoboBraille.WebApi.Models.UserManagement;
 
 namespace RoboBraille.WebApi.Controllers
 {
-    //TODO add form based authorization with your user id and api key (look at forkbra, maybe do it mvc style)
+    //[Authorize]
     public class ServiceUsersController : Controller
     {
-        private RoboBrailleDataContext db = new RoboBrailleDataContext();
+        private RoboBrailleDataContext _context = new RoboBrailleDataContext();
 
         // GET: ServiceUsers
         public async Task<ActionResult> Index()
         {
-            return View(await db.ServiceUsers.ToListAsync());
+            if (Session["role"].Equals(UserRole.Administrator))
+                return View(await _context.ServiceUsers.ToListAsync());
+            else return RedirectToAction("Index", "Home");
+            //return View(await db.ServiceUsers.ToListAsync());
         }
 
         // GET: ServiceUsers/Details/5
@@ -31,7 +33,7 @@ namespace RoboBraille.WebApi.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ServiceUser serviceUser = await db.ServiceUsers.FindAsync(id);
+            ServiceUser serviceUser = await _context.ServiceUsers.FindAsync(id);
             if (serviceUser == null)
             {
                 return HttpNotFound();
@@ -51,16 +53,22 @@ namespace RoboBraille.WebApi.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Exclude="UserId,ApiKey")]ServiceUser serviceUser)
+        public async Task<ActionResult> Create([Bind(Exclude = "UserId,ApiKey")]ServiceUser serviceUser)
         {
+            ServiceUser user = await _context.ServiceUsers.SingleOrDefaultAsync(u => u.EmailAddress.Equals(serviceUser.EmailAddress.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            if (user != null)
+            {
+                ModelState.AddModelError("EmailAddress", "Email already exists! Please use another email address.");
+            }
             serviceUser.UserId = Guid.NewGuid();
             serviceUser.ApiKey = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
             TryUpdateModel(serviceUser);
-            if (ModelState.IsValid || serviceUser.ApiKey!=null)
+            if (ModelState.IsValid || serviceUser.ApiKey != null)
             {
-                db.ServiceUsers.Add(serviceUser);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Details",new { id = serviceUser.UserId });
+                serviceUser.Password = Encrypt.CreateHash(serviceUser.Password);
+                _context.ServiceUsers.Add(serviceUser);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { id = serviceUser.UserId });
             }
 
             return View(serviceUser);
@@ -69,16 +77,18 @@ namespace RoboBraille.WebApi.Controllers
         // GET: ServiceUsers/Edit/5
         public async Task<ActionResult> Edit(Guid? id)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ServiceUser serviceUser = await db.ServiceUsers.FindAsync(id);
+            ServiceUser serviceUser = await _context.ServiceUsers.FindAsync(id);
             if (serviceUser == null)
             {
                 return HttpNotFound();
             }
             return View(serviceUser);
+
         }
 
         // POST: ServiceUsers/Edit/5
@@ -86,12 +96,12 @@ namespace RoboBraille.WebApi.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "UserId,UserName,ApiKey,FromDate,ToDate,EmailAddress")] ServiceUser serviceUser)
+        public async Task<ActionResult> Edit(/*[Bind(Include = "UserId,UserName,ApiKey,FromDate,ToDate,EmailAddress")]*/ ServiceUser serviceUser)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(serviceUser).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _context.Entry(serviceUser).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(serviceUser);
@@ -104,7 +114,7 @@ namespace RoboBraille.WebApi.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ServiceUser serviceUser = await db.ServiceUsers.FindAsync(id);
+            ServiceUser serviceUser = await _context.ServiceUsers.FindAsync(id);
             if (serviceUser == null)
             {
                 return HttpNotFound();
@@ -117,9 +127,9 @@ namespace RoboBraille.WebApi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            ServiceUser serviceUser = await db.ServiceUsers.FindAsync(id);
-            db.ServiceUsers.Remove(serviceUser);
-            await db.SaveChangesAsync();
+            ServiceUser serviceUser = await _context.ServiceUsers.FindAsync(id);
+            _context.ServiceUsers.Remove(serviceUser);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -127,7 +137,7 @@ namespace RoboBraille.WebApi.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _context.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -7,6 +7,9 @@ using System.Web.Routing;
 
 namespace RoboBraille.WebApi
 {
+    /// <summary>
+    /// RouteConfig
+    /// </summary>
     public class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)

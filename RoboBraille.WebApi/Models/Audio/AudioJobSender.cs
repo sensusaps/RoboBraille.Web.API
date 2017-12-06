@@ -19,8 +19,6 @@ namespace RoboBraille.WebApi.Models
     /// </summary>
     public class AudioJobSender : IAudioJobSender
     {
-      
-
         public AudioJobSender()
         {
          
@@ -30,15 +28,22 @@ namespace RoboBraille.WebApi.Models
         {
             AudioReplyQueue rq = new AudioReplyQueue();
             var props = rq.Start(auJob.Id.ToString());
+            props.Persistent = true;
             props.Headers = new Dictionary<string, object>();
             string voiceProp = "";
-            if (auJob.VoicePropriety.Count() > 1)
+            if (auJob.VoicePropriety.Count() > 0)
             {
-                foreach (VoicePropriety vp in auJob.VoicePropriety)
-                    voiceProp += vp + ":";
-                voiceProp = voiceProp.Substring(0, voiceProp.Length - 1);
+                if (auJob.VoicePropriety.Count() > 1)
+                {
+                    foreach (VoicePropriety vp in auJob.VoicePropriety)
+                        voiceProp += vp + ":";
+                    voiceProp = voiceProp.Substring(0, voiceProp.Length - 1);
+                }
+                else voiceProp = "" + auJob.VoicePropriety.First();
+            } else
+            {
+                voiceProp = "" + VoicePropriety.None;
             }
-            else voiceProp = ""+auJob.VoicePropriety.First();
             props.Headers.Add("inputPropriety", (byte[]) Encoding.UTF8.GetBytes(voiceProp));
             props.Headers.Add("inputLanguage",(int) auJob.AudioLanguage);
             props.Headers.Add("voiceSpeed", (int) auJob.SpeedOptions);
@@ -116,6 +121,12 @@ namespace RoboBraille.WebApi.Models
                         routingKey += "male.none";
                     else routingKey += "female.none";
                     break;
+                case Language.cyGB:
+                    routingKey += "cy.";
+                    if (auJob.VoicePropriety.Contains(VoicePropriety.Male))
+                        routingKey += "male.none";
+                    else routingKey += "female.none";
+                    break;
                 case Language.enUS: routingKey += "en.us.none"; break;
                 case Language.enGB: routingKey += "en.gb.none"; break;
                 case Language.enCA: routingKey += "en.ca.none"; break;
@@ -151,6 +162,8 @@ namespace RoboBraille.WebApi.Models
                 case Language.ruRU: routingKey += "ru.none.none"; break;
                 case Language.esMX: routingKey += "es.mx.none"; break;
                 case Language.caES: routingKey += "ca.es.none"; break;
+                case Language.czCZ: routingKey += "cz.cz.none"; break;
+                case Language.skSK: routingKey += "sk.sk.none"; break;
                 default: routingKey += "none.none.none"; break;
             }
             return routingKey;

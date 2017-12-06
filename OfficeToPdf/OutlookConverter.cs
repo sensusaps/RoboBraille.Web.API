@@ -63,8 +63,8 @@ namespace OfficeToPDF
                             return (int)ExitCode.FileOpenFailure;
                         }
                         message.SaveAs(tmpDocFile, Microsoft.Office.Interop.Outlook.OlSaveAsType.olDoc);
-                        Converter.releaseCOMObject(message);
-                        Converter.releaseCOMObject(session);
+                        Converter.ReleaseCOMObject(message);
+                        Converter.ReleaseCOMObject(session);
                         break;
                     case ".vcf":
                         var contact = (ContactItem)session.OpenSharedItem(inputFile);
@@ -73,8 +73,8 @@ namespace OfficeToPDF
                             return (int)ExitCode.FileOpenFailure;
                         }
                         contact.SaveAs(tmpDocFile, Microsoft.Office.Interop.Outlook.OlSaveAsType.olDoc);
-                        Converter.releaseCOMObject(contact);
-                        Converter.releaseCOMObject(session);
+                        Converter.ReleaseCOMObject(contact);
+                        Converter.ReleaseCOMObject(session);
                         break;
                     case ".ics":
                         var item = session.OpenSharedItem(inputFile);
@@ -92,8 +92,8 @@ namespace OfficeToPDF
                                 Console.WriteLine("Unable to convert ICS type " + itemType);
                                 break;
                         }
-                        Converter.releaseCOMObject(item);
-                        Converter.releaseCOMObject(session);
+                        Converter.ReleaseCOMObject(item);
+                        Converter.ReleaseCOMObject(session);
                         break;
                 }
 
@@ -120,7 +120,7 @@ namespace OfficeToPDF
                 {
                     ((Microsoft.Office.Interop.Outlook._Application)app).Quit();
                 }
-                Converter.releaseCOMObject(app);
+                Converter.ReleaseCOMObject(app);
             }
         }
     }

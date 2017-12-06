@@ -6,6 +6,9 @@ using System.Web.Http;
 
 namespace RoboBraille.WebApi
 {
+    /// <summary>
+    /// WebAPIConfig
+    /// </summary>
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)

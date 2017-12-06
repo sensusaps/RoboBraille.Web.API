@@ -55,7 +55,7 @@ namespace AmaraVideoClient
                     return new SubtitleInfo(videoDetail.Id, VideoSubtitleStatus.Submitted);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return new SubtitleInfo(null, VideoSubtitleStatus.Error);
             }

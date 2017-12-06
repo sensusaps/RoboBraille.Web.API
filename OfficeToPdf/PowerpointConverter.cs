@@ -99,16 +99,16 @@ namespace OfficeToPDF
                     }
                     catch (System.Runtime.InteropServices.COMException)
                     {
-                        Converter.releaseCOMObject(fonts);
+                        Converter.ReleaseCOMObject(fonts);
                         // This presentation looked read-only
                         activePresentation.Close();
-                        Converter.releaseCOMObject(activePresentation);
+                        Converter.ReleaseCOMObject(activePresentation);
                         // Create a new blank presentation and insert slides from the original
                         activePresentation = presentations.Add(MSCore.MsoTriState.msoFalse);
                         // This is only a band-aid - backgrounds won't come through
                         activePresentation.Slides.InsertFromFile(inputFile, 0);
                     }
-                    Converter.releaseCOMObject(fonts);
+                    Converter.ReleaseCOMObject(fonts);
                     activePresentation.ExportAsFixedFormat(outputFile, PpFixedFormatType.ppFixedFormatTypePDF, quality, MSCore.MsoTriState.msoFalse, PpPrintHandoutOrder.ppPrintHandoutVerticalFirst, PpPrintOutputType.ppPrintOutputSlides, MSCore.MsoTriState.msoFalse, null, PpPrintRangeType.ppPrintAll, "", includeProps, true, includeTags, true, pdfa, Type.Missing);
                     activePresentation.Saved = MSCore.MsoTriState.msoTrue;
                     activePresentation.Close();
@@ -122,14 +122,14 @@ namespace OfficeToPDF
                 }
                 finally
                 {
-                    Converter.releaseCOMObject(activePresentation);
-                    Converter.releaseCOMObject(presentations);
+                    Converter.ReleaseCOMObject(activePresentation);
+                    Converter.ReleaseCOMObject(presentations);
 
                     if (app != null && !running)
                     {
                         app.Quit();
                     }
-                    Converter.releaseCOMObject(app);
+                    Converter.ReleaseCOMObject(app);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 

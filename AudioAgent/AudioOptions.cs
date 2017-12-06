@@ -1,31 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AudioAgent
+﻿namespace AudioAgent
 {
-    public enum VoicePropriety : int
-    {
-        Male = 1,
-        Female = 2,
-        Older = 3,
-        Younger = 4,
-        Bilingual = 5,
-        Cantonese = 6,
-        Mandarin = 7,
-        Taiwanese = 8,
-        Castilian = 9,
-        LatinAmerican = 10,
-        Anne = 11,
-        None = 0
-    }
     public enum Language : uint
     {
-        enUEB = 0x1,
         esCO = 0x240A,
         arEG = 0x0C01,
-        klGL = 0x2,
         enGB = 0x0809,
         enUS = 0x0409,
         daDK = 0x0406,
@@ -56,9 +34,29 @@ namespace AudioAgent
         ptBR = 0x0416,
         enAU = 0x0C09,
         enCA = 0x1009,
-        enIN = 0x4,
         frCA = 0x0C0C,
         esMX = 0x080A,
-        caES = 0x0403
+        caES = 0x0403,
+        czCZ = 0x0405,
+        skSK = 0x041B,
+        enUEB = 0x1000,
+        klGL = 0x2000,
+        enIN = 0x3000,
+        cyGB = 0x4000,
+    }
+    public enum VoicePropriety : int
+    {
+        Male = 1,
+        Female = 2,
+        Older = 3,
+        Younger = 4,
+        Bilingual = 5,
+        Cantonese = 6,
+        Mandarin = 7,
+        Taiwanese = 8,
+        Castilian = 9,
+        LatinAmerican = 10,
+        Anne = 11,
+        None = 0
     }
 }

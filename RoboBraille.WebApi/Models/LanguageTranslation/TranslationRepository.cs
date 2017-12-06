@@ -10,26 +10,28 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
-namespace RoboBraille.WebApi.Models.LanguageTranslation
+namespace RoboBraille.WebApi.Models
 {
     public class TranslationRepository : IRoboBrailleJob<TranslationJob>
     {
         private RoboBrailleDataContext _context;
-        /*
-         Investigate on using Google Translate API and make it into a more general mock-up to support any language to language translations
-         */
-        public System.Threading.Tasks.Task<Guid> SubmitWorkItem(TranslationJob job)
-        {
-            if (job == null)
-                return null;
 
+        public TranslationRepository()
+        {
+            _context = new RoboBrailleDataContext();
+        }
+
+        public TranslationRepository(RoboBrailleDataContext context)
+        {
+            _context = context;
+        }
+        
+        public async System.Threading.Tasks.Task<Guid> SubmitWorkItem(TranslationJob job)
+        {
             try
             {
-                using (var context = new RoboBrailleDataContext())
-                {
-                    context.Jobs.Add(job);
-                    context.SaveChanges();
-                }
+                _context.Jobs.Add(job);
+                _context.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
@@ -39,7 +41,6 @@ namespace RoboBraille.WebApi.Models.LanguageTranslation
 
             var task = Task.Factory.StartNew(t =>
             {
-                bool success = true;
                 try
                 {
                     /*
@@ -55,41 +56,22 @@ namespace RoboBraille.WebApi.Models.LanguageTranslation
                     //get result and save to database as simple text
 
                     job.ResultContent = Encoding.UTF8.GetBytes(result);
-                    using (var context = new RoboBrailleDataContext())
-                    {
-                        job.Status = JobStatus.Done;
-                        job.FinishTime = DateTime.Now;
-                        context.Entry(job).State = EntityState.Modified;
-                        context.SaveChanges();
-                    }
+
+                    job.Status = JobStatus.Done;
+                    job.FinishTime = DateTime.Now;
+                    _context.Entry(job).State = EntityState.Modified;
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    success = false;
                     Trace.WriteLine(ex.Message);
-                }
-
-                if (!success)
-                {
-                    try
-                    {
-                        using (var context = new RoboBrailleDataContext())
-                        {
-                            job.Status = JobStatus.Error;
-                            job.FinishTime = DateTime.UtcNow;
-                            context.Entry(job).State = EntityState.Modified;
-                            context.SaveChanges();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex.Message);
-                    }
+                    RoboBrailleProcessor.SetJobFaulted(job, _context);
+                    throw ex;
                 }
 
             }, job);
 
-            return Task.FromResult(job.Id);
+            return job.Id;
         }
 
         private string MockTranslate(string textToTranslate, string sourceLang, string targetLang)
@@ -107,12 +89,11 @@ namespace RoboBraille.WebApi.Models.LanguageTranslation
             if (jobId.Equals(Guid.Empty))
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            using (var context = new RoboBrailleDataContext())
-            {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job != null)
-                    return (int)job.Status;
-            }
+
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job != null)
+                return (int)job.Status;
+
             return (int)JobStatus.Error;
         }
         public FileResult GetResultContents(Guid jobId)
@@ -120,29 +101,26 @@ namespace RoboBraille.WebApi.Models.LanguageTranslation
             if (jobId.Equals(Guid.Empty))
                 return null;
 
-            using (var context = new RoboBrailleDataContext())
+
+            var job = _context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
+            if (job == null || job.ResultContent == null)
+                return null;
+            RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
+            FileResult result = null;
+            try
             {
-                var job = context.Jobs.FirstOrDefault(e => jobId.Equals(e.Id));
-                if (job == null || job.ResultContent == null)
-                    return null;
-                RoboBrailleProcessor.UpdateDownloadCounterInDb(job.Id, _context);
-                FileResult result = null;
-                try
-                {
-                    result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-                return result;
+                result = new FileResult(job.ResultContent, job.ResultMimeType, job.FileName + job.ResultFileExtension);
             }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return result;
+
         }
-
-
         public RoboBrailleDataContext GetDataContext()
         {
-            throw new NotImplementedException();
+            return _context;
         }
     }
 }

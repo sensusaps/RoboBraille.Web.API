@@ -1,0 +1,106 @@
+﻿@model RoboBraille.WebApi.Models.Job
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Job</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FileName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FileName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FileExtension)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FileExtension)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MimeType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MimeType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubmitTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubmitTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FinishTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FinishTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InputFileHash)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InputFileHash)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.DownloadCounter)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DownloadCounter)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ResultFileExtension)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ResultFileExtension)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ResultMimeType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ResultMimeType)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

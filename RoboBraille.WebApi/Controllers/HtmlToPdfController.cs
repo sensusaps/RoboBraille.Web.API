@@ -39,15 +39,6 @@ namespace RoboBraille.WebApi.Controllers
             {
                 Guid userId = RoboBrailleProcessor.getUserIdFromJob(this.Request.Headers.Authorization.Parameter);
                 job.UserId = userId;
-                if (RoboBrailleProcessor.IsSameJobProcessing(job, _repository.GetDataContext()))
-                {
-                    var resp = new HttpResponseMessage(HttpStatusCode.Conflict)
-                    {
-                        Content = new StringContent(string.Format("The file with the name {0} is already being processed", job.FileName)),
-                        ReasonPhrase = "Job already processing"
-                    };
-                    throw new HttpResponseException(resp);
-                }
                 Guid jobId = await _repository.SubmitWorkItem(job);
                 return Ok(jobId.ToString("D"));
             }
@@ -56,7 +47,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }
@@ -92,6 +83,18 @@ namespace RoboBraille.WebApi.Controllers
         }
 
         /// <summary>
+        /// Values used in the paper size post parameter
+        /// </summary>
+        /// <returns>A list of available paper sizes</returns>
+        [AllowAnonymous]
+        [Route("api/htmltopdf/getpapersizeoptions")]
+        [ResponseType(typeof(string))]
+        public IEnumerable<string> GetPaperSizeOptions()
+        {
+            return Enum.GetNames(typeof(PaperSize));
+        }
+
+        /// <summary>
         /// Delete a job that you published. You must be the owner of the job.
         /// </summary>
         /// <param name="jobId"></param>
@@ -112,7 +115,7 @@ namespace RoboBraille.WebApi.Controllers
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     Content = new StringContent(string.Format("Internal error: {0}", e)),
-                    ReasonPhrase = "Job already processing or " + e.Message
+                    ReasonPhrase = e.Message
                 };
                 throw new HttpResponseException(resp);
             }

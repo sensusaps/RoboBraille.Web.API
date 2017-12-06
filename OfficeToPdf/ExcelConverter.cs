@@ -45,14 +45,16 @@ namespace OfficeToPDF
             Boolean nowrite = (Boolean)options["readonly"];
             try
             {
-                app = new Microsoft.Office.Interop.Excel.Application();
-                app.Visible = true;
-                app.DisplayAlerts = false;
-                app.AskToUpdateLinks = false;
-                app.AlertBeforeOverwriting = false;
-                app.EnableLargeOperationAlert = false;
-                app.Interactive = false;
-                app.FeatureInstall = Microsoft.Office.Core.MsoFeatureInstall.msoFeatureInstallNone;
+                app = new Microsoft.Office.Interop.Excel.Application()
+                {
+                    Visible = true,
+                    DisplayAlerts = false,
+                    AskToUpdateLinks = false,
+                    AlertBeforeOverwriting = false,
+                    EnableLargeOperationAlert = false,
+                    Interactive = false,
+                    FeatureInstall = Microsoft.Office.Core.MsoFeatureInstall.msoFeatureInstallNone
+                };
                 if ((Boolean)options["hidden"])
                 {
                     // Try and at least minimise it
@@ -133,12 +135,12 @@ namespace OfficeToPDF
                 if (wbWin.Count > 0)
                 {
                     wbWin[1].Visible = (Boolean)options["hidden"] ? false : true;
-                    Converter.releaseCOMObject(wbWin);
+                    Converter.ReleaseCOMObject(wbWin);
                 }
                 if (appWin.Count > 0)
                 {
                     appWin[1].Visible = (Boolean)options["hidden"] ? false : true;
-                    Converter.releaseCOMObject(appWin);
+                    Converter.ReleaseCOMObject(appWin);
                 }
 
                 // Large excel files may simply not print reliably - if the excel_max_rows
@@ -164,7 +166,7 @@ namespace OfficeToPDF
                         {
                             var pageSetup = ((Microsoft.Office.Interop.Excel.Worksheet)ws).PageSetup;
                             pageSetup.PrintHeadings = true;
-                            Converter.releaseCOMObject(pageSetup);
+                            Converter.ReleaseCOMObject(pageSetup);
                         }
 
                         // If showing formulas, make things auto-fit
@@ -174,7 +176,7 @@ namespace OfficeToPDF
                             app.ActiveWindow.DisplayFormulas = true;
                             var cols = ((Microsoft.Office.Interop.Excel.Worksheet)ws).Columns;
                             cols.AutoFit();
-                            Converter.releaseCOMObject(cols);
+                            Converter.ReleaseCOMObject(cols);
                         }
 
                         // If there is a maximum row count, make sure we check each worksheet
@@ -183,7 +185,7 @@ namespace OfficeToPDF
                             // Check for a print area
                             var page_setup = ((Microsoft.Office.Interop.Excel.Worksheet)ws).PageSetup;
                             var print_area = page_setup.PrintArea;
-                            Converter.releaseCOMObject(page_setup);
+                            Converter.ReleaseCOMObject(page_setup);
                             if (string.IsNullOrEmpty(print_area))
                             {
                                 // There is no print area, check that the row count is <= to the
@@ -206,28 +208,28 @@ namespace OfficeToPDF
                                             {
                                                 row_count = cellSearch.Row;
                                                 found_worksheet = ((Microsoft.Office.Interop.Excel.Worksheet)ws).Name;
-                                                Converter.releaseCOMObject(cellSearch);
+                                                Converter.ReleaseCOMObject(cellSearch);
                                             }
-                                            Converter.releaseCOMObject(cells);
+                                            Converter.ReleaseCOMObject(cells);
                                         }
-                                        Converter.releaseCOMObject(rows);
+                                        Converter.ReleaseCOMObject(rows);
                                     }
                                 }
-                                Converter.releaseCOMObject(range);
+                                Converter.ReleaseCOMObject(range);
 
                                 if (row_count > max_rows)
                                 {
                                     // Too many rows on this worksheet - mark the workbook as unprintable
                                     row_count_check_ok = false;
                                     found_rows = row_count;
-                                    Converter.releaseCOMObject(ws);
+                                    Converter.ReleaseCOMObject(ws);
                                     break;
                                 }
                             }
                         } // End of row check
-                        Converter.releaseCOMObject(ws);
+                        Converter.ReleaseCOMObject(ws);
                     }
-                    Converter.releaseCOMObject(worksheets);
+                    Converter.ReleaseCOMObject(worksheets);
 
                     // Make sure we are not converting a document with too many rows
                     if (row_count_check_ok == false)
@@ -269,9 +271,9 @@ namespace OfficeToPDF
                 }
 
                 // Clean all the COM leftovers
-                Converter.releaseCOMObject(workbook);
-                Converter.releaseCOMObject(workbooks);
-                Converter.releaseCOMObject(app);
+                Converter.ReleaseCOMObject(workbook);
+                Converter.ReleaseCOMObject(workbooks);
+                Converter.ReleaseCOMObject(app);
 
                 if (tmpFile != null && File.Exists(tmpFile))
                 {

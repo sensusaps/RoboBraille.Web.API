@@ -10,6 +10,9 @@ using RoboBraille.WebApi.Models;
 
 namespace RoboBraille.WebApi
 {
+    /// <summary>
+    /// SwaggerConfig
+    /// </summary>
     public class SwaggerConfig
     {
         public static void Register()
@@ -35,8 +38,8 @@ namespace RoboBraille.WebApi
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("Realease 1.01", "RoboBraille WebApi")
-                            .Description("P4All - RoboBraille API using a RESTful Web Service")
+                        c.SingleApiVersion("Release 1.0", "RoboBraille WebApi")
+                            .Description("RoboBraille API using a RESTful Web Service")
                             .TermsOfService("Terms")
                             .Contact(cc => cc
                                 .Name("Sensus ApS")
@@ -45,7 +48,7 @@ namespace RoboBraille.WebApi
                             .License(lc => lc
                                 .Name("License")
                                 .Url("https://github.com/sensusaps/RoboBraille.Web.API/blob/master/LICENSE"));
-
+                        
                         // If your API has multiple versions, use "MultipleApiVersions" instead of "SingleApiVersion".
                         // In this case, you must provide a lambda that tells Swashbuckle which actions should be
                         // included in the docs for a given API version. Like "SingleApiVersion", each call to "Version"

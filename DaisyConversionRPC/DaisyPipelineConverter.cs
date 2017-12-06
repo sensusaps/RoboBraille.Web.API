@@ -199,7 +199,7 @@ namespace DaisyConversionRPC
                 p.Start();
                 p.WaitForExit();
             }
-            catch (Exception ex)
+            catch
             {
             }
 

@@ -5,7 +5,7 @@
         TooFast = 10,
         StillFast = 9,
         Fastest = 8,
-        Fastish = 7,
+        ModerateFast = 7,
         Faster = 6,
         Fast5 = 5,
         Fast4 = 4,
@@ -19,7 +19,7 @@
         Slow4 = -4,
         Slow5 = -5,
         Slower= -6,
-        Slowish= -7,
+        ModerateSlow= -7,
         Slowest = -8,
         StillSlow = -9,
         TooSlow = -10
@@ -43,7 +43,6 @@
     {
         Mp3 =1,
         Wav =2,
-        Wma =4,
         Aac =8
     }
 }

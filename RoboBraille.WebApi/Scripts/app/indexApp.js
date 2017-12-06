@@ -1,7 +1,7 @@
 ﻿var app2 = angular.module('testApp', ['emguo.poller']);
 
 app2.controller('statusController', function ($scope, poller) {
-    var url = 'http://localhost:35015';
+    var url = 'http://2.109.50.18:5150';
     var statusResultApiPath = url + '/api/RoboBrailleJob';
     $scope.statusCode = 2;
     $scope.flag = 'Checking';
