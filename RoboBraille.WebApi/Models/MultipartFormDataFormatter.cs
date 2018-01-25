@@ -129,10 +129,6 @@ namespace RoboBraille.WebApi.Models
                 {
                     ((BrailleJob)job).PageNumbering = (PageNumbering)int.Parse(msp.FormData["pagenumbering"]);
                 }
-                if (msp.FormData.AllKeys.Contains("translationtable"))
-                {
-                    ((BrailleJob)job).TranslationTable = msp.FormData["translationtable"];
-                }
             }
             else if (type == typeof(DaisyJob))
             {
